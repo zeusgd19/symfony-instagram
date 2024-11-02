@@ -64,13 +64,14 @@ header > div > img {
     height: 23px;
     border-radius: 100%;
 }
-
 .mainContent {
+    display: flex;
     max-width: 1024px;
     margin: 0 auto;
     margin-top: 95px;
     max-height: 100vh;
 }
+
 
 .stories-box {
     max-width: 490px;
@@ -239,4 +240,77 @@ header > div > img {
     background: none;
     border: none;
     color:  #8A8A8A;
+}
+
+aside {
+    margin-left: 30px;
+}
+
+.suggestions {
+    margin-top: 50px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 40px;
+}
+
+.suggestions > p  {
+    color: #8E8E8E;
+    font-family: "Segoe UI", serif;
+    font-weight: 14;
+    width: 339px;
+    height: 20px;
+    font-size: 13px;
+}
+
+.suggestion-item {
+    display: flex;
+    gap: 10px;
+}
+
+.suggestion-item img {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+}
+
+.suggestion-item p {
+    font-weight: 14;
+    font-size: 11px;
+}
+
+.followed {
+    color: #8E8E8E;
+}
+
+.follow-btn {
+    background: none;
+    border: none;
+    color: #0095F6;
+    font-size: 10px;
+    text-decoration: none;
+    width: 44px;
+    height: 31px;
+    text-align: center;
+    align-content: center;
+}
+
+.footer-ul {
+    display: flex;
+    flex-wrap: wrap;
+    max-width: 293px;
+    max-height: 42px;
+    list-style: none;
+    gap: 5px;
+    margin-bottom: 20px;
+}
+
+.footer-ul li {
+    color: #C7C7C7;
+    font-size: 10px;
+}
+
+footer p {
+    color: #C7C7C7;
+    font-size: 10px;
 }
