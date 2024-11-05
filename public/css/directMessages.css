@@ -93,6 +93,7 @@ main {
 .messages {
     padding: 10px;
     height: 450px;
+    overflow: scroll;
 }
 
 .message{
