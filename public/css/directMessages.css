@@ -2,7 +2,7 @@ main {
     display: flex;
     max-width: 1120px;
     margin: 0 auto;
-    margin-top: 100px;
+    margin-top: 90px;
 }
 
 .message-users {
@@ -12,6 +12,7 @@ main {
     border: 1px solid #DBDBDB;
     border-radius: 2px;
     width: 300px;
+    max-height: 550px;
 }
 
 .message-users > div:first-child{
@@ -21,12 +22,12 @@ main {
     padding: 15px 10px 15px 10px;
     font-weight: bold;
     border-bottom: 1px solid #DBDBDB;
+    max-height: 400px;
 }
 
 .message-user-item {
     display: flex;
     flex-direction: column;
-    max-height: 500px;
     overflow: scroll;
 }
 
@@ -71,6 +72,7 @@ main {
     display: flex;
     flex-direction: column;
     width: 820px;
+    max-height: 550px;
     border: 1px solid #DBDBDB;
 }
 

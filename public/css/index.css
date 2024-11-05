@@ -5,6 +5,7 @@
 
 body {
     background-color: #FAFAFA;
+    user-select: none;
 }
 
 span {
@@ -57,6 +58,10 @@ header > div > img {
     list-style: none;
     gap: 25px;
     margin-top: 10px;
+}
+
+.icon-logos .active {
+    border-bottom: 2px solid #DBDBDB;
 }
 
 .profil-pic {
@@ -113,7 +118,7 @@ header > div > img {
 .storie-item div img{
     width: 61px;
     height: 61px;
-    border-radius: 50%;
+    border-radius: 100%;
     background-color: white;
 }
 
@@ -124,8 +129,21 @@ header > div > img {
 }
 
 .other-storie div {
+    display: flex;
     border-radius: 100%;
     border: 2px solid #EA48F4;
+    align-items: center;
+    width: 66px;
+    height: 63px;
+}
+
+.other-storie div a {
+    width: 60px;
+    height: 60px;
+}
+.other-storie div a img {
+    width: 60px;
+    height: 59px;
 }
 
 
@@ -362,7 +380,7 @@ footer p {
 
 /* Post Header */
 .hide {
-    display: none;
+    display: none !important;
 }
 .modal-comments .post-user-up {
     border-bottom: 1px solid #DBDBDB;
@@ -493,3 +511,24 @@ footer p {
     font-weight: bold;
     cursor: pointer;
 }
+
+.emoji {
+    position: relative;
+}
+
+.modal-emojis {
+    width: 150px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    background-color: #DBDBDB;
+    padding: 5px;
+    position: absolute;
+    bottom: 20px
+}
+
+.modal-emojis p {
+    cursor: pointer;
+}
+
+
