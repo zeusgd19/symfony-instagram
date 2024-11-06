@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Instagram</title>
     <link rel="stylesheet" href="css/index.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="js/app.js"></script>
 </head>
 <body>
     <header>
@@ -99,7 +101,7 @@
                     <div class="post-options">
                         <div class="post-option">
                             <a href=""><img src="img/post-like.svg" alt="like"></a>
-                            <a href=""><img src="img/post-comment.svg" alt="comment"></a>
+                            <a href="" class="comment"><img src="img/post-comment.svg" alt="comment"></a>
                             <a href=""><img src="img/post-share.svg" alt="share" class="share"></a>
                         </div>
                         <div class="post-option-save">
@@ -115,10 +117,10 @@
                 </div>
                 <div class="post-comment">
                     <div>
-                        <a href=""><img src="img/post-emoji-icon.svg" alt="emoji-icon"></a>
-                        <input type="text" placeholder="Add a comment...">
+                        <a href="" class="emoji"><img src="img/post-emoji-icon.svg" alt="emoji-icon"></a>
+                        <input type="text" placeholder="Add a comment..." class="comment-input">
                     </div>
-                    <button>Publish</button>
+                    <button class="publish" disabled>Publish</button>
                 </div>
             </article>
             <article class="post-box">
@@ -134,7 +136,7 @@
                     <div class="post-options">
                         <div class="post-option">
                             <a href=""><img src="img/post-like.svg" alt="like"></a>
-                            <a href=""><img src="img/post-comment.svg" alt="comment"></a>
+                            <a href="" class="comment"><img src="img/post-comment.svg" alt="comment"></a>
                             <a href=""><img src="img/post-share.svg" alt="share" class="share"></a>
                         </div>
                         <div class="post-option-save">
@@ -150,10 +152,10 @@
                 </div>
                 <div class="post-comment">
                     <div>
-                        <a href=""><img src="img/post-emoji-icon.svg" alt="emoji-icon"></a>
-                        <input type="text" placeholder="Add a comment...">
+                        <a href="" class="emoji"><img src="img/post-emoji-icon.svg" alt="emoji-icon"></a>
+                        <input type="text" placeholder="Add a comment..." class="comment-input">
                     </div>
-                    <button>Publish</button>
+                    <button class="publish" disabled>Publish</button>
                 </div>
             </article>
             <article class="post-box">
@@ -169,7 +171,7 @@
                     <div class="post-options">
                         <div class="post-option">
                             <a href=""><img src="img/post-like.svg" alt="like"></a>
-                            <a href=""><img src="img/post-comment.svg" alt="comment"></a>
+                            <a href="" class="comment"><img src="img/post-comment.svg" alt="comment"></a>
                             <a href=""><img src="img/post-share.svg" alt="share" class="share"></a>
                         </div>
                         <div class="post-option-save">
@@ -185,123 +187,33 @@
                 </div>
                 <div class="post-comment">
                     <div>
-                        <a href="" class="emoji"><img src="img/post-emoji-icon.svg" alt="emoji-icon">
-                            <div class="modal-emojis hide" id="modalEmoji">
-                                <p>&#128512;</p>
-                                <p>&#128513;</p>
-                                <p>&#128514;</p>
-                                <p>&#128515;</p>
-                                <p>&#128516;</p>
-                                <p>&#128517;</p>
-                                <p>&#128518;</p>
-                                <p>&#128519;</p>
-                                <p>&#128520;</p>
-                                <p>&#128521;</p>
-                                <p>&#128522;</p>
-                                <p>&#128523;</p>
-                                <p>&#128524;</p>
-                                <p>&#128525;</p>
-                                <p>&#128526;</p>
-                                <p>&#128527;</p>
-                                <p>&#128528;</p>
-                                <p>&#128529;</p>
-                            </div></a>
-                        <input type="text" placeholder="Add a comment...">
+                        <a href="" class="emoji"><img src="img/post-emoji-icon.svg" alt="emoji-icon"></a>
+                        <input type="text" placeholder="Add a comment..." class="comment-input">
                     </div>
-                    <button>Publish</button>
+                    <button class="publish" disabled>Publish</button>
                 </div>
-            </article>
-
-            <article class="modal hide">
-                <div class="modal-content">
-                    <div class="modal-image">
-                        <img src="img/storie-image.png" alt="">
-                    </div>
-                    <div class="modal-comments">
-                        <div class="post-user-up">
-                            <div class="user-info">
-                                <img src="img/storie-image.png" alt="user-image">
-                                <p>darius</p>
-                            </div>
-                            <button>...</button>
-                        </div>
-                        <div class="comments-box">
-                            <div class="comment-item">
-                                <div>
-                                    <img src="img/storie-image.png" alt="user-image">
-                                    <p class="username">darius</p>
-                                    <p class="comment-text">Esto es un comentario</p>
-                                </div>
-                                <img src="img/post-like.svg" alt="like-icon">
-                            </div>
-                            <div class="comment-item">
-                                <div>
-                                    <img src="img/storie-image.png" alt="user-image">
-                                    <p class="username">darius</p>
-                                    <p class="comment-text">Esto es un comentario</p>
-                                </div>
-                                <img src="img/post-like.svg" alt="like-icon">
-                            </div>
-                            <div class="comment-item">
-                                <div>
-                                    <img src="img/storie-image.png" alt="user-image">
-                                    <p class="username">darius</p>
-                                    <p class="comment-text">Esto es un comentario</p>
-                                </div>
-                                <img src="img/post-like.svg" alt="like-icon">
-                            </div>
-                            <div class="comment-item">
-                                <div>
-                                    <img src="img/storie-image.png" alt="user-image">
-                                    <p class="username">darius</p>
-                                    <p class="comment-text">Esto es un comentario</p>
-                                </div>
-                                <img src="img/post-like.svg" alt="like-icon">
-                            </div>
-                            <div class="comment-item">
-                                <div>
-                                    <img src="img/storie-image.png" alt="user-image">
-                                    <p class="username">darius</p>
-                                    <p class="comment-text">Esto es un comentario</p>
-                                </div>
-                                <img src="img/post-like.svg" alt="like-icon">
-                            </div>
-                            <div class="comment-item">
-                                <div>
-                                    <img src="img/storie-image.png" alt="user-image">
-                                    <p class="username">darius</p>
-                                    <p class="comment-text">Esto es un comentario</p>
-                                </div>
-                                <img src="img/post-like.svg" alt="like-icon">
-                            </div>
-                        </div>
-                        <div class="post-options">
-                            <div class="post-option">
-                                <a href="#"><img src="img/post-like.svg" alt="like"></a>
-                                <a href="#"><img src="img/post-comment.svg" alt="comment"></a>
-                                <a href="#"><img src="img/post-share.svg" alt="share" class="share"></a>
-                            </div>
-                            <div class="post-option-save">
-                                <a href="#"><img src="img/post-save.svg" alt="save"></a>
-                            </div>
-                        </div>
-                        <div class="likes-description">
-                            <p>Liked by <span>you</span> and <span>10 others</span></p>
-                            <p class="time">HOUR AGO</p>
-                        </div>
-                        <div class="post-comment">
-                            <div class="comment-input">
-                                <a href="#" class="emoji"><img src="img/post-emoji-icon.svg" alt="emoji-icon">
-                                </a>
-                                <input type="text" placeholder="Add a comment...">
-                            </div>
-                            <button>Publish</button>
-                        </div>
-                    </div>
+                <div class="modal-emojis hide" id="modalEmoji">
+                    <p>&#128512;</p>
+                    <p>&#128513;</p>
+                    <p>&#128514;</p>
+                    <p>&#128515;</p>
+                    <p>&#128516;</p>
+                    <p>&#128517;</p>
+                    <p>&#128518;</p>
+                    <p>&#128519;</p>
+                    <p>&#128520;</p>
+                    <p>&#128521;</p>
+                    <p>&#128522;</p>
+                    <p>&#128523;</p>
+                    <p>&#128524;</p>
+                    <p>&#128525;</p>
+                    <p>&#128526;</p>
+                    <p>&#128527;</p>
+                    <p>&#128528;</p>
+                    <p>&#128529;</p>
                 </div>
             </article>
         </section>
-
         <aside>
             <article class="suggestions">
                 <p>Suggestions For You</p>
@@ -363,6 +275,92 @@
                 <p>© 2021 INSTAGRAM FROM META</p>
             </footer>
         </aside>
+
+        <article class="modal hide" id="commentModal">
+            <div class="modal-image">
+                <img src="img/storie-image.png" alt="">
+            </div>
+            <div class="modal-comments">
+                <div class="post-user-up">
+                    <div class="user-info">
+                        <img src="img/storie-image.png" alt="user-image">
+                        <p>darius</p>
+                    </div>
+                    <button>...</button>
+                </div>
+                <div class="comments-box">
+                    <div class="comment-item">
+                        <div>
+                            <img src="img/storie-image.png" alt="user-image">
+                            <p class="username">darius</p>
+                            <p class="comment-text">Esto es un comentario</p>
+                        </div>
+                        <img src="img/post-like.svg" alt="like-icon">
+                    </div>
+                    <div class="comment-item">
+                        <div>
+                            <img src="img/storie-image.png" alt="user-image">
+                            <p class="username">darius</p>
+                            <p class="comment-text">Esto es un comentario</p>
+                        </div>
+                        <img src="img/post-like.svg" alt="like-icon">
+                    </div>
+                    <div class="comment-item">
+                        <div>
+                            <img src="img/storie-image.png" alt="user-image">
+                            <p class="username">darius</p>
+                            <p class="comment-text">Esto es un comentario</p>
+                        </div>
+                        <img src="img/post-like.svg" alt="like-icon">
+                    </div>
+                    <div class="comment-item">
+                        <div>
+                            <img src="img/storie-image.png" alt="user-image">
+                            <p class="username">darius</p>
+                            <p class="comment-text">Esto es un comentario</p>
+                        </div>
+                        <img src="img/post-like.svg" alt="like-icon">
+                    </div>
+                    <div class="comment-item">
+                        <div>
+                            <img src="img/storie-image.png" alt="user-image">
+                            <p class="username">darius</p>
+                            <p class="comment-text">Esto es un comentario</p>
+                        </div>
+                        <img src="img/post-like.svg" alt="like-icon">
+                    </div>
+                    <div class="comment-item">
+                        <div>
+                            <img src="img/storie-image.png" alt="user-image">
+                            <p class="username">darius</p>
+                            <p class="comment-text">Esto es un comentario</p>
+                        </div>
+                        <img src="img/post-like.svg" alt="like-icon">
+                    </div>
+                </div>
+                <div class="post-options">
+                    <div class="post-option">
+                        <a href="#"><img src="img/post-like.svg" alt="like"></a>
+                        <a href="#"><img src="img/post-share.svg" alt="share" class="share"></a>
+                    </div>
+                    <div class="post-option-save">
+                        <a href="#"><img src="img/post-save.svg" alt="save"></a>
+                    </div>
+                </div>
+                <div class="likes-description">
+                    <p>Liked by <span>you</span> and <span>10 others</span></p>
+                    <p class="time">HOUR AGO</p>
+                </div>
+                <div class="post-comment">
+                    <div>
+                        <a href="#" class="emoji"><img src="img/post-emoji-icon.svg" alt="emoji-icon">
+                        </a>
+                        <input type="text" placeholder="Add a comment..." class="comment-input">
+                    </div>
+                    <button class="publish" disabled>Publish</button>
+                </div>
+            </div>
+        </article>
     </div>
 </body>
 </html>
