@@ -1,0 +1,75 @@
+{% extends "base.html.twig" %}
+{% block title %}Instagram{% endblock %}
+{% block body %}
+    <div class="mainContent">
+        <section>
+            <article class="stories-box">
+                <div class="stories">
+                    {{ include('partials/_storie-item.html.twig') }}
+                </div>
+            </article>
+            {{ include('partials/_posts.html.twig') }}
+        </section>
+        <aside>
+            <article class="suggestions">
+                <p>Suggestions For You</p>
+                <div class="suggestion-item">
+                    <img src="img/storie-image.png" alt="profil-pic">
+                    <div>
+                        <p>lucas</p>
+                        <p class="followed">Followed by mark + 2more</p>
+                    </div>
+                    <a href="" class="follow-btn">Follow</a>
+                </div>
+                <div class="suggestion-item">
+                    <img src="img/storie-image.png" alt="profil-pic">
+                    <div>
+                        <p>lucas</p>
+                        <p class="followed">Followed by mark + 2more</p>
+                    </div>
+                    <a href="" class="follow-btn">Follow</a>
+                </div>
+                <div class="suggestion-item">
+                    <img src="img/storie-image.png" alt="profil-pic">
+                    <div>
+                        <p>lucas</p>
+                        <p class="followed">Followed by mark + 2more</p>
+                    </div>
+                    <a href="" class="follow-btn">Follow</a>
+                </div>
+                <div class="suggestion-item">
+                    <img src="img/storie-image.png" alt="profil-pic">
+                    <div>
+                        <p>lucas</p>
+                        <p class="followed">Followed by mark + 2more</p>
+                    </div>
+                    <a href="" class="follow-btn">Follow</a>
+                </div>
+                <div class="suggestion-item">
+                    <img src="img/storie-image.png" alt="profil-pic">
+                    <div>
+                        <p>lucas</p>
+                        <p class="followed">Followed by mark + 2more</p>
+                    </div>
+                    <a href="" class="follow-btn">Follow</a>
+                </div>
+            </article>
+
+            <footer>
+                <ul class="footer-ul">
+                    <li>About</li>
+                    <li>Press</li>
+                    <li>API</li>
+                    <li>Jobs</li>
+                    <li>Privacy</li>
+                    <li>Terms</li>
+                    <li>Locations</li>
+                    <li>TopAccounts</li>
+                    <li>Hashtags</li>
+                    <li>Language</li>
+                </ul>
+                <p>© 2021 INSTAGRAM FROM META</p>
+            </footer>
+        </aside>
+    </div>
+{% endblock %}

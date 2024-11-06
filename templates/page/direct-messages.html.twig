@@ -1,0 +1,29 @@
+{% extends 'base.html.twig' %}
+{% block title %}Direct Messages{% endblock %}
+{% block body %}
+    <main>
+        <div class="message-users">
+            <div>
+                <p>Direct</p>
+                <img src="{{ asset('img/new-message.svg') }}" alt="Hola">
+            </div>
+            <div class="type-messages">
+                <p class="active">PRIMARY</p>
+                <p>GENERAL</p>
+            </div>
+            <div class="message-user-item">
+                {{ include('partials/_message-user-item.html.twig') }}
+            </div>
+        </div>
+        <div class="message-item">
+            <div class="message-item-user-info">
+                <img src="{{ asset('img/storie-image.png') }}" alt="profile-pic">
+                <p>darius</p>
+            </div>
+            {{ include('partials/_messages.html.twig') }}
+            <div class="send-messages">
+                <input type="text" placeholder="Message...">
+            </div>
+        </div>
+    </main>
+{% endblock %}
