@@ -5,6 +5,23 @@
 
 body {
     background-color: #FAFAFA;
+    user-select: none;
+}
+
+#content{
+    display: flex;
+    flex-direction: column;
+    margin: 0 auto;
+}
+
+main {
+    display: flex;
+    width: 60%;
+    margin: 100px auto;
+}
+
+#profile{
+    display: flex;
 }
 
 header {
@@ -58,30 +75,32 @@ header > div > div input::placeholder {
     border-radius: 100%;
 }
 
-main {
-    width: 60%;
-    margin: 100px auto;
-}
+
 
 #narutoProfilePic{
     border-radius: 100%;
-    width: 120px;
+    width: 150px;
+    height: 150px;
 }
 
 .profile-data{
     display: flex;
+    flex-direction: column;
+    gap: 20px;
+    justify-content: center;
 }
 
 .info{
     display: flex;
+    flex-direction: column;
     gap: 10px;
     align-items: center;
     margin-bottom: 100px;
 }
 
+
 #profile-name{
     font-size: 20px;
-    margin-left: 50px;
 }
 
 #profile-send-message{
@@ -89,10 +108,82 @@ main {
     border: 1px solid lightgrey;
     padding: 5px;
     border-radius: 5px;
+    width: 110px;
+    text-align: center;
+    cursor: pointer;
 }
 
-#profile-options{
+.profile-options{
     display: flex;
-    margin-left: 100px;
+    margin-left: 50px;
     gap: 15px;
+}
+
+#three-dots{
+    width: 30px;
+}
+
+.followers{
+    display: flex;
+    gap: 70px;
+    margin-left: 50px;
+    padding-top: 15px;
+}
+
+.description{
+    display: flex;
+    flex-direction: column;
+    margin-left: 50px;
+    margin-top: 15px;
+}
+
+.description p{
+    padding-bottom: 10px;
+}
+
+.description-product-service{
+    color: grey;
+}
+
+.description-web a{
+    color: #0f4d73;
+    text-decoration: none;
+}
+
+#publicaciones{
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 15px;
+    padding-top: 15px;
+}
+
+.foto{
+    width: 250px;
+}
+
+#publicaciones-container{
+    display: flex;
+    border-top: 1px solid lightgrey;
+    justify-content: center;
+    gap: 20px;
+}
+
+#publicaciones-title{
+    color: grey;
+    font-size: 14px;
+    text-align: center;
+    margin-top: 15px;
+    padding-right: 20px;
+    border-right: 1px solid lightgrey;
+}
+
+#guardados{
+    color: grey;
+    font-size: 14px;
+    text-align: center;
+    margin-top: 15px;
+}
+
+#publicaciones-guardadas{
+    display: none;
 }
