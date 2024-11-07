@@ -1,0 +1,60 @@
+{% extends 'base.html.twig'%}
+{% block title %}Profile{% endblock %}
+{% block head %}
+    <link rel="stylesheet" href="{{ asset('css/profile.css') }}">
+{% endblock %}
+{% block body %}
+    <main>
+        <div id="content">
+            <div id="profile">
+                <img src="img/naruto.jpeg" id="narutoProfilePic" draggable="false">
+                <div class="profile-data">
+                    <div class="profile-options">
+                        <p id="profile-name">alexillo98</p>
+                        <p id="profile-send-message">send a message</p>
+                        <img id="followed" src="img/unfollowed.svg">
+                        <img src="img/more-options.svg">
+                        <img id="three-dots" src="img/three-dots.svg">
+                    </div>
+                    <div class="followers">
+                        <p>1,132 Posts</p>
+                        <p>60K Followers</p>
+                        <p>4 Following</p>
+                    </div>
+                    <div class="description">
+                        <p class="description-title">Mediamodifier•Building Brands </p>
+                        <p class="description-product-service">Product/service</p>
+                        <p>We provide essential tools to help entrepreneurs grow their businesses online.</p>
+                        <p class="description-web"><a href="">mediamodifier.com</a></p>
+                    </div>
+                </div>
+            </div>
+            <div id="publicaciones-container">
+                <p id="publicaciones-title" class="active">PUBLICACIONES</p>
+                <p id="guardados">GUARDADOS</p>
+            </div>
+            <div id="publicaciones" class="publicaciones">
+                <img class="foto 1" src="img/naruto-meme.jpeg">
+                <img class="foto 2" src="img/naruto-meme.jpeg">
+                <img class="foto 3" src="img/naruto-meme.jpeg">
+                <img class="foto 4" src="img/naruto-meme.jpeg">
+                <img class="foto 5" src="img/naruto-meme.jpeg">
+                <img class="foto 6" src="img/naruto-meme.jpeg">
+                <img class="foto 7" src="img/naruto-meme.jpeg">
+                <img class="foto 8" src="img/naruto-meme.jpeg">
+                <img class="foto 9" src="img/naruto-meme.jpeg">
+            </div>
+            <div id="publicaciones-guardadas" class="publicaciones">
+                <img class="foto 1" src="img/naruto-meme.jpeg">
+                <img class="foto 2" src="img/naruto-meme.jpeg">
+                <img class="foto 3" src="img/naruto-meme.jpeg">
+                <img class="foto 4" src="img/naruto-meme.jpeg">
+                <img class="foto 5" src="img/naruto-meme.jpeg">
+                <img class="foto 6" src="img/naruto-meme.jpeg">
+                <img class="foto 7" src="img/naruto-meme.jpeg">
+                <img class="foto 8" src="img/naruto-meme.jpeg">
+                <img class="foto 9" src="img/storie-image.png">
+            </div>
+        </div>
+    </main>
+{% endblock %}

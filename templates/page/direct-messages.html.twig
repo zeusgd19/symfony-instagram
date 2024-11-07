@@ -1,5 +1,8 @@
 {% extends 'base.html.twig' %}
 {% block title %}Direct Messages{% endblock %}
+{% block head %}
+    <link rel="stylesheet" href="{{ asset('css/directMessages.css') }}">
+{% endblock %}
 {% block body %}
     <main>
         <div class="message-users">

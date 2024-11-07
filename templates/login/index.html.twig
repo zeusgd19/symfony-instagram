@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Login</title>
+    <link rel="stylesheet" href="{{ asset('css/login.css') }}">
+</head>
+<body>
+<div id="allContent">
+    <header>
+        <img id="instagram-logo" src="{{ asset('img/instagram.svg') }}">
+    </header>
+    <p id="facebook-continue"><img id="facebook-logo" src="{{ asset('img/facebook-logo.svg') }}">Continue witeh Facebook</p>
+    <div id="or">
+        <p id="or-text">OR</p>
+    </div>
+
+    {% if error %}
+        <div>{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+    {% endif %}
+    <form action="{{ path('login') }}" method="post">
+        <input type="text" placeholder="Phone number,username, or email" name="_username" value="{{ last_username }}">
+        <input type="password" placeholder="Password" name="_password">
+
+        <div class="forgot-password">
+            <a href="#">Forgot password?</a>
+        </div>
+
+        <button class="login-button" disabled>Log In</button>
+
+        <div class="signup-prompt">
+            Don't have an account? <a href="{{ path('app_register') }}">Sign up</a>
+        </div>
+    </form>
+</div>
+</body>
+</html>
