@@ -5,11 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Profile</title>
     <link rel="stylesheet" href="./css/profile.css">
+    <script src=""></script>
 </head>
 <body>
     <header>
         <div>
-            <img src="img/instagram.svg" alt="instagram-logo">
+            <a href="index.html"><img src="img/instagram.svg" alt="instagram-logo"></a>
             <div>
                 <img src="img/search-icon.svg" alt="search-icon" class="search-icon">
                 <input type="text" placeholder="Search">
@@ -19,21 +20,60 @@
                 <li><a href=""><img src="img/direct-messages.svg" alt="direct-messages"></a></li>
                 <li><a href=""><img src="img/create-post.svg" alt="create-post"></a></li>
                 <li><a href=""><img src="img/like-notifcation.svg" alt="like-notification"></a></li>
-                <li><a href=""><img src="img/storie-image.png" alt="profil-pic" class="profil-pic"></a></li>
+                <li><a href="./profile.html"><img src="img/storie-image.png" alt="profil-pic" class="profil-pic"></a></li>
             </ul>
         </div>
     </header>
     <main>
-        <div class="profile-data">
-            <a href=""><img src="img/naruto.jpeg" id="narutoProfilePic"></a>
-            <div class="info">
-                <p id="profile-name">alexillo98</p>
-                <div id="profile-options">
-                    <p id="profile-send-message">send a message</p>
-                    <img src="img/followed.svg">
-                    <img src="img/more-options.svg">
-                    <img src="img/three-dots.svg">
+        <div id="content">
+            <div id="profile">
+                <img src="img/naruto.jpeg" id="narutoProfilePic" draggable="false">
+                <div class="profile-data">
+                    <div class="profile-options">
+                        <p id="profile-name">alexillo98</p>
+                        <p id="profile-send-message">send a message</p>
+                        <img id="followed" src="img/unfollowed.svg">
+                        <img src="img/more-options.svg">
+                        <img id="three-dots" src="img/three-dots.svg">
+                    </div>
+                    <div class="followers">
+                        <p>1,132 Posts</p>
+                        <p>60K Followers</p>
+                        <p>4 Following</p>
+                    </div>
+                    <div class="description">
+                        <p class="description-title">Mediamodifier•Building Brands </p>
+                        <p class="description-product-service">Product/service</p>
+                        <p>We provide essential tools to help entrepreneurs grow their businesses online.</p>
+                        <p class="description-web"><a href="">mediamodifier.com</a></p>
+                    </div>
                 </div>
+            </div>
+            <div id="publicaciones-container">
+                <p id="publicaciones-title">PUBLICACIONES</p>
+                <p id="guardados">GUARDADOS</p>
+            </div>
+            <div id="publicaciones">
+                <img class="foto 1" src="img/naruto-meme.jpeg">
+                <img class="foto 2" src="img/naruto-meme.jpeg">
+                <img class="foto 3" src="img/naruto-meme.jpeg">
+                <img class="foto 4" src="img/naruto-meme.jpeg">
+                <img class="foto 5" src="img/naruto-meme.jpeg">
+                <img class="foto 6" src="img/naruto-meme.jpeg">
+                <img class="foto 7" src="img/naruto-meme.jpeg">
+                <img class="foto 8" src="img/naruto-meme.jpeg">
+                <img class="foto 9" src="img/naruto-meme.jpeg">
+            </div>
+            <div id="publicaciones-guardadas">
+                <img class="foto 1" src="img/naruto-meme.jpeg">
+                <img class="foto 2" src="img/naruto-meme.jpeg">
+                <img class="foto 3" src="img/naruto-meme.jpeg">
+                <img class="foto 4" src="img/naruto-meme.jpeg">
+                <img class="foto 5" src="img/naruto-meme.jpeg">
+                <img class="foto 6" src="img/naruto-meme.jpeg">
+                <img class="foto 7" src="img/naruto-meme.jpeg">
+                <img class="foto 8" src="img/naruto-meme.jpeg">
+                <img class="foto 9" src="img/naruto-meme.jpeg">
             </div>
         </div>
     </main>
