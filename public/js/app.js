@@ -71,4 +71,27 @@ document.addEventListener("DOMContentLoaded", function () {
             document.body.style.overflow = "auto";
         }
     });
+
+    publicaciones_title = document.getElementById("publicaciones-title");
+    guardados = document.getElementById("guardados");
+
+    posts = document.getElementById("publicaciones");
+    postGuardados = document.getElementById("publicaciones-guardadas");
+
+
+    publicaciones_title.addEventListener("click",function (){
+        postGuardados.style.display = "none";
+        posts.style.display = "grid";
+        publicaciones_title.classList.add("active");
+        guardados.classList.remove("active");
+    })
+
+
+    guardados.addEventListener("click",function (){
+        posts.style.display = "none";
+        postGuardados.style.display = "grid";
+        publicaciones_title.classList.remove("active");
+        guardados.classList.add("active");
+    })
 });
+
