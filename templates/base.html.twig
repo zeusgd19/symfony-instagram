@@ -19,15 +19,33 @@
 
     <div class="formulario-post">
         <div class="cabecera-form">
-            <p>Crea una nueva publicacion</p>
+            <p id="tituloCabecera">Crea una nueva publicacion</p>
+            <button id="nextButton" class="hide">Siguiente</button>
+            <button id="compartir" class="hide">Compartir</button>
         </div>
-        <div class="formulario-body">
-            <p>Selecciona las fotos o videos aquí</p>
+        <div class="formulario-body" id="body-form">
+            <p id="textoInput">Selecciona las fotos o videos aquí</p>
             <form>
                 <input type="file" id="postInput">
+                <textarea type="text" id="description" class="hide"></textarea>
             </form>
         </div>
-        <div class="imagenDiv">
+        <div id="filters" class="hide">
+            <div id="filtros">
+                <button data-filters="normal">Original</button>
+                <button data-filters="blancoNegro">Blanco y negro</button>
+                <button data-filters="desenfoque">Desenfoque</button>
+                <button data-filters="sepia">Sepia</button>
+                <button data-filters="invertir">Invertir Colores</button>
+                <br>
+                <label for="saturacion">Saturacion</label>
+                <input type="range" name="saturacion" id="saturacion" min="0" max="1000">
+                <br>
+                <label for="contrast">Contraste</label>
+                <input type="range" name="contrast" id="contraste" min="0" max="1000">
+            </div>
+        </div>
+        <div class="imagenDiv" id="imageDiv">
         </div>
     </div>
 </body>

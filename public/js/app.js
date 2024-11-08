@@ -7,9 +7,144 @@ document.addEventListener("DOMContentLoaded", function () {
     const commentInput = $('.comment-input');
     const messages = document.getElementById('messages');
     const imagePost = document.getElementById('postInput');
+    const bodyForm = document.getElementById('body-form');
+    const nextButton = document.getElementById('nextButton');
+    const filterDiv = document.getElementById('filters');
+    const imageDiv = document.getElementById('imageDiv');
+    const saturacionInput = document.getElementById("saturacion");
+    const contrasteInput = document.getElementById("contraste");
+    const tituloCabecera = document.getElementById('tituloCabecera');
+    const descriptionInput = document.getElementById('description');
+    const filtros = document.getElementById('filtros').children;
+
+    // Variables para los filtros
+    let saturacion = 100;
+    let contraste = 100;
+
+// Función para crear un Blob a partir de la imagen procesada en el canvas
+    function obtenerImagenProcesada() {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        const img = imageDiv.firstElementChild; // Imagen cargada
+
+        // Configuramos el tamaño del canvas con el tamaño de la imagen
+        canvas.width = img.width;
+        canvas.height = img.height;
+
+        // Dibujamos la imagen en el canvas
+        ctx.drawImage(img, 0, 0, img.width, img.height);
+
+        // Aplicamos los filtros acumulados
+        ctx.filter = filtrosAplicados;
+
+        // Redibujamos la imagen con los filtros aplicados
+        ctx.drawImage(img, 0, 0, img.width, img.height);
+
+        // Convertimos el canvas a un Blob (imagen procesada)
+        return new Promise((resolve) => {
+            canvas.toBlob((blob) => {
+                resolve(blob);
+            });
+        });
+    }
+
     imagePost.addEventListener('change', (ev) => {
-        console.log(new URL(imagePost.value).pathname);
+        const file = ev.target.files[0];
+
+        // Crear un elemento de imagen y agregarlo al div
+        bodyForm.classList.add('hide');
+        const img = document.createElement('img');
+        img.src = URL.createObjectURL(file);
+        img.classList.add('imagenDiv');
+        img.onload = () => {
+            // Una vez cargada la imagen, establecer el tamaño del canvas
+            img.width = 400; // Ajusta según lo necesario
+            img.height = 400;
+        };
+        imageDiv.appendChild(img);
+
+        // Habilitar el botón siguiente
+        nextButton.classList.remove('hide');
+    });
+
+    Array.from(filtros).forEach(filtro => {
+        filtro.addEventListener('click', (ev) => {
+            switch (filtro.getAttribute('data-filters')){
+                case 'blancoNegro':
+                    imageDiv.firstElementChild.style.filter = 'grayscale(100%)';
+                    break;
+                case 'desenfoque':
+                    imageDiv.firstElementChild.style.filter = 'blur(2px)';
+                    break;
+                case 'sepia':
+                    imageDiv.firstElementChild.style.filter = 'sepia(100%)';
+                    break;
+                case 'invertir':
+                    imageDiv.firstElementChild.style.filter = 'invert(100%)';
+                    break;
+                case 'normal':
+                    imageDiv.firstElementChild.style.filter = 'none';
+                    break;
+            }
+        })
+        function actualizarFiltros() {
+            // Aplica todos los filtros acumulados
+            imageDiv.firstElementChild.style.filter = `saturate(${saturacion}%) contrast(${contraste}%)`;
+        }
+
+        // Escucha el evento 'input' para saturación
+        saturacionInput.addEventListener("input", (ev) => {
+            saturacion = ev.target.value; // Actualiza la variable de saturación
+            actualizarFiltros();          // Aplica los cambios
+        });
+
+        // Escucha el evento 'input' para contraste
+        contrasteInput.addEventListener("input", (ev) => {
+            contraste = ev.target.value;   // Actualiza la variable de contraste
+            actualizarFiltros();           // Aplica los cambios
+        });
     })
+    nextButton.addEventListener('click', () => {
+        nextButton.classList.toggle('editar');
+        bodyForm.classList.add('hide');
+        filterDiv.classList.remove('hide');
+        filterDiv.prepend(imageDiv);
+        tituloCabecera.textContent = 'Editar'; // Cambiar el título del header
+        filtrosAplicados = imageDiv.firstElementChild.style.filter;
+        if(!nextButton.classList.contains('editar')){
+            nextButton.classList.add('hide');
+            document.getElementById('compartir').classList.remove('hide');
+            document.getElementById('filtros').classList.add('hide');
+            bodyForm.classList.remove('hide');
+            descriptionInput.classList.remove('hide')
+            document.getElementById('textoInput').textContent = "Descripcion";
+            imagePost.classList.add('hide');
+            filterDiv.appendChild(bodyForm);
+        }
+    });
+
+    // Función para reemplazar el archivo en el input con la imagen procesada
+    async function reemplazarArchivoConImagenProcesada() {
+        const blob = await obtenerImagenProcesada();
+
+        // Crear un nuevo archivo de tipo imagen
+        const processedFile = new File([blob], 'imagenProcesada.jpg', { type: 'image/jpeg' });
+
+        // Crear un nuevo FileList con el archivo procesado
+        const dataTransfer = new DataTransfer();
+        dataTransfer.items.add(processedFile);
+
+        // Reemplazar el archivo en el input
+        imagePost.files = dataTransfer.files;
+
+        // Log para verificar que el archivo ha sido reemplazado correctamente
+        console.log(imagePost.files[0]);
+    }
+
+// Llamar a esta función cuando se quiera reemplazar la imagen en el input
+    document.getElementById('compartir').addEventListener('click', () => {
+        reemplazarArchivoConImagenProcesada().then();
+    });
     // Selecciona todas las imágenes con la clase lazy-load
     const lazyImages = document.querySelectorAll("img.lazy-load");
 
