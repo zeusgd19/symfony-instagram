@@ -3,14 +3,16 @@
         <img src="{{ asset('img/instagram.svg') }}" alt="instagram-logo">
         <div>
             <img src="{{ asset('img/search-icon.svg') }}" alt="search-icon" class="search-icon">
-            <input type="text" placeholder="Search">
+            <form>
+                <input type="text" placeholder="Search" onchange="window.location.href='/search'">
+            </form>
         </div>
         <ul class="icon-logos">
             <li><a href="{{ path('index') }}" class={{(app.request.attributes.get('_route') == 'index')  ? 'active': ''}}><img src="{{ asset('img/home.svg') }}" alt="home"></a></li>
             <li><a href="{{ path('direct_messages') }}" class={{(app.request.attributes.get('_route') == 'direct_messages')  ? 'active': ''}}><img src="{{ asset('img/direct-messages.svg') }}" alt="direct-messages"></a></li>
             <li><a href=""><img src="{{ asset('img/create-post.svg') }}" alt="create-post"></a></li>
             <li><a href=""><img src="{{ asset('img/like-notification.svg') }}" alt="like-notification"></a></li>
-            <li><a href="{{ path('profile') }}"><img src="{{ asset('img/storie-image.png') }}" alt="profil-pic" class="profil-pic"></a></li>
+            <li><a href="{{ path('profile') }}"><img src="{{ asset('img/' ~ app.user.photo) }}" alt="profil-pic" class="profil-pic"></a></li>
         </ul>
     </div>
 </header>

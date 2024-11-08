@@ -1,0 +1,42 @@
+.formulario-post {
+    width: 500px;
+    height: 450px;
+    border: 1px solid #DBDBDB;
+    border-radius: 10px;
+    position: fixed;
+    top: 15%;
+    left: 30%;
+    z-index: 10000;
+}
+
+.cabecera-form {
+    background-color: #0a0a0a;
+    height: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+}
+
+.cabecera-form p {
+    color: white;
+    font-weight: bolder;
+    font-size: 10px;
+}
+
+.formulario-body {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 450px;
+    background-color: #393939;
+    gap: 10px;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+}
+
+.formulario-body p {
+    color: white;
+}

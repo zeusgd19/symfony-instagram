@@ -1,0 +1,12 @@
+<div>
+    {% for user in users %}
+    <div class="suggestion-item">
+        <img src="{{ asset('img/' ~ user.photo) }}" alt="profil-pic">
+        <div>
+            <p>{{ user.username }}</p>
+            <p class="followed">Followed by mark + 2more</p>
+        </div>
+        <a href="" class="follow-btn">Follow</a>
+    </div>
+    {% endfor %}
+</div>

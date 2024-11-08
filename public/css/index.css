@@ -72,8 +72,7 @@ header > div > img {
 .mainContent {
     display: flex;
     max-width: 1024px;
-    margin: 0 auto;
-    margin-top: 95px;
+    margin: 95px auto;
     max-height: 100vh;
 }
 

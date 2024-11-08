@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{% block title %}{% endblock %}</title>
     <link rel="stylesheet" href="{{ asset('css/index.css') }}">
-
+    <link rel="stylesheet" href="{{ asset('css/form_post.css') }}">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="{{ asset('js/app.js') }}"></script>
     {% block head %}
@@ -16,5 +16,19 @@
 {% block body %}{% endblock %}
 {{ include('partials/_emoji-modal.html.twig') }}
 {{ include('partials/_comment-modal.html.twig') }}
+
+    <div class="formulario-post">
+        <div class="cabecera-form">
+            <p>Crea una nueva publicacion</p>
+        </div>
+        <div class="formulario-body">
+            <p>Selecciona las fotos o videos aquí</p>
+            <form>
+                <input type="file" id="postInput">
+            </form>
+        </div>
+        <div class="imagenDiv">
+        </div>
+    </div>
 </body>
 </html>

@@ -5,8 +5,37 @@ document.addEventListener("DOMContentLoaded", function () {
     const commentModal = document.getElementById('commentModal');
     const emojis = $('#modalEmoji').find('p');
     const commentInput = $('.comment-input');
-    console.log(commentInput);
     const messages = document.getElementById('messages');
+    const imagePost = document.getElementById('postInput');
+    imagePost.addEventListener('change', (ev) => {
+        console.log(new URL(imagePost.value).pathname);
+    })
+    // Selecciona todas las imágenes con la clase lazy-load
+    const lazyImages = document.querySelectorAll("img.lazy-load");
+
+    // Configura el Intersection Observer
+    const observer = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                // Obtiene la imagen y asigna el src desde el data-src
+                const img = entry.target;
+                img.src = img.getAttribute("data-src");
+
+                // Remueve data-src para evitar que vuelva a cargarse
+                img.removeAttribute("data-src");
+
+                // Deja de observar esta imagen
+                observer.unobserve(img);
+            }
+        });
+    }, {
+        rootMargin: "0px 0px 0px 0px" // Carga un poco antes de que sea visible
+    });
+
+    // Observa cada imagen con lazy loading
+    lazyImages.forEach(img => observer.observe(img));
+
+
     if (messages) messages.scrollTop = messages.scrollHeight;
     // Desvincula eventos previos para evitar duplicados
 

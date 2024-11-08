@@ -1,60 +1,19 @@
 {% extends "base.html.twig" %}
 {% block title %}Instagram{% endblock %}
 {% block body %}
+{% if app.user %}
     <div class="mainContent">
         <section>
             <article class="stories-box">
-                {{ include('partials/_storie-item.html.twig') }}
+                {{ include('partials/_storie-item.html.twig', {'user':user}) }}
             </article>
             {{ include('partials/_posts.html.twig') }}
         </section>
         <aside>
             <article class="suggestions">
                 <p>Suggestions For You</p>
-                <div>
-                    <div class="suggestion-item">
-                        <img src="img/storie-image.png" alt="profil-pic">
-                        <div>
-                            <p>lucas</p>
-                            <p class="followed">Followed by mark + 2more</p>
-                        </div>
-                        <a href="" class="follow-btn">Follow</a>
-                    </div>
-                    <div class="suggestion-item">
-                        <img src="img/storie-image.png" alt="profil-pic">
-                        <div>
-                            <p>lucas</p>
-                            <p class="followed">Followed by mark + 2more</p>
-                        </div>
-                        <a href="" class="follow-btn">Follow</a>
-                    </div>
-                    <div class="suggestion-item">
-                        <img src="img/storie-image.png" alt="profil-pic">
-                        <div>
-                            <p>lucas</p>
-                            <p class="followed">Followed by mark + 2more</p>
-                        </div>
-                        <a href="" class="follow-btn">Follow</a>
-                    </div>
-                    <div class="suggestion-item">
-                        <img src="img/storie-image.png" alt="profil-pic">
-                        <div>
-                            <p>lucas</p>
-                            <p class="followed">Followed by mark + 2more</p>
-                        </div>
-                        <a href="" class="follow-btn">Follow</a>
-                    </div>
-                    <div class="suggestion-item">
-                        <img src="img/storie-image.png" alt="profil-pic">
-                        <div>
-                            <p>lucas</p>
-                            <p class="followed">Followed by mark + 2more</p>
-                        </div>
-                        <a href="" class="follow-btn">Follow</a>
-                    </div>
-                </div>
+                {{ include('partials/_suggestions.html.twig',{'users':users}) }}
             </article>
-
             <footer>
                 <ul class="footer-ul">
                     <li>About</li>
@@ -72,4 +31,5 @@
             </footer>
         </aside>
     </div>
+{% endif %}
 {% endblock %}
