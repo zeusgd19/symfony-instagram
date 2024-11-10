@@ -7,10 +7,10 @@
     <main>
         <div id="content">
             <div id="profile">
-                <img src="img/naruto.jpeg" id="narutoProfilePic" draggable="false">
+                <img src="{{ asset("img/" ~ app.user.photo)  }}" id="narutoProfilePic" draggable="false">
                 <div class="profile-data">
                     <div class="profile-options">
-                        <p id="profile-name">alexillo98</p>
+                        <p id="profile-name">{{ app.user.username }}</p>
                         <p id="profile-send-message">send a message</p>
                         <img id="followed" src="img/unfollowed.svg">
                         <img src="img/more-options.svg">
@@ -22,10 +22,7 @@
                         <p>4 Following</p>
                     </div>
                     <div class="description">
-                        <p class="description-title">Mediamodifier•Building Brands </p>
-                        <p class="description-product-service">Product/service</p>
-                        <p>We provide essential tools to help entrepreneurs grow their businesses online.</p>
-                        <p class="description-web"><a href="">mediamodifier.com</a></p>
+                        <p>{{ app.user.description }}</p>
                     </div>
                 </div>
             </div>
