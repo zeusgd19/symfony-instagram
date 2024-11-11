@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Post;
 use App\Entity\User;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -16,6 +17,9 @@ class IndexController extends AbstractController
         $repository = $doctrine->getRepository(User::class);
         $allUsers = $repository->findAll();
         $users = [];
+
+        $repositoryPosts = $doctrine->getRepository(Post::class);
+        $posts = $repositoryPosts->findAll();
         foreach ($allUsers as $user) {
             if($user != $this->getUser()) {
                 $users[] = $user;
@@ -23,7 +27,8 @@ class IndexController extends AbstractController
         }
         return $this->render('page/index.html.twig',[
             'users'=> $users,
-            'user' => $this->getUser()
+            'user' => $this->getUser(),
+            'posts' => $posts
         ]);
     }
 }

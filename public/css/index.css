@@ -526,5 +526,19 @@ footer p {
     cursor: pointer;
 }
 
+#deleteImage {
+    position: relative;
+}
+
+.delete-anchor {
+    color: red;
+    background-color: #DBDBDB;
+    width: 150px;
+    font-size: 10px;
+    white-space: nowrap;
+    position: absolute;
+    left: 600px;
+}
+
 
 

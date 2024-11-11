@@ -13,22 +13,9 @@
 </head>
 <body>
 {{ include('partials/_navigation.html.twig') }}
-{% block body %}{% endblock %}
+{% block body %}
+{% endblock %}
 {{ include('partials/_emoji-modal.html.twig') }}
 {{ include('partials/_comment-modal.html.twig') }}
-
-    <div class="formulario-post">
-        <div class="cabecera-form">
-            <p>Crea una nueva publicacion</p>
-        </div>
-        <div class="formulario-body">
-            <p>Selecciona las fotos o videos aquí</p>
-            <form>
-                <input type="file" id="postInput">
-            </form>
-        </div>
-        <div class="imagenDiv">
-        </div>
-    </div>
 </body>
 </html>

@@ -3,11 +3,11 @@
 {% block body %}
 {% if app.user %}
     <div class="mainContent">
-        <section>
+        <section id="postSection">
             <article class="stories-box">
-                {{ include('partials/_storie-item.html.twig', {'user':user}) }}
+                {{ include('partials/_storie-item.html.twig') }}
             </article>
-            {{ include('partials/_posts.html.twig') }}
+            {{ include('partials/_posts.html.twig', {'posts':posts}) }}
         </section>
         <aside>
             <article class="suggestions">
@@ -30,6 +30,8 @@
                 <p>© 2021 INSTAGRAM FROM META</p>
             </footer>
         </aside>
+    </div>
+    <div class="formulario-post hide" id="formPost">
     </div>
 {% endif %}
 {% endblock %}
