@@ -7,14 +7,18 @@
     <main>
         <div id="content">
             <div id="profile">
-                <img src="{{ asset("img/" ~ app.user.photo)  }}" id="narutoProfilePic" draggable="false">
-                <div class="profile-data">
+                <img src="{{ asset("img/" ~ user.photo)  }}" id="narutoProfilePic" draggable="false">
+                <div class="profile-data" data-id="{{ user.id }}">
                     <div class="profile-options">
-                        <p id="profile-name">{{ app.user.username }}</p>
+                        <p id="profile-name">{{ user.username }}</p>
                         <p id="profile-send-message">send a message</p>
-                        <img id="followed" src="img/unfollowed.svg">
-                        <img src="img/more-options.svg">
-                        <img id="three-dots" src="img/three-dots.svg">
+                        {% if not app.user.following.contains(user) %}
+                            <img id="followed" src="{{ asset("img/unfollowed.svg") }}" alt="Seguir">
+                        {% else %}
+                            <img id="followed" src="{{ asset("img/followed.svg") }}" alt="Seguir">
+                        {% endif %}
+                        <img src="{{ asset("img/more-options.svg") }}">
+                        <img id="three-dots" src="{{ asset("img/three-dots.svg") }}">
                     </div>
                     <div class="followers">
                         <p>1,132 Posts</p>
@@ -22,7 +26,7 @@
                         <p>4 Following</p>
                     </div>
                     <div class="description">
-                        <p>{{ app.user.description }}</p>
+                        <p>{{ user.description }}</p>
                     </div>
                 </div>
             </div>
@@ -31,26 +35,26 @@
                 <p id="guardados">GUARDADOS</p>
             </div>
             <div id="publicaciones" class="publicaciones">
-                <img class="foto 1" src="img/naruto-meme.jpeg">
-                <img class="foto 2" src="img/naruto-meme.jpeg">
-                <img class="foto 3" src="img/naruto-meme.jpeg">
-                <img class="foto 4" src="img/naruto-meme.jpeg">
-                <img class="foto 5" src="img/naruto-meme.jpeg">
-                <img class="foto 6" src="img/naruto-meme.jpeg">
-                <img class="foto 7" src="img/naruto-meme.jpeg">
-                <img class="foto 8" src="img/naruto-meme.jpeg">
-                <img class="foto 9" src="img/naruto-meme.jpeg">
+                <img class="foto 1" src="{{ asset("img/naruto-meme.jpeg") }}">
+                <img class="foto 2" src="{{ asset("img/naruto-meme.jpeg") }}">
+                <img class="foto 3" src="{{ asset("img/naruto-meme.jpeg") }}">
+                <img class="foto 4" src="{{ asset("img/naruto-meme.jpeg") }}">
+                <img class="foto 5" src="{{ asset("img/naruto-meme.jpeg") }}">
+                <img class="foto 6" src="{{ asset("img/naruto-meme.jpeg") }}">
+                <img class="foto 7" src="{{ asset("img/naruto-meme.jpeg") }}">
+                <img class="foto 8" src="{{ asset("img/naruto-meme.jpeg") }}">
+                <img class="foto 9" src="{{ asset("img/naruto-meme.jpeg") }}">
             </div>
             <div id="publicaciones-guardadas" class="publicaciones">
-                <img class="foto 1" src="img/naruto-meme.jpeg">
-                <img class="foto 2" src="img/naruto-meme.jpeg">
-                <img class="foto 3" src="img/naruto-meme.jpeg">
-                <img class="foto 4" src="img/naruto-meme.jpeg">
-                <img class="foto 5" src="img/naruto-meme.jpeg">
-                <img class="foto 6" src="img/naruto-meme.jpeg">
-                <img class="foto 7" src="img/naruto-meme.jpeg">
-                <img class="foto 8" src="img/naruto-meme.jpeg">
-                <img class="foto 9" src="img/storie-image.png">
+                <img class="foto 1" src="{{ asset("img/naruto-meme.jpeg") }}">
+                <img class="foto 2" src="{{ asset("img/naruto-meme.jpeg") }}">
+                <img class="foto 3" src="{{ asset("img/naruto-meme.jpeg") }}">
+                <img class="foto 4" src="{{ asset("img/naruto-meme.jpeg") }}">
+                <img class="foto 5" src="{{ asset("img/naruto-meme.jpeg") }}">
+                <img class="foto 6" src="{{ asset("img/naruto-meme.jpeg") }}">
+                <img class="foto 7" src="{{ asset("img/naruto-meme.jpeg") }}">
+                <img class="foto 8" src="{{ asset("img/naruto-meme.jpeg") }}">
+                <img class="foto 9" src="{{ asset("img/naruto-meme.jpeg") }}">
             </div>
         </div>
     </main>
