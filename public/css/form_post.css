@@ -8,7 +8,6 @@
     left: 30%;
     z-index: 10000;
 }
-
 .cabecera-form {
     background-color: #0a0a0a;
     height: 30px;
@@ -32,6 +31,17 @@
     background-color: #0a0a0a;
     color: #008cff;
     cursor: pointer;
+}
+
+.formulario-body button {
+    margin-right: 10px;
+    border: none;
+    background-color: #0a0a0a;
+    color: #008cff;
+    cursor: pointer;
+    position: fixed;
+    top: 125px;
+    left: 860px;
 }
 
 .formulario-body {

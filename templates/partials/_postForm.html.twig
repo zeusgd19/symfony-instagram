@@ -1,0 +1,34 @@
+<div class="cabecera-form">
+        <p id="tituloCabecera">Crea una nueva publicacion</p>
+        <button id="nextButton" class="hide">Siguiente</button>
+    </div>
+    <div class="formulario-body" id="body-form">
+        <p id="textoInput">Selecciona las fotos o videos aquí</p>
+            {{ form_start(form) }}
+            <div>
+                {{ form_widget(form.photo, {'attr': {'id': 'postInput'}}) }} <!-- Campo para subir fotos -->
+            </div>
+            <div>
+                {{ form_widget(form.description, {'attr': {'id': 'description', 'class': 'hide'}}) }} <!-- Campo para la descripción -->
+            </div>
+            <!-- El botón de compartir se encuentra fuera del form_row -->
+            {{ form_widget(form.compartir, {'attr': {'class': 'hide'}})}}
+            {{ form_end(form) }}
+    </div>
+    <div id="filters" class="hide">
+        <div id="filtros">
+            <button data-filters="normal">Original</button>
+            <button data-filters="blancoNegro">Blanco y negro</button>
+            <button data-filters="desenfoque">Desenfoque</button>
+            <button data-filters="sepia">Sepia</button>
+            <button data-filters="invertir">Invertir Colores</button>
+            <br>
+            <label for="saturacion">Saturacion</label>
+            <input type="range" name="saturacion" id="saturacion" min="0" max="1000">
+            <br>
+            <label for="contrast">Contraste</label>
+            <input type="range" name="contrast" id="contraste" min="0" max="1000">
+        </div>
+    </div>
+    <div class="imagenDiv" id="imageDiv">
+</div>
