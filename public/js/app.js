@@ -1,4 +1,4 @@
-document.addEventListener("DOMContentLoaded", function () {
+window.onload = () => {
     const emojiModal = document.getElementById("modalEmoji");
     const emojiButtons = $('.emoji'); // Selecciona todos los botones de emoji
     const comments = document.querySelectorAll(".comment");
@@ -6,6 +6,14 @@ document.addEventListener("DOMContentLoaded", function () {
     const emojis = $('#modalEmoji').find('p');
     const commentInput = $('.comment-input');
     const messages = document.getElementById('messages');
+
+    $("#formSearchUsers").submit((ev) => {
+        ev.preventDefault();
+
+        let username = $("#formSearchUsers").find('#username').val();
+
+        window.location.href = `/search/${username}`
+    })
 
     $(".deleteImage").unbind().click((ev) => {
         ev.preventDefault();
@@ -31,17 +39,16 @@ document.addEventListener("DOMContentLoaded", function () {
     $('#enlace-crear').click((e) => {
         e.preventDefault();
     })
-    const xhr = new XMLHttpRequest();
     $('#create-post').click(function(e) {
-        $('#formPost').removeClass('hide')
         e.preventDefault();
         document.body.style.overflow = 'hidden';
         // Mostrar la modal
         // Hacer la solicitud AJAX para obtener el formulario
-        $.post("/post/new",(response) => {// Ruta a tu controlador
+        $.post("/post/new",(response) => {
+                // Ruta a tu controlador
                 // Insertar el formulario en la modal
-                $('#formPost').html(response);
-                console.log(response)
+                $('#formPost').html(response).removeClass('hide');
+                console.log($('#formPost'))
             const nextButton = document.getElementById('nextButton');
             const bodyForm = document.getElementById('body-form');
             const filterDiv = document.getElementById('filters');
@@ -215,8 +222,16 @@ document.addEventListener("DOMContentLoaded", function () {
                         console.log(response.message)// Muestra un mensaje de éxito
                         $('#formPost').addClass('hide');// Oculta el formulario
                         document.body.style.overflow = 'scroll';
+                        $('#postSection').append(response.html.content);
+
+                        // Seleccionar las nuevas imágenes añadidas con `data-src`
+                        const newImages = $('#postSection').find('img[data-src]');
+
+                        // Hacer que el observer observe cada imagen añadida
+                        newImages.each(function() {
+                            observer.observe(this);
+                        });
                     }
-                    window.location.reload();
                 },
                 error: function () {
                     alert('Hubo un error al enviar el formulario');
@@ -339,5 +354,5 @@ document.addEventListener("DOMContentLoaded", function () {
         publicaciones_title.classList.remove("active");
         guardados.classList.add("active");
     })
-});
+};
 
