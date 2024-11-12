@@ -15,7 +15,7 @@ window.onload = () => {
         window.location.href = `/search/${username}`
     })
 
-    $(".deleteImage").unbind().click((ev) => {
+    $(".deleteImage").click((ev) => {
         ev.preventDefault();
         const id = $(ev.currentTarget).data('id'); // Accede al data-id correctamente
 
@@ -209,6 +209,7 @@ window.onload = () => {
         $('#formPost').on('submit', 'form', function (e) {
             e.preventDefault();
 
+            $('#formPost button[type="submit"]').prop('disabled', true);
             const formData = new FormData(this); // Crea un FormData con el formulario
 
             $.ajax({
@@ -226,6 +227,27 @@ window.onload = () => {
 
                         // Seleccionar las nuevas imágenes añadidas con `data-src`
                         const newImages = $('#postSection').find('img[data-src]');
+
+                        const newDeleteButton = $('#postSection').find('button.deleteImage');
+
+                        $(newDeleteButton).click((ev) => {
+                            ev.preventDefault();
+                            const id = $(ev.currentTarget).data('id'); // Accede al data-id correctamente
+
+                            // Muestra un botón o confirma la eliminación
+                            $(`a[data-id=${id}]`).toggleClass('hide').click((ev) => {
+                                ev.preventDefault();
+
+                                $.get(`/post/delete/${id}`, (response) => {
+                                    if (response.success) {
+                                        // Si la eliminación es exitosa, elimina el post del DOM
+                                        $(`#post-${id}`).slideUp(400, function() {
+                                            $(this).remove(); // Elimina el elemento una vez completada la animación
+                                        });
+                                    }
+                                });
+                            });
+                        });
 
                         // Hacer que el observer observe cada imagen añadida
                         newImages.each(function() {
