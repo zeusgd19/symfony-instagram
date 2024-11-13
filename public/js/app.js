@@ -1,4 +1,4 @@
-document.addEventListener("DOMContentLoaded", function () {
+window.onload = () => {
     const emojiModal = document.getElementById("modalEmoji");
     const emojiButtons = $('.emoji'); // Selecciona todos los botones de emoji
     const comments = document.querySelectorAll(".comment");
@@ -7,7 +7,15 @@ document.addEventListener("DOMContentLoaded", function () {
     const commentInput = $('.comment-input');
     const messages = document.getElementById('messages');
 
-    $(".deleteImage").unbind().click((ev) => {
+    $("#formSearchUsers").submit((ev) => {
+        ev.preventDefault();
+
+        let username = $("#formSearchUsers").find('#username').val();
+
+        window.location.href = `/search/${username}`
+    })
+
+    $(".deleteImage").click((ev) => {
         ev.preventDefault();
         const id = $(ev.currentTarget).data('id'); // Accede al data-id correctamente
 
@@ -18,7 +26,7 @@ document.addEventListener("DOMContentLoaded", function () {
             $.get(`/post/delete/${id}`, (response) => {
                 if (response.success) {
                     // Si la eliminación es exitosa, elimina el post del DOM
-                    $(`#post-${id}`).slideUp(400, function() {
+                    $(`#post-${id}`).slideUp(400, function () {
                         $(this).remove(); // Elimina el elemento una vez completada la animación
                     });
                 }
@@ -31,17 +39,16 @@ document.addEventListener("DOMContentLoaded", function () {
     $('#enlace-crear').click((e) => {
         e.preventDefault();
     })
-    const xhr = new XMLHttpRequest();
-    $('#create-post').click(function(e) {
-        $('#formPost').removeClass('hide')
+    $('#create-post').click(function (e) {
         e.preventDefault();
         document.body.style.overflow = 'hidden';
         // Mostrar la modal
         // Hacer la solicitud AJAX para obtener el formulario
-        $.post("/post/new",(response) => {// Ruta a tu controlador
-                // Insertar el formulario en la modal
-                $('#formPost').html(response);
-                console.log(response)
+        $.post("/post/new", (response) => {
+            // Ruta a tu controlador
+            // Insertar el formulario en la modal
+            $('#formPost').html(response).removeClass('hide');
+            console.log($('#formPost'))
             const nextButton = document.getElementById('nextButton');
             const bodyForm = document.getElementById('body-form');
             const filterDiv = document.getElementById('filters');
@@ -51,28 +58,28 @@ document.addEventListener("DOMContentLoaded", function () {
             const tituloCabecera = document.getElementById('tituloCabecera');
             const descriptionInput = document.getElementById('post_form_description');
             const imagePost = document.getElementById('post_form_photo');
-                if(imagePost) {
-                    imagePost.addEventListener('change', (ev) => {
-                        const file = ev.target.files[0];
+            if (imagePost) {
+                imagePost.addEventListener('change', (ev) => {
+                    const file = ev.target.files[0];
 
-                        // Crear un elemento de imagen y agregarlo al div
-                        bodyForm.classList.add('hide');
-                        const img = document.createElement('img');
-                        img.src = URL.createObjectURL(file);
-                        img.classList.add('imagenDiv');
-                        img.onload = () => {
-                            // Una vez cargada la imagen, establecer el tamaño del canvas
-                            img.width = 400; // Ajusta según lo necesario
-                            img.height = 400;
-                        };
-                        imageDiv.appendChild(img);
-                        console.log('Hola')
-                        // Habilitar el botón siguiente
-                        nextButton.classList.remove('hide');
-                    });
-                }
+                    // Crear un elemento de imagen y agregarlo al div
+                    bodyForm.classList.add('hide');
+                    const img = document.createElement('img');
+                    img.src = URL.createObjectURL(file);
+                    img.classList.add('imagenDiv');
+                    img.onload = () => {
+                        // Una vez cargada la imagen, establecer el tamaño del canvas
+                        img.width = 400; // Ajusta según lo necesario
+                        img.height = 400;
+                    };
+                    imageDiv.appendChild(img);
+                    console.log('Hola')
+                    // Habilitar el botón siguiente
+                    nextButton.classList.remove('hide');
+                });
+            }
 
-            if(nextButton){
+            if (nextButton) {
                 nextButton.addEventListener('click', () => {
                     const filtros = document.getElementById('filtros').children
                     nextButton.classList.toggle('editar');
@@ -95,7 +102,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         imagePost.classList.add('hide');
                         filterDiv.appendChild(bodyForm);
                     }
-                    if(filtros){
+                    if (filtros) {
                         Array.from(filtros).forEach(filtro => {
                             filtro.addEventListener('click', (ev) => {
                                 switch (filtro.getAttribute('data-filters')) {
@@ -159,7 +166,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 // Dibujamos la imagen en el canvas
                 ctx.drawImage(img, 0, 0, img.width, img.height);
 
-                if(filtrosAplicados) {
+                if (filtrosAplicados) {
                     // Aplicamos los filtros acumulados
                     ctx.filter = filtrosAplicados;
                 }
@@ -196,12 +203,13 @@ document.addEventListener("DOMContentLoaded", function () {
 // Llamar a esta función cuando se quiera reemplazar la imagen en el input
         });
 
-                // Mostrar el botón de compartir
+        // Mostrar el botón de compartir
         $('#compartir').removeClass('hide');
 
         $('#formPost').on('submit', 'form', function (e) {
             e.preventDefault();
 
+            $('#formPost button[type="submit"]').prop('disabled', true);
             const formData = new FormData(this); // Crea un FormData con el formulario
 
             $.ajax({
@@ -215,15 +223,44 @@ document.addEventListener("DOMContentLoaded", function () {
                         console.log(response.message)// Muestra un mensaje de éxito
                         $('#formPost').addClass('hide');// Oculta el formulario
                         document.body.style.overflow = 'scroll';
+                        $('#postSection').append(response.html.content);
+
+                        // Seleccionar las nuevas imágenes añadidas con `data-src`
+                        const newImages = $('#postSection').find('img[data-src]');
+
+                        const newDeleteButton = $('#postSection').find('button.deleteImage');
+
+                        $(newDeleteButton).click((ev) => {
+                            ev.preventDefault();
+                            const id = $(ev.currentTarget).data('id'); // Accede al data-id correctamente
+
+                            // Muestra un botón o confirma la eliminación
+                            $(`a[data-id=${id}]`).toggleClass('hide').click((ev) => {
+                                ev.preventDefault();
+
+                                $.get(`/post/delete/${id}`, (response) => {
+                                    if (response.success) {
+                                        // Si la eliminación es exitosa, elimina el post del DOM
+                                        $(`#post-${id}`).slideUp(400, function () {
+                                            $(this).remove(); // Elimina el elemento una vez completada la animación
+                                        });
+                                    }
+                                });
+                            });
+                        });
+
+                        // Hacer que el observer observe cada imagen añadida
+                        newImages.each(function () {
+                            observer.observe(this);
+                        });
                     }
-                    window.location.reload();
                 },
                 error: function () {
                     alert('Hubo un error al enviar el formulario');
                 }
             });
         });
-        });
+    });
 
     // Selecciona todas las imágenes con la clase lazy-load
     const lazyImages = document.querySelectorAll("img.lazy-load");
@@ -255,19 +292,19 @@ document.addEventListener("DOMContentLoaded", function () {
     // Desvincula eventos previos para evitar duplicados
 
 
-    $(commentInput).on('input',(e) => {
+    $(commentInput).on('input', (e) => {
         const input = e.currentTarget;
         const parent = $(input).parent();
         const postComment = $(parent).parent();
 
         const publish = $(postComment).find('.publish');
 
-        if(input.value){
+        if (input.value) {
             console.log('hOla')
             publish[0].removeAttribute('disabled');
             console.log(publish[0])
         } else {
-            publish[0].setAttribute('disabled','true');
+            publish[0].setAttribute('disabled', 'true');
         }
 
     })
@@ -325,7 +362,7 @@ document.addEventListener("DOMContentLoaded", function () {
     postGuardados = document.getElementById("publicaciones-guardadas");
 
 
-    publicaciones_title.addEventListener("click",function (){
+    publicaciones_title.addEventListener("click", function () {
         postGuardados.style.display = "none";
         posts.style.display = "grid";
         publicaciones_title.classList.add("active");
@@ -333,7 +370,7 @@ document.addEventListener("DOMContentLoaded", function () {
     })
 
 
-    guardados.addEventListener("click",function (){
+    guardados.addEventListener("click", function () {
         posts.style.display = "none";
         postGuardados.style.display = "grid";
         publicaciones_title.classList.remove("active");
@@ -341,16 +378,16 @@ document.addEventListener("DOMContentLoaded", function () {
     })
 
     const unfollowed = document.getElementById("unfollowed");
-    if (unfollowed){
-        unfollowed.addEventListener("click",function (){
+    if (unfollowed) {
+        unfollowed.addEventListener("click", function () {
             XHR = new XMLHttpRequest();
             const id = document.getElementById("profile-name").getAttribute("data-id");
-            XHR.open("POST",`/addFollowing/${id}`);
-            XHR.addEventListener("readystatechange",function (){
-                if(XHR.readyState !== 4){
+            XHR.open("POST", `/addFollowing/${id}`);
+            XHR.addEventListener("readystatechange", function () {
+                if (XHR.readyState !== 4) {
                     return;
                 }
-                if(XHR.status === 200){
+                if (XHR.status === 200) {
                     unfollowed.classList.add("hide");
                     document.getElementById("followed").classList.remove("hide");
                 }
@@ -360,16 +397,16 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     const followed = document.getElementById("followed");
-    if (followed){
-        followed.addEventListener("click",function (){
+    if (followed) {
+        followed.addEventListener("click", function () {
             XHR = new XMLHttpRequest();
             const id = document.getElementById("profile-name").getAttribute("data-id");
-            XHR.open("POST",`/removeFollowing/${id}`);
-            XHR.addEventListener("readystatechange",function (){
-                if(XHR.readyState !== 4){
+            XHR.open("POST", `/removeFollowing/${id}`);
+            XHR.addEventListener("readystatechange", function () {
+                if (XHR.readyState !== 4) {
                     return;
                 }
-                if(XHR.status === 200){
+                if (XHR.status === 200) {
                     followed.classList.add("hide");
                     document.getElementById("unfollowed").classList.remove("hide");
                 }
@@ -377,5 +414,5 @@ document.addEventListener("DOMContentLoaded", function () {
             XHR.send();
         })
     }
-});
+}
 

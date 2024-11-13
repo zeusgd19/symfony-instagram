@@ -7,7 +7,6 @@
     top: 15%;
     left: 30%;
     z-index: 10000;
-    display:none;
 }
 .cabecera-form {
     background-color: #0a0a0a;
@@ -17,6 +16,7 @@
     align-items: center;
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;
+    position: relative;
 }
 
 .cabecera-form p {
@@ -35,14 +35,15 @@
 }
 
 .formulario-body button {
+    position: absolute;
+    top: 5px;
+    right: 0;
+    z-index: 1;
     margin-right: 10px;
     border: none;
     background-color: #0a0a0a;
     color: #008cff;
     cursor: pointer;
-    position: fixed;
-    top: 125px;
-    left: 860px;
 }
 
 .formulario-body {

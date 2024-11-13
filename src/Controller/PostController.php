@@ -53,12 +53,13 @@ class PostController extends AbstractController
             $entityManager->persist($post);
             $entityManager->flush();
 
-            $repository = $doctrine->getRepository(Post::class);
-            $posts = $repository->findAll();
-
+            $html = $this->render('partials/_post.html.twig',[
+                'post' => $post
+            ]);
             return $this->json([
                 'status' => 'success',
                 'message' => 'Post creado con éxito',
+                'html' => $html
             ]);
         }
 
@@ -74,6 +75,15 @@ class PostController extends AbstractController
         $manager = $doctrine->getManager();
 
         if ($post) {
+            // Obtenemos la ruta de la imagen desde el directorio donde las guardas
+            $imagePath = $this->getParameter('images_directory') . '/' . $post->getPhoto();
+
+            // Verificamos si el archivo existe y lo eliminamos
+            if (file_exists($imagePath)) {
+                unlink($imagePath);
+            }
+
+            // Eliminamos el post de la base de datos
             $manager->remove($post);
             $manager->flush();
         }
