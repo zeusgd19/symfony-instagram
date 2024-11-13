@@ -196,3 +196,6 @@ header > div > div input::placeholder {
     display: none;
 }
 
+#unfollowed,  #followed{
+    cursor: pointer;
+}

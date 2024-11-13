@@ -8,14 +8,13 @@
         <div id="content">
             <div id="profile">
                 <img src="{{ asset("img/" ~ user.photo)  }}" id="narutoProfilePic" draggable="false">
-                <div class="profile-data" data-id="{{ user.id }}">
-                    <div class="profile-options">
-                        <p id="profile-name">{{ user.username }}</p>
+                <div class="profile-data">
+                    <div id="profile-options" class="profile-options">
+                        <p id="profile-name" data-id="{{ user.id }}">{{ user.username }}</p>
                         <p id="profile-send-message">send a message</p>
-                        {% if not app.user.following.contains(user) %}
-                            <img id="followed" src="{{ asset("img/unfollowed.svg") }}" alt="Seguir">
-                        {% else %}
-                            <img id="followed" src="{{ asset("img/followed.svg") }}" alt="Seguir">
+                        {% if user.id != app.user.id %}
+                            <img id="unfollowed" src="{{ asset("img/unfollowed.svg") }}" alt="Seguir">
+                            <img id="followed" class="hide" src="{{ asset("img/followed.svg") }}" alt="Seguir">
                         {% endif %}
                         <img src="{{ asset("img/more-options.svg") }}">
                         <img id="three-dots" src="{{ asset("img/three-dots.svg") }}">
