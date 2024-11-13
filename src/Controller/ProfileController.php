@@ -30,8 +30,10 @@ class ProfileController extends AbstractController
         $posts = [];
         $postsCount = count($posts);
 
-        $followersCount = $doctrine->getRepository(User::class);
+        $followersCount = count($user->getFollower()); // Asegúrate de que getFollowers() devuelva la colección de seguidores
 
+        // Contar seguidos
+        $followingCount = count($user->getFollowing()); // Asegúrate de que getFollowing() devuelva la colección de seguidos
 
         foreach ($allPosts as $post){
             if(!$post){
@@ -42,7 +44,13 @@ class ProfileController extends AbstractController
             }
         }
 
-        return $this->render('page/profile.html.twig',['user'=>$user,'posts'=>$posts]);
+        return $this->render('page/profile.html.twig',
+            ['user'=>$user,
+            'posts'=>$posts,
+            'postsCount'=>$postsCount,
+             'followersCount'=>$followersCount,
+             'followingCount'=>$followingCount
+            ]);
     }
 
     #[Route('/addFollowing/{id}', name: 'add_following')]
