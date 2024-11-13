@@ -2,11 +2,13 @@
 
 namespace App\Controller;
 
+use App\Entity\Post;
 use App\Entity\User;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use function PHPUnit\Framework\throwException;
 
 class ProfileController extends AbstractController
 {
@@ -23,7 +25,24 @@ class ProfileController extends AbstractController
     {
         $user = $doctrine->getRepository(User::class)->findOneBy(['username'=>$username]);
 
-        return $this->render('page/profile.html.twig',['user'=>$user]);
+        $allPosts = $doctrine->getRepository(Post::class)->findAll();
+
+        $posts = [];
+        $postsCount = count($posts);
+
+        $followersCount = $doctrine->getRepository(User::class);
+
+
+        foreach ($allPosts as $post){
+            if(!$post){
+                throw $this->createNotFoundException("No hay posts.");
+            }
+            if ($post->getUser() == $user){
+                array_push($posts,$post);
+            }
+        }
+
+        return $this->render('page/profile.html.twig',['user'=>$user,'posts'=>$posts]);
     }
 
     #[Route('/addFollowing/{id}', name: 'add_following')]

@@ -34,15 +34,11 @@
                 <p id="guardados">GUARDADOS</p>
             </div>
             <div id="publicaciones" class="publicaciones">
-                <img class="foto 1" src="{{ asset("img/naruto-meme.jpeg") }}">
-                <img class="foto 2" src="{{ asset("img/naruto-meme.jpeg") }}">
-                <img class="foto 3" src="{{ asset("img/naruto-meme.jpeg") }}">
-                <img class="foto 4" src="{{ asset("img/naruto-meme.jpeg") }}">
-                <img class="foto 5" src="{{ asset("img/naruto-meme.jpeg") }}">
-                <img class="foto 6" src="{{ asset("img/naruto-meme.jpeg") }}">
-                <img class="foto 7" src="{{ asset("img/naruto-meme.jpeg") }}">
-                <img class="foto 8" src="{{ asset("img/naruto-meme.jpeg") }}">
-                <img class="foto 9" src="{{ asset("img/naruto-meme.jpeg") }}">
+                {% for post in posts %}
+                <div>
+                    <img class="foto" src="{{ asset("img/posts/"~post.photo) }}">
+                </div>
+                {% endfor %}
             </div>
             <div id="publicaciones-guardadas" class="publicaciones">
                 <img class="foto 1" src="{{ asset("img/naruto-meme.jpeg") }}">
