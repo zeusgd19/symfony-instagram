@@ -390,6 +390,8 @@ window.onload = () => {
                 if (XHR.status === 200) {
                     unfollowed.classList.add("hide");
                     document.getElementById("followed").classList.remove("hide");
+                    const jsonFolloewers = JSON.parse(XHR.responseText);
+                    $('#followers').text(jsonFolloewers.followers + " Followers");
                 }
             })
             XHR.send();
@@ -409,6 +411,8 @@ window.onload = () => {
                 if (XHR.status === 200) {
                     followed.classList.add("hide");
                     document.getElementById("unfollowed").classList.remove("hide");
+                    const jsonFolloewers = JSON.parse(XHR.responseText);
+                    $('#followers').text(jsonFolloewers.followers + " Followers");
                 }
             })
             XHR.send();

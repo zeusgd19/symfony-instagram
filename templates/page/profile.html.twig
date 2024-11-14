@@ -13,16 +13,21 @@
                         <p id="profile-name" data-id="{{ user.id }}">{{ user.username }}</p>
                         <p id="profile-send-message">send a message</p>
                         {% if user.id != app.user.id %}
-                            <img id="unfollowed" src="{{ asset("img/unfollowed.svg") }}" alt="Seguir">
-                            <img id="followed" class="hide" src="{{ asset("img/followed.svg") }}" alt="Seguir">
+                            {% if isFollowing %}
+                                <img id="unfollowed" src="{{ asset("img/unfollowed.svg") }}" alt="Seguir" class="hide">
+                                <img id="followed" src="{{ asset("img/followed.svg") }}" alt="Siguiendo">
+                            {% else %}
+                                <img id="unfollowed" src="{{ asset("img/unfollowed.svg") }}" alt="Seguir">
+                                <img id="followed" src="{{ asset("img/followed.svg") }}" alt="Siguiendo" class="hide">
+                            {% endif %}
                         {% endif %}
                         <img src="{{ asset("img/more-options.svg") }}">
                         <img id="three-dots" src="{{ asset("img/three-dots.svg") }}">
                     </div>
                     <div class="followers">
-                        <p>1,132 Posts</p>
-                        <p>60K Followers</p>
-                        <p>4 Following</p>
+                        <p>{{ posts|length }} Posts</p>
+                        <p id="followers">{{ user.getFollower|length }} Followers</p>
+                        <p>{{ user.getFollowing|length }} Following</p>
                     </div>
                     <div class="description">
                         <p>{{ user.description }}</p>

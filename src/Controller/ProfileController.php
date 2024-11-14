@@ -28,21 +28,19 @@ class ProfileController extends AbstractController
         $allPosts = $doctrine->getRepository(Post::class)->findAll();
 
         $posts = [];
-        $postsCount = count($posts);
-
-        $followersCount = $doctrine->getRepository(User::class);
-
 
         foreach ($allPosts as $post){
             if(!$post){
                 throw $this->createNotFoundException("No hay posts.");
             }
             if ($post->getUser() == $user){
-                array_push($posts,$post);
+                $posts[] = $post;
             }
         }
 
-        return $this->render('page/profile.html.twig',['user'=>$user,'posts'=>$posts]);
+        $isFollowing = $this->getUser()->getFollowing()->contains($user);
+
+        return $this->render('page/profile.html.twig',['user'=>$user,'posts'=>$posts,'isFollowing' => $isFollowing]);
     }
 
     #[Route('/addFollowing/{id}', name: 'add_following')]
@@ -63,7 +61,9 @@ class ProfileController extends AbstractController
             $manager->flush();
         }
 
-        return $this->redirectToRoute('profile');
+        return $this->json([
+            'followers' => count($userToFollow->getFollower())
+        ]);
     }
 
     #[Route('/removeFollowing/{id}', name: 'remove_following')]
@@ -83,6 +83,8 @@ class ProfileController extends AbstractController
             $manager->flush();
         }
 
-        return $this->redirectToRoute('profile');
+        return $this->json([
+            'followers' => count($userToFollow->getFollower())
+        ]);
     }
 }

@@ -20,4 +20,3 @@
 ###< phpunit/phpunit ###
 .env
 .idea/
-/public/img/posts
