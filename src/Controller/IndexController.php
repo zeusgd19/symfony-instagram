@@ -35,13 +35,17 @@ class IndexController extends AbstractController
             // Creamos una entidad de comentario nueva para cada post
             $comment = new Comment();
 
-            // Creamos un formulario único para cada post
-            $form = $this->createForm(CommentFormType::class, $comment);
+            // Añadimos una opción personalizada con el ID del post
+            $form = $this->createForm(CommentFormType::class, $comment, [
+                'action' => $this->generateUrl('index', ['post_id' => $post->getId()]),
+            ]);
             $form->handleRequest($request);
+
+            // Guardamos el formulario en un array para renderizarlo luego
             $commentForms[$post->getId()] = $form;
 
             // Verificamos si este formulario específico fue enviado y es válido
-            if ($form->isSubmitted() && $form->isValid()) {
+            if ($form->isSubmitted() && $form->isValid() && $request->query->get('post_id') == $post->getId()) {
                 $comment = $form->getData();
                 $comment->setPost($post);
                 $comment->setUser($this->getUser());
@@ -51,8 +55,8 @@ class IndexController extends AbstractController
                 $manager->persist($comment);
                 $manager->flush();
 
-                // Redirigir o enviar una respuesta después del guardado
-                return $this->redirectToRoute('index'); // Para evitar reenvíos al recargar
+                // Redirigir para evitar reenvíos
+                return $this->redirectToRoute('index');
             }
         }
         return $this->render('page/index.html.twig',[
