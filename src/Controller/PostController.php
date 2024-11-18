@@ -2,8 +2,10 @@
 
 namespace App\Controller;
 
+use App\Entity\Comment;
 use App\Entity\Post;
 use App\Entity\User;
+use App\Form\CommentFormType;
 use App\Form\PostFormType;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -53,8 +55,11 @@ class PostController extends AbstractController
             $entityManager->persist($post);
             $entityManager->flush();
 
+            $comment = new Comment();
+            $form = $this->createForm(CommentFormType::class,$comment);
             $html = $this->render('partials/_post.html.twig',[
-                'post' => $post
+                'post' => $post,
+                'form' => $form->createView()
             ]);
             return $this->json([
                 'status' => 'success',
