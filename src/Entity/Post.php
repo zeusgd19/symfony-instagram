@@ -6,11 +6,12 @@ use App\Repository\PostRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: PostRepository::class)]
+#[ORM\Table(name: 'post')]  // Especificar el nombre de la tabla como 'post' (minúsculas)
 class Post
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column]
+    #[ORM\Column(type: 'integer')]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
@@ -19,10 +20,9 @@ class Post
     #[ORM\Column(length: 255, nullable: true, options: ["default" => " "])]
     private ?string $description = null;
 
-    #[ORM\ManyToOne]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(name: 'user_id', referencedColumnName: 'id', nullable: false)]  // Especifica el nombre de la columna 'user_id'
     private ?User $user;
-
 
     public function getId(): ?int
     {
@@ -46,7 +46,7 @@ class Post
         return $this->description;
     }
 
-    public function setDescription(string $description): self
+    public function setDescription(?string $description): self  // Permitido null
     {
         $this->description = $description;
 

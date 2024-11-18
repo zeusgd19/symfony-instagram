@@ -11,18 +11,19 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
+#[ORM\Table(name: 'user')]  // Especifica el nombre de la tabla como 'user' (minúsculas)
 #[UniqueEntity(fields: ['username'], message: 'There is already an account with this username')]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column]
+    #[ORM\Column(type: "integer")]
     private ?int $id = null;
 
-    #[ORM\Column(length: 180, unique: true)]
+    #[ORM\Column(type: "string", length: 180, unique: true)]
     private ?string $username = null;
 
-    #[ORM\Column]
+    #[ORM\Column(type: "json")]
     private array $roles = [];
 
     /**
@@ -37,9 +38,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255)]
     private ?string $description;
 
+    // Relación ManyToMany con los seguidores (follower)
     #[ORM\ManyToMany(targetEntity: self::class, inversedBy: 'following')]
+    #[ORM\JoinTable(name: 'user_follower')]  // Nombre explícito de la tabla intermedia
     private Collection $follower;
 
+    // Relación ManyToMany con los seguidos (following)
     #[ORM\ManyToMany(targetEntity: self::class, mappedBy: 'follower')]
     private Collection $following;
 
@@ -115,7 +119,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function eraseCredentials()
     {
-        // If you store any temporary, sensitive data on the user, clear it here
+        // Si almacenas datos temporales, sensibles en el usuario, límpialos aquí
         // $this->plainPassword = null;
     }
 
@@ -124,9 +128,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->photo;
     }
 
-    public function setPhoto(string $Photo): self
+    public function setPhoto(string $photo): self
     {
-        $this->photo = $Photo;
+        $this->photo = $photo;
 
         return $this;
     }
@@ -136,9 +140,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->description;
     }
 
-    public function setDescription(string $Description): self
+    public function setDescription(string $description): self
     {
-        $this->description = $Description;
+        $this->description = $description;
 
         return $this;
     }
