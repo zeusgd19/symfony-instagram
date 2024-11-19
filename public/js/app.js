@@ -300,6 +300,37 @@ window.onload = () => {
         }
 
     })
+
+    $('.post-comment').find('form').on('submit', function(ev) {
+        ev.preventDefault();  // Prevenir el comportamiento por defecto (recarga de la página)
+
+        const form = $(this)[0]; // Obtener el formulario en su forma "nativa" (sin jQuery)
+        // Aquí puedes obtener los datos del formulario como un objeto FormData
+        const formData = new FormData(form);
+
+        // Usamos fetch para enviar el formulario de manera asíncrona (sin recargar la página)
+        fetch(form.action, {
+            method: form.method,
+            body: formData
+        })
+            .then(response => {
+                if (response.ok) {
+                    $(this).find('.comment-input').val('');
+                    return;// Si es un API que devuelve JSON
+                }
+                throw new Error('Error en el envío CHE');
+            })
+            .then(data => {
+                console.log('Respuesta del servidor:', data);
+                $(this).find('.comment-input').val('');
+            })
+            .catch(error => {
+                console.log(error)
+                $(this).find('.comment-input').val('');
+                // Manejar el error de envío (por ejemplo, mostrar un mensaje de error)
+            });
+    });
+
     $('#postSection').on('click', '.emoji', (e) => {
         e.preventDefault();
         const emojiButton = e.currentTarget;
