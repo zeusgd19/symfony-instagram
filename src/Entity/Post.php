@@ -20,9 +20,9 @@ class Post
     #[ORM\Column(length: 255, nullable: true, options: ["default" => " "])]
     private ?string $description = null;
 
-    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\ManyToOne(targetEntity: UserPostgres::class)]
     #[ORM\JoinColumn(name: 'user_id', referencedColumnName: 'id', nullable: false)]  // Especifica el nombre de la columna 'user_id'
-    private ?User $user;
+    private ?UserPostgres $user;
 
     public function getId(): ?int
     {
@@ -53,12 +53,12 @@ class Post
         return $this;
     }
 
-    public function getUser(): ?User
+    public function getUser(): ?UserPostgres
     {
         return $this->user;
     }
 
-    public function setUser(?User $user): self
+    public function setUser(?UserPostgres $user): self
     {
         $this->user = $user;
 

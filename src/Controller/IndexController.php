@@ -3,7 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Post;
-use App\Entity\User;
+use App\Entity\UserPostgres;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -14,7 +14,7 @@ class IndexController extends AbstractController
     #[Route('/', name: 'index')]
     public function index(ManagerRegistry $doctrine): Response
     {
-        $repository = $doctrine->getRepository(User::class);
+        $repository = $doctrine->getRepository(UserPostgres::class);
         $allUsers = $repository->findAll();
         $users = [];
 

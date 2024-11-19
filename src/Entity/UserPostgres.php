@@ -11,13 +11,13 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
-#[ORM\Table(name: 'user')]  // Especifica el nombre de la tabla como 'user' (minúsculas)
 #[UniqueEntity(fields: ['username'], message: 'There is already an account with this username')]
-class User implements UserInterface, PasswordAuthenticatedUserInterface
+class UserPostgres implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
-    #[ORM\GeneratedValue]
+    #[ORM\GeneratedValue(strategy: "AUTO")]
     #[ORM\Column(type: "integer")]
+
     private ?int $id = null;
 
     #[ORM\Column(type: "string", length: 180, unique: true)]

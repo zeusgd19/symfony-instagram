@@ -3,7 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Post;
-use App\Entity\User;
+use App\Entity\UserPostgres;
 use App\Form\PostFormType;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;

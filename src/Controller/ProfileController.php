@@ -3,7 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Post;
-use App\Entity\User;
+use App\Entity\UserPostgres;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -23,7 +23,7 @@ class ProfileController extends AbstractController
     #[Route('/profile/{username}', name: 'profile_page')]
     public function profile(string $username, ManagerRegistry $doctrine): Response
     {
-        $user = $doctrine->getRepository(User::class)->findOneBy(['username'=>$username]);
+        $user = $doctrine->getRepository(UserPostgres::class)->findOneBy(['username'=>$username]);
 
         $allPosts = $doctrine->getRepository(Post::class)->findAll();
 
@@ -46,7 +46,7 @@ class ProfileController extends AbstractController
     #[Route('/addFollowing/{id}', name: 'add_following')]
     public function addFollower(ManagerRegistry $doctrine, int $id): Response
     {
-        $repository = $doctrine->getRepository(User::class);
+        $repository = $doctrine->getRepository(UserPostgres::class);
 
         $user = $this->getUser();
         $userToFollow = $repository->find($id);
@@ -69,7 +69,7 @@ class ProfileController extends AbstractController
     #[Route('/removeFollowing/{id}', name: 'remove_following')]
     public function removeFollowing(ManagerRegistry $doctrine, int $id): Response
     {
-        $repository = $doctrine->getRepository(User::class);
+        $repository = $doctrine->getRepository(UserPostgres::class);
 
         $user = $this->getUser();
         $userToFollow = $repository->find($id);
