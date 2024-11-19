@@ -377,46 +377,6 @@ window.onload = () => {
         guardados.classList.add("active");
     })
 
-    const unfollowed = document.getElementById("unfollowed");
-    if (unfollowed) {
-        unfollowed.addEventListener("click", function () {
-            XHR = new XMLHttpRequest();
-            const id = document.getElementById("profile-name").getAttribute("data-id");
-            XHR.open("POST", `/addFollowing/${id}`);
-            XHR.addEventListener("readystatechange", function () {
-                if (XHR.readyState !== 4) {
-                    return;
-                }
-                if (XHR.status === 200) {
-                    unfollowed.classList.add("hide");
-                    document.getElementById("followed").classList.remove("hide");
-                    const jsonFolloewers = JSON.parse(XHR.responseText);
-                    $('#followers').text(jsonFolloewers.followers + " Followers");
-                }
-            })
-            XHR.send();
-        })
-    }
 
-    const followed = document.getElementById("followed");
-    if (followed) {
-        followed.addEventListener("click", function () {
-            XHR = new XMLHttpRequest();
-            const id = document.getElementById("profile-name").getAttribute("data-id");
-            XHR.open("POST", `/removeFollowing/${id}`);
-            XHR.addEventListener("readystatechange", function () {
-                if (XHR.readyState !== 4) {
-                    return;
-                }
-                if (XHR.status === 200) {
-                    followed.classList.add("hide");
-                    document.getElementById("unfollowed").classList.remove("hide");
-                    const jsonFolloewers = JSON.parse(XHR.responseText);
-                    $('#followers').text(jsonFolloewers.followers + " Followers");
-                }
-            })
-            XHR.send();
-        })
-    }
 }
 

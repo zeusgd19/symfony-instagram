@@ -21,7 +21,23 @@
                                 <img id="followed" src="{{ asset("img/followed.svg") }}" alt="Siguiendo" class="hide">
                             {% endif %}
                         {% endif %}
-                        <img src="{{ asset("img/more-options.svg") }}">
+                        <div class="modify-profile">
+                            <img id="more-options" src="{{ asset("img/more-options.svg") }}">
+                            <div class="dropdown-content">
+                                <a href="#cambiarFoto" id="change-photo">Cambiar foto del perfil</a>
+                                <a href="#cambiarNombre" id="change-name">Cambiar nombre del perfil</a>
+                                <a href="#cambiarDescripcion" id="change-description">Cambiar descripcion del perfil</a>
+                            </div>
+                        </div>
+                        <div id="modal" class="modal">
+                            <div class="modal-content">
+                                <span class="close">&times;</span>
+                                <h2 id="modal-title"></h2>
+                                <form id="modal-form">
+                                    <!-- Campos dinámicos se añaden aquí -->
+                                </form>
+                            </div>
+                        </div>
                         <img id="three-dots" src="{{ asset("img/three-dots.svg") }}">
                     </div>
                     <div class="followers">
@@ -34,6 +50,7 @@
                     </div>
                 </div>
             </div>
+
             <div id="publicaciones-container">
                 <p id="publicaciones-title" class="active">PUBLICACIONES</p>
                 <p id="guardados">GUARDADOS</p>
@@ -57,7 +74,9 @@
                 <img class="foto 9" src="{{ asset("img/naruto-meme.jpeg") }}">
             </div>
         </div>
+
     </main>
     <div class="formulario-post hide" id="formPost">
     </div>
+
 {% endblock %}
