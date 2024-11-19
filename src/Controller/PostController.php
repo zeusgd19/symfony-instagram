@@ -55,16 +55,9 @@ class PostController extends AbstractController
             $entityManager->persist($post);
             $entityManager->flush();
 
-            $comment = new Comment();
-            $form = $this->createForm(CommentFormType::class,$comment);
-            $html = $this->render('partials/_post.html.twig',[
-                'post' => $post,
-                'form' => $form->createView()
-            ]);
             return $this->json([
                 'status' => 'success',
-                'message' => 'Post creado con éxito',
-                'html' => $html
+                'message' => 'Post creado con éxito'
             ]);
         }
 
