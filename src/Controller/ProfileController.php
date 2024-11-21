@@ -15,14 +15,6 @@ use Symfony\Component\String\Slugger\SluggerInterface;
 
 class ProfileController extends AbstractController
 {
-    #[Route('/profile', name: 'profile')]
-    public function index(): Response
-    {
-        $user = $this->getUser();
-
-        return $this->render('page/profile.html.twig',['user' => $user]);
-    }
-
     #[Route('/profile/{username}', name: 'profile_page')]
     public function profile(string $username, ManagerRegistry $doctrine, Request $request, SluggerInterface $slugger): Response
     {
@@ -40,7 +32,6 @@ class ProfileController extends AbstractController
                 $posts[] = $post;
             }
         }
-        $user = $this->getUser();
         $formulario = $this->createForm(UserFormType::class,$user);
         $formulario->handleRequest($request);
 
@@ -65,7 +56,7 @@ class ProfileController extends AbstractController
 
                 //  actualiza la propiedad $filename de $file para que guarde
                 // el nombre del PDF en vez de su contenido
-                $this->getUser()->setPhoto($newFilename);
+                $user->setPhoto($newFilename);
             }
             $manager = $doctrine->getManager();
             $manager->persist($user);
