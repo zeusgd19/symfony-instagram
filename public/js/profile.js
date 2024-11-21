@@ -41,8 +41,8 @@ const unfollowed = document.getElementById("unfollowed");
         })
     }
 
-    // Mostrar/ocultar dropdown al hacer clic en la imagen
-    const dropdown = document.querySelector('.dropdown-content');
+        // Mostrar/ocultar dropdown al hacer clic en la imagen
+        const dropdown = document.querySelector('.dropdown-content');
         document.getElementById("more-options").addEventListener('click', function (event) {
             event.stopPropagation();
             dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
@@ -53,70 +53,93 @@ const unfollowed = document.getElementById("unfollowed");
             dropdown.style.display = 'none';
         });
 
-    // Obtener el modal y elementos interactivos
-    const modal = document.getElementById('modal');
-    const modalContent = document.querySelector('.modal-content');
-    const modalTitle = document.getElementById('modal-title');
-    const modalForm = document.getElementById('modal-form');
-    const closeModal = document.querySelector('.close');
+        // Obtener el modal y elementos interactivos
+        const modal = document.getElementById('modal');
+        const modalContent = document.querySelector('.modal-content');
+        const modalTitle = document.getElementById('modal-title');
+        const closeModal = document.querySelector('.close');
 
-    // Función para mostrar el modal con contenido dinámico
-    function openModal(title, inputType, placeholder) {
-        modalTitle.textContent = title;
+        // Función para mostrar el modal con contenido dinámico
+        function openModal(title, inputType, placeholder) {
+            form = document.createElement("form");
 
-        // Limpiar formulario previo
-        modalForm.innerHTML = '';
+            modalTitle.textContent = title;
 
-        // Crear input dinámico
-        const input = document.createElement('input');
-        input.type = inputType;
-        input.name = 'modal-input';
-        input.placeholder = placeholder;
-        input.required = true;
-        input.style.width = '50%';
-        input.style.padding = '10px';
-        input.style.marginTop = '15px';
-        input.style.marginBottom = '15px';
+            // Crear input dinámico
+            const input = document.createElement('input');
+            input.type = inputType;
+            input.name = 'modal-input';
+            input.placeholder = placeholder;
+            input.required = true;
+            input.style.width = '50%';
+            input.style.padding = '10px';
+            input.style.marginTop = '15px';
+            input.style.marginBottom = '15px';
 
-        // Añadir el input al formulario
-        modalForm.appendChild(input);
+            // Añadir un botón de enviar
+            const submitButton = document.createElement('button');
+            submitButton.textContent = 'Guardar';
+            submitButton.type = 'submit';
+            submitButton.style.padding = '10px 20px';
 
-        // Añadir un botón de enviar
-        const submitButton = document.createElement('button');
-        submitButton.textContent = 'Guardar';
-        submitButton.type = 'submit';
-        submitButton.style.padding = '10px 20px';
-        modalForm.appendChild(submitButton);
+            form.appendChild(input);
+            form.appendChild(submitButton);
 
-        // Mostrar el modal
-        modal.style.display = 'block';
-    }
+            form.addEventListener("submit", function (event) {
+                event.preventDefault();
+                XHR = new XMLHttpRequest();
+                if (title.includes("nombre")) {
+                    XHR.open("POST", `/profile/change-username/${input.value}`);
 
-    // Eventos para las opciones del menú desplegable
-    document.getElementById('change-photo').addEventListener('click', function (event) {
-        event.preventDefault();
-        openModal('Cambiar foto de perfil', 'file', 'Selecciona una foto');
-    });
+                } else {
+                    XHR.open("POST", `/profile/change-description/${input.value}`)
+                }
 
-    document.getElementById('change-name').addEventListener('click', function (event) {
-        event.preventDefault();
-        openModal('Cambiar nombre de perfil', 'text', 'Escribe tu nuevo nombre');
-    });
+                XHR.addEventListener("readystatechange", function () {
+                    if (XHR.readyState !== 4) return;
+                    if (XHR.status === 200) {
+                        console.log("hola");
+                        window.location.reload();
+                    }
+                })
 
-    document.getElementById('change-description').addEventListener('click', function (event) {
-        event.preventDefault();
-        openModal('Cambiar descripción', 'text', 'Escribe tu nueva descripción');
-    });
+                XHR.send(null);
+            });
 
-    // Cerrar modal
-    closeModal.addEventListener('click', function () {
-        modal.style.display = 'none';
-    });
+            modalContent.appendChild(form);
 
-    // Cerrar modal al hacer clic fuera de él
-    window.addEventListener('click', function (event) {
-        if (event.target === modal) {
-            modal.style.display = 'none';
+            // Mostrar el modal
+            modal.style.display = 'block';
         }
+
+        document.getElementById('change-photo').addEventListener('click', function (event) {
+            event.preventDefault();
+            modal.style.display = "block";
+        });
+
+        document.getElementById('change-name').addEventListener('click', function (event) {
+            event.preventDefault();
+            document.getElementById("formulario").classList.add("hide");
+            openModal('Cambiar nombre de perfil', 'text', 'Escribe tu nuevo nombre');
+        });
+
+        document.getElementById('change-description').addEventListener('click', function (event) {
+            event.preventDefault();
+            document.getElementById("formulario").classList.add("hide");
+            openModal('Cambiar descripción', 'text', 'Escribe tu nueva descripción');
+        });
+
+
+        // Cerrar modal
+        closeModal.addEventListener('click', function () {
+            modalContent.removeChild(modalContent.lastChild);
+            modal.style.display = 'none';
+        });
+
+        // Cerrar modal al hacer clic fuera de él
+        window.addEventListener('click', function (event) {
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
+        });
     });
-});
