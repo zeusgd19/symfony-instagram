@@ -18,7 +18,7 @@ class Comment
 
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
-    private ?User $user = null;
+    private ?UserPostgres $user = null;
 
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
@@ -41,12 +41,12 @@ class Comment
         return $this;
     }
 
-    public function getUser(): ?User
+    public function getUser(): ?UserPostgres
     {
         return $this->user;
     }
 
-    public function setUser(?User $user): self
+    public function setUser(?UserPostgres $user): self
     {
         $this->user = $user;
 
