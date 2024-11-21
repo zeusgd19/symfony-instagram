@@ -20,6 +20,7 @@ header {
     right: 0;
     left: 0;
     top: 0;
+    z-index: 1000;
 }
 
 header > div {
@@ -266,6 +267,10 @@ header > div > img {
     color:  #8A8A8A;
 }
 
+.post-comment form {
+    display: flex;
+}
+
 aside {
     margin-left: 30px;
 }
@@ -291,6 +296,7 @@ aside {
 .suggestion-item {
     display: flex;
     gap: 10px;
+    margin-bottom: 10px;
 }
 
 .suggestion-item img {
@@ -309,6 +315,18 @@ aside {
 }
 
 .follow-btn {
+    background: none;
+    border: none;
+    color: #0095F6;
+    font-size: 10px;
+    text-decoration: none;
+    width: 44px;
+    height: 31px;
+    text-align: center;
+    align-content: center;
+}
+
+.unfollow-btn {
     background: none;
     border: none;
     color: #0095F6;

@@ -31,11 +31,13 @@
                 <p class="time">HOUR AGO</p>
             </div>
         </div>
-        <div class="post-comment">
-            <div>
-                <a href="" class="emoji"><img data-src="img/post-emoji-icon.svg" alt="emoji-icon" class="lazy-load"></a>
-                <input type="text" placeholder="Add a comment..." class="comment-input">
-            </div>
-            <button class="publish" disabled>Publish</button>
+    <div class="post-comment">
+        {{ form_start(form) }}
+        <div>
+            <a href="" class="emoji"><img data-src="img/post-emoji-icon.svg" alt="emoji-icon" class="lazy-load"></a>
+            {{form_widget(form.text, {'attr': {'placeholder': 'Add a comment...', 'class': 'comment-input'}})}}
         </div>
+        {{ form_widget(form.submit, {'attr': {'class': 'publish','disabled':'true'}}) }}
+        {{ form_end(form) }}
+    </div>
 </article>

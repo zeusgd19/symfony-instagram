@@ -8,7 +8,7 @@ use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use function PHPUnit\Framework\throwException;
+
 
 class ProfileController extends AbstractController
 {
@@ -51,7 +51,6 @@ class ProfileController extends AbstractController
         $user = $this->getUser();
         $userToFollow = $repository->find($id);
 
-        // Solo seguir si el usuario no se está siguiendo a sí mismo y si aún no lo sigue
         if ($user != $userToFollow) {
 
             $user->addFollowing($userToFollow);

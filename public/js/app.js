@@ -1,10 +1,8 @@
 window.onload = () => {
     const emojiModal = document.getElementById("modalEmoji");
-    const emojiButtons = $('.emoji'); // Selecciona todos los botones de emoji
     const comments = document.querySelectorAll(".comment");
     const commentModal = document.getElementById('commentModal');
     const emojis = $('#modalEmoji').find('p');
-    const commentInput = $('.comment-input');
     const messages = document.getElementById('messages');
 
     $("#formSearchUsers").submit((ev) => {
@@ -223,11 +221,6 @@ window.onload = () => {
                         console.log(response.message)// Muestra un mensaje de éxito
                         $('#formPost').addClass('hide');// Oculta el formulario
                         document.body.style.overflow = 'scroll';
-                        $('#postSection').append(response.html.content);
-
-                        // Seleccionar las nuevas imágenes añadidas con `data-src`
-                        const newImages = $('#postSection').find('img[data-src]');
-
                         const newDeleteButton = $('#postSection').find('button.deleteImage');
 
                         $(newDeleteButton).click((ev) => {
@@ -248,12 +241,9 @@ window.onload = () => {
                                 });
                             });
                         });
-
-                        // Hacer que el observer observe cada imagen añadida
-                        newImages.each(function () {
-                            observer.observe(this);
-                        });
                     }
+
+                    window.location.reload()
                 },
                 error: function () {
                     alert('Hubo un error al enviar el formulario');
@@ -292,7 +282,7 @@ window.onload = () => {
     // Desvincula eventos previos para evitar duplicados
 
 
-    $(commentInput).on('input', (e) => {
+    $('#postSection').on('input','.comment-input', (e) => {
         const input = e.currentTarget;
         const parent = $(input).parent();
         const postComment = $(parent).parent();
@@ -308,14 +298,44 @@ window.onload = () => {
         }
 
     })
-    emojiButtons.unbind();
-    emojiButtons.click((e) => {
+
+    $('.post-comment').find('form').on('submit', function(ev) {
+        ev.preventDefault();  // Prevenir el comportamiento por defecto (recarga de la página)
+
+        const form = $(this)[0]; // Obtener el formulario en su forma "nativa" (sin jQuery)
+        // Aquí puedes obtener los datos del formulario como un objeto FormData
+        const formData = new FormData(form);
+
+        // Usamos fetch para enviar el formulario de manera asíncrona (sin recargar la página)
+        fetch(form.action, {
+            method: form.method,
+            body: formData
+        })
+            .then(response => {
+                if (response.ok) {
+                    $(this).find('.comment-input').val('');
+                    return;// Si es un API que devuelve JSON
+                }
+                throw new Error('Error en el envío CHE');
+            })
+            .then(data => {
+                console.log('Respuesta del servidor:', data);
+                $(this).find('.comment-input').val('');
+            })
+            .catch(error => {
+                console.log(error)
+                $(this).find('.comment-input').val('');
+                // Manejar el error de envío (por ejemplo, mostrar un mensaje de error)
+            });
+    });
+
+    $('#postSection').on('click', '.emoji', (e) => {
         e.preventDefault();
-        const emojiButton = e.currentTarget; // Almacena el botón actual
+        const emojiButton = e.currentTarget;
         const rect = emojiButton.getBoundingClientRect();
         const scrollTop = window.scrollY || document.documentElement.scrollTop;
 
-        // Posiciona el modal de emojis cerca del botón de emoji
+        // Posiciona el modal cerca del botón de emoji
         emojiModal.style.top = `${rect.top + scrollTop - emojiModal.offsetHeight - 100}px`;
         emojiModal.style.left = `${rect.left}px`;
 
@@ -323,11 +343,14 @@ window.onload = () => {
         emojiModal.classList.toggle("hide");
 
         e.stopPropagation();
-        const parent = $(emojiButton).parent();// Usa emojiButton para el contexto correcto
-        const input = parent.find('.comment-input'); // Encuentra el input relacionado
 
-        emojis.off('click'); // Remueve eventos previos en los emojis
-        emojis.click((e) => {
+        // Encuentra el input relacionado al emoji clickeado
+        const parent = $(emojiButton).parent();
+        const input = parent.find('.comment-input');
+
+        // Reasigna eventos a los emojis en el modal
+        emojis.off('click');
+        emojis.on('click', (e) => {
             e.preventDefault();
             input.val(input.val() + $(e.target).text()); // Añade el emoji al input
         });
@@ -355,6 +378,44 @@ window.onload = () => {
         }
     });
 
+    const followButton = $('.follow-btn');
+    $(followButton).click((ev) => {
+        ev.preventDefault();
+        XHR = new XMLHttpRequest();
+        const id = ev.target.parentElement.getAttribute('data-id');
+        XHR.open("POST", `/addFollowing/${id}`);
+        XHR.addEventListener("readystatechange", function () {
+            if (XHR.readyState !== 4) {
+                return;
+            }
+            if (XHR.status === 200) {
+                ev.target.textContent = "Following";
+                const jsonFollowers = JSON.parse(XHR.responseText);
+                $('#followers').text(jsonFollowers.followers + " Followers");
+            }
+        })
+        XHR.send();
+    })
+
+    const unfollowButton = $('.unfollow-btn');
+    $(unfollowButton).click((ev) => {
+        ev.preventDefault();
+        XHR = new XMLHttpRequest();
+        const id = ev.target.parentElement.getAttribute('data-id');
+        XHR.open("POST", `/removeFollowing/${id}`);
+        XHR.addEventListener("readystatechange", function () {
+            if (XHR.readyState !== 4) {
+                return;
+            }
+            if (XHR.status === 200) {
+                ev.target.textContent = "Follow";
+                const jsonFollowers = JSON.parse(XHR.responseText);
+                $('#followers').text(jsonFollowers.followers + " Followers");
+            }
+        })
+        XHR.send();
+    })
+
     publicaciones_title = document.getElementById("publicaciones-title");
     guardados = document.getElementById("guardados");
 
@@ -376,47 +437,5 @@ window.onload = () => {
         publicaciones_title.classList.remove("active");
         guardados.classList.add("active");
     })
-
-    const unfollowed = document.getElementById("unfollowed");
-    if (unfollowed) {
-        unfollowed.addEventListener("click", function () {
-            XHR = new XMLHttpRequest();
-            const id = document.getElementById("profile-name").getAttribute("data-id");
-            XHR.open("POST", `/addFollowing/${id}`);
-            XHR.addEventListener("readystatechange", function () {
-                if (XHR.readyState !== 4) {
-                    return;
-                }
-                if (XHR.status === 200) {
-                    unfollowed.classList.add("hide");
-                    document.getElementById("followed").classList.remove("hide");
-                    const jsonFolloewers = JSON.parse(XHR.responseText);
-                    $('#followers').text(jsonFolloewers.followers + " Followers");
-                }
-            })
-            XHR.send();
-        })
-    }
-
-    const followed = document.getElementById("followed");
-    if (followed) {
-        followed.addEventListener("click", function () {
-            XHR = new XMLHttpRequest();
-            const id = document.getElementById("profile-name").getAttribute("data-id");
-            XHR.open("POST", `/removeFollowing/${id}`);
-            XHR.addEventListener("readystatechange", function () {
-                if (XHR.readyState !== 4) {
-                    return;
-                }
-                if (XHR.status === 200) {
-                    followed.classList.add("hide");
-                    document.getElementById("unfollowed").classList.remove("hide");
-                    const jsonFolloewers = JSON.parse(XHR.responseText);
-                    $('#followers').text(jsonFolloewers.followers + " Followers");
-                }
-            })
-            XHR.send();
-        })
-    }
 }
 
