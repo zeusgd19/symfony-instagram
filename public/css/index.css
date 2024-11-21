@@ -296,6 +296,7 @@ aside {
 .suggestion-item {
     display: flex;
     gap: 10px;
+    margin-bottom: 10px;
 }
 
 .suggestion-item img {
@@ -314,6 +315,18 @@ aside {
 }
 
 .follow-btn {
+    background: none;
+    border: none;
+    color: #0095F6;
+    font-size: 10px;
+    text-decoration: none;
+    width: 44px;
+    height: 31px;
+    text-align: center;
+    align-content: center;
+}
+
+.unfollow-btn {
     background: none;
     border: none;
     color: #0095F6;

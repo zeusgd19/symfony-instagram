@@ -1,12 +1,16 @@
 <div>
     {% for user in users %}
-    <div class="suggestion-item">
-        <img src="{{ asset('img/' ~ user.photo) }}" alt="profil-pic">
+    <div class="suggestion-item" data-id="{{ user.id }}">
+        <a href="/profile/{{ user.username }}"><img src="{{ asset('img/' ~ user.photo) }}" alt="profil-pic"></a>
         <div>
             <p>{{ user.username }}</p>
             <p class="followed">Followed by mark + 2more</p>
         </div>
+        {% if app.user.getFollowing.contains(user) %}
+        <a href="" class="unfollow-btn">Following</a>
+        {% else %}
         <a href="" class="follow-btn">Follow</a>
+        {% endif %}
     </div>
     {% endfor %}
 </div>
