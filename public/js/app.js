@@ -1,10 +1,8 @@
 window.onload = () => {
     const emojiModal = document.getElementById("modalEmoji");
-    const emojiButtons = $('.emoji'); // Selecciona todos los botones de emoji
     const comments = document.querySelectorAll(".comment");
     const commentModal = document.getElementById('commentModal');
     const emojis = $('#modalEmoji').find('p');
-    const commentInput = $('.comment-input');
     const messages = document.getElementById('messages');
 
     $("#formSearchUsers").submit((ev) => {
@@ -380,6 +378,44 @@ window.onload = () => {
         }
     });
 
+    const followButton = $('.follow-btn');
+    $(followButton).click((ev) => {
+        ev.preventDefault();
+        XHR = new XMLHttpRequest();
+        const id = ev.target.parentElement.getAttribute('data-id');
+        XHR.open("POST", `/addFollowing/${id}`);
+        XHR.addEventListener("readystatechange", function () {
+            if (XHR.readyState !== 4) {
+                return;
+            }
+            if (XHR.status === 200) {
+                ev.target.textContent = "Following";
+                const jsonFollowers = JSON.parse(XHR.responseText);
+                $('#followers').text(jsonFollowers.followers + " Followers");
+            }
+        })
+        XHR.send();
+    })
+
+    const unfollowButton = $('.unfollow-btn');
+    $(unfollowButton).click((ev) => {
+        ev.preventDefault();
+        XHR = new XMLHttpRequest();
+        const id = ev.target.parentElement.getAttribute('data-id');
+        XHR.open("POST", `/removeFollowing/${id}`);
+        XHR.addEventListener("readystatechange", function () {
+            if (XHR.readyState !== 4) {
+                return;
+            }
+            if (XHR.status === 200) {
+                ev.target.textContent = "Follow";
+                const jsonFollowers = JSON.parse(XHR.responseText);
+                $('#followers').text(jsonFollowers.followers + " Followers");
+            }
+        })
+        XHR.send();
+    })
+
     publicaciones_title = document.getElementById("publicaciones-title");
     guardados = document.getElementById("guardados");
 
@@ -401,7 +437,5 @@ window.onload = () => {
         publicaciones_title.classList.remove("active");
         guardados.classList.add("active");
     })
-
-
 }
 

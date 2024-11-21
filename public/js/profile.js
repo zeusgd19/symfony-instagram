@@ -1,56 +1,57 @@
+document.addEventListener('DOMContentLoaded',function() {
 const unfollowed = document.getElementById("unfollowed");
-if (unfollowed) {
-    unfollowed.addEventListener("click", function () {
-        XHR = new XMLHttpRequest();
-        const id = document.getElementById("profile-name").getAttribute("data-id");
-        XHR.open("POST", `/addFollowing/${id}`);
-        XHR.addEventListener("readystatechange", function () {
-            if (XHR.readyState !== 4) {
-                return;
-            }
-            if (XHR.status === 200) {
-                unfollowed.classList.add("hide");
-                document.getElementById("followed").classList.remove("hide");
-                const jsonFolloewers = JSON.parse(XHR.responseText);
-                $('#followers').text(jsonFolloewers.followers + " Followers");
-            }
+    if (unfollowed) {
+        unfollowed.addEventListener("click", function () {
+            XHR = new XMLHttpRequest();
+            const id = document.getElementById("profile-name").getAttribute("data-id");
+            XHR.open("POST", `/addFollowing/${id}`);
+            XHR.addEventListener("readystatechange", function () {
+                if (XHR.readyState !== 4) {
+                    return;
+                }
+                if (XHR.status === 200) {
+                    unfollowed.classList.add("hide");
+                    document.getElementById("followed").classList.remove("hide");
+                    const jsonFolloewers = JSON.parse(XHR.responseText);
+                    $('#followers').text(jsonFolloewers.followers + " Followers");
+                }
+            })
+            XHR.send();
         })
-        XHR.send();
-    })
-}
+    }
 
-const followed = document.getElementById("followed");
-if (followed) {
-    followed.addEventListener("click", function () {
-        XHR = new XMLHttpRequest();
-        const id = document.getElementById("profile-name").getAttribute("data-id");
-        XHR.open("POST", `/removeFollowing/${id}`);
-        XHR.addEventListener("readystatechange", function () {
-            if (XHR.readyState !== 4) {
-                return;
-            }
-            if (XHR.status === 200) {
-                followed.classList.add("hide");
-                document.getElementById("unfollowed").classList.remove("hide");
-                const jsonFolloewers = JSON.parse(XHR.responseText);
-                $('#followers').text(jsonFolloewers.followers + " Followers");
-            }
+    const followed = document.getElementById("followed");
+    if (followed) {
+        followed.addEventListener("click", function () {
+            XHR = new XMLHttpRequest();
+            const id = document.getElementById("profile-name").getAttribute("data-id");
+            XHR.open("POST", `/removeFollowing/${id}`);
+            XHR.addEventListener("readystatechange", function () {
+                if (XHR.readyState !== 4) {
+                    return;
+                }
+                if (XHR.status === 200) {
+                    followed.classList.add("hide");
+                    document.getElementById("unfollowed").classList.remove("hide");
+                    const jsonFolloewers = JSON.parse(XHR.responseText);
+                    $('#followers').text(jsonFolloewers.followers + " Followers");
+                }
+            })
+            XHR.send();
         })
-        XHR.send();
-    })
-}
-document.addEventListener('DOMContentLoaded', function () {
+    }
 
     // Mostrar/ocultar dropdown al hacer clic en la imagen
     const dropdown = document.querySelector('.dropdown-content');
-    document.getElementById("more-options").addEventListener('click', function (event) {
-        event.stopPropagation();
-        dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
-    });
+        document.getElementById("more-options").addEventListener('click', function (event) {
+            event.stopPropagation();
+            dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+        });
 
-    document.addEventListener('click', function () {
-        dropdown.style.display = 'none';
-    });
+
+        document.addEventListener('click', function () {
+            dropdown.style.display = 'none';
+        });
 
     // Obtener el modal y elementos interactivos
     const modal = document.getElementById('modal');
