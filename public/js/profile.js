@@ -1,3 +1,4 @@
+document.addEventListener('DOMContentLoaded', function () {
 const unfollowed = document.getElementById("unfollowed");
 if (unfollowed) {
     unfollowed.addEventListener("click", function () {
@@ -39,7 +40,7 @@ if (followed) {
         XHR.send();
     })
 }
-document.addEventListener('DOMContentLoaded', function () {
+
 
     // Mostrar/ocultar dropdown al hacer clic en la imagen
     const dropdown = document.querySelector('.dropdown-content');
@@ -56,15 +57,13 @@ document.addEventListener('DOMContentLoaded', function () {
     const modal = document.getElementById('modal');
     const modalContent = document.querySelector('.modal-content');
     const modalTitle = document.getElementById('modal-title');
-    const modalForm = document.getElementById('modal-form');
     const closeModal = document.querySelector('.close');
 
     // Función para mostrar el modal con contenido dinámico
     function openModal(title, inputType, placeholder) {
-        modalTitle.textContent = title;
+        form = document.createElement("form");
 
-        // Limpiar formulario previo
-        modalForm.innerHTML = '';
+        modalTitle.textContent = title;
 
         // Crear input dinámico
         const input = document.createElement('input');
@@ -77,38 +76,64 @@ document.addEventListener('DOMContentLoaded', function () {
         input.style.marginTop = '15px';
         input.style.marginBottom = '15px';
 
-        // Añadir el input al formulario
-        modalForm.appendChild(input);
-
         // Añadir un botón de enviar
         const submitButton = document.createElement('button');
         submitButton.textContent = 'Guardar';
         submitButton.type = 'submit';
         submitButton.style.padding = '10px 20px';
-        modalForm.appendChild(submitButton);
+
+        form.appendChild(input);
+        form.appendChild(submitButton);
+
+        form.addEventListener("submit",function (event){
+            event.preventDefault();
+            XHR = new XMLHttpRequest();
+            if (title.includes("nombre")){
+                XHR.open("POST",`/profile/change-username/${input.value}`);
+
+            }else {
+                XHR.open("POST",`/profile/change-description/${input.value}`)
+            }
+
+            XHR.addEventListener("readystatechange",function (){
+                if (XHR.readyState !== 4) return;
+                if (XHR.status === 200) {
+                    console.log("hola");
+                    window.location.reload();
+                }
+            })
+
+            XHR.send(null);
+        });
+
+        modalContent.appendChild(form);
 
         // Mostrar el modal
         modal.style.display = 'block';
     }
 
-    // Eventos para las opciones del menú desplegable
     document.getElementById('change-photo').addEventListener('click', function (event) {
         event.preventDefault();
-        openModal('Cambiar foto de perfil', 'file', 'Selecciona una foto');
+        modal.style.display = "block";
     });
 
     document.getElementById('change-name').addEventListener('click', function (event) {
         event.preventDefault();
+        document.getElementById("formulario").classList.add("hide");
         openModal('Cambiar nombre de perfil', 'text', 'Escribe tu nuevo nombre');
     });
 
     document.getElementById('change-description').addEventListener('click', function (event) {
         event.preventDefault();
+        document.getElementById("formulario").classList.add("hide");
         openModal('Cambiar descripción', 'text', 'Escribe tu nueva descripción');
     });
 
+
+
     // Cerrar modal
     closeModal.addEventListener('click', function () {
+        modalContent.removeChild(modalContent.lastChild);
         modal.style.display = 'none';
     });
 
@@ -118,4 +143,6 @@ document.addEventListener('DOMContentLoaded', function () {
             modal.style.display = 'none';
         }
     });
+
+
 });

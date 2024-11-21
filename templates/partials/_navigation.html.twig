@@ -12,7 +12,7 @@
             <li><a href="{{ path('direct_messages') }}" class={{(app.request.attributes.get('_route') == 'direct_messages')  ? 'active': ''}}><img src="{{ asset('img/direct-messages.svg') }}" alt="direct-messages"></a></li>
             <li><a href="" id="enlace-crear"><img src="{{ asset('img/create-post.svg') }}" alt="create-post" id="create-post"></a></li>
             <li><a href=""><img src="{{ asset('img/like-notification.svg') }}" alt="like-notification"></a></li>
-            <li><a href="/profile/{{app.user.username}}"><img src="{{ asset('img/' ~ app.user.photo) }}" alt="profil-pic" class="profil-pic"></a></li>
+            <li><a href="/profile/{{app.user.username}}"><img src="{{ asset('img/profile-images/' ~ app.user.photo) }}" alt="profil-pic" class="profil-pic"></a></li>
         </ul>
     </div>
 </header>
