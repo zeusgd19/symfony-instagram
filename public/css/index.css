@@ -6,6 +6,7 @@
 body {
     background-color: #FAFAFA;
     user-select: none;
+    overflow: scroll;
 }
 
 span {
@@ -153,7 +154,7 @@ header > div > img {
     max-height: 784px;
     border-radius: 8px;
     border: 1px solid #DBDBDB;
-    margin-bottom: 20px;
+    margin-bottom: 50px;
 }
 
 .post-user-up {

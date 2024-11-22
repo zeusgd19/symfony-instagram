@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Post;
 use App\Entity\UserPostgres;
 use App\Form\UserFormType;
+use App\Service\FirebaseService;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
@@ -15,6 +16,13 @@ use Symfony\Component\String\Slugger\SluggerInterface;
 
 class ProfileController extends AbstractController
 {
+
+    private FirebaseService $firebaseService;
+
+    public function __construct(FirebaseService $firebaseService)
+    {
+        $this->firebaseService = $firebaseService;
+    }
     #[Route('/profile/{username}', name: 'profile_page')]
     public function profile(string $username, ManagerRegistry $doctrine, Request $request, SluggerInterface $slugger): Response
     {
@@ -44,19 +52,25 @@ class ProfileController extends AbstractController
                 //  esto se hace para poder incluir de manera segura el nombre del archivo como parte de la URL
                 $safeFilename = $slugger -> slug($originalFileName);
                 $newFilename = $safeFilename.'-'.uniqid().'.'.$file->guessExtension();
-
+                $firebasePath = 'profile-images/' . $newFilename;
                 //  mover el archivo al directorio donde se almacenan las imagenes
 
                 try {
-                    $file->move( // <----- REVISAR ESTA PARTE
-                        $this->getParameter('profile_photo_directory'), $newFilename
-                    );
+                    $actualPhoto = $user->getPhoto();
+
+                    $decodedUrl = urldecode($actualPhoto);
+                    $path = parse_url($decodedUrl, PHP_URL_PATH);
+                    $imageName = pathinfo($path, PATHINFO_BASENAME);
+                    if(strpos($actualPhoto, 'sin-imagen.png') === false){
+                        $this->firebaseService->deleteFile("profile-images/" . $imageName);
+                    }
+                    $firebaseUrl = $this->firebaseService->uploadFile($file->getPathname(),$firebasePath);
                 }catch (FileException $e){
                 }
 
                 //  actualiza la propiedad $filename de $file para que guarde
                 // el nombre del PDF en vez de su contenido
-                $user->setPhoto($newFilename);
+                $user->setPhoto($firebaseUrl);
             }
             $manager = $doctrine->getManager();
             $manager->persist($user);

@@ -3,7 +3,7 @@
     <div class="post-user-up">
         <div>
             <a href="/profile/{{ post.user.username }}">
-                <img data-src="{{ asset('img/profile-images/' ~ post.user.photo) }}" alt="image" class="lazy-load">
+                <img data-src="{{ post.user.photo }}" alt="image" class="lazy-load">
             </a>
             <p>{{ post.user.username }}</p>
         </div>
@@ -14,7 +14,7 @@
         </button>
     </div>
     <div class="post-item">
-        <img data-src="{{ asset('img/posts/' ~ post.photo) }}" alt="image" class="lazy-load">
+        <img data-src="{{ post.photo }}" alt="image" class="lazy-load">
         <div class="post-options">
             <div class="post-option">
                 <a href=""><img data-src="img/post-like.svg" alt="like" class="lazy-load"></a>

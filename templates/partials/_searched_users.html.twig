@@ -2,7 +2,7 @@
     {% for user in users %}
     <li class="user-searched">
         <a href="/profile/{{ user.username }}" class="profileSearch">
-            <img src="{{ asset('img/profile-images/' ~ user.photo) }}" alt="profile-pic">
+            <img src="{{ user.photo }}" alt="profile-pic">
             <div>
                 <p>{{ user.username }}</p>
                 <p class="description">{{ user.description }}</p>

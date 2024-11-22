@@ -48,7 +48,7 @@ class UserPostgres implements UserInterface, PasswordAuthenticatedUserInterface
     private Collection $following;
 
     public function __construct(){
-        $this->photo = 'sin-imagen.png';
+        $this->photo = 'https://firebasestorage.googleapis.com/v0/b/pdf-resummer-d822e.appspot.com/o/profile-images%2Fsin-imagen.png?alt=media';
         $this->description = '';
         $this->follower = new ArrayCollection();
         $this->following = new ArrayCollection();
