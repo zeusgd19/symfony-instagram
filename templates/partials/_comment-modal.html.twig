@@ -1,85 +1,57 @@
 <article class="modal hide" id="commentModal">
     <div class="modal-image">
-        <img src="img/storie-image.png" alt="">
+        <img src="{{ post.photo }}" alt="">
     </div>
     <div class="modal-comments">
-        <div class="post-user-up">
-            <div class="user-info">
-                <img src="img/storie-image.png" alt="user-image">
-                <p>darius</p>
-            </div>
-            <button>...</button>
-        </div>
-        <div class="comments-box">
-            <div class="comment-item">
-                <div>
-                    <img src="img/storie-image.png" alt="user-image">
-                    <p class="username">darius</p>
-                    <p class="comment-text">Esto es un comentario</p>
+        <div>
+            <div class="post-user-up">
+                <div class="user-info">
+                    <img src="{{ post.user.photo }}" alt="user-image">
+                    <p>{{ post.user.username }}</p>
                 </div>
-                <img src="img/post-like.svg" alt="like-icon">
+                <button>...</button>
             </div>
-            <div class="comment-item">
-                <div>
-                    <img src="img/storie-image.png" alt="user-image">
-                    <p class="username">darius</p>
-                    <p class="comment-text">Esto es un comentario</p>
+            <div class="comments-box">
+                {% if comments %}
+                {% for comment in comments %}
+                <div class="comment-item">
+                    <div>
+                        <img src="{{ comment.user.photo }}" alt="user-image">
+                        <p class="username">{{ comment.user.username }}</p>
+                        <p class="comment-text">{{ comment.text }}</p>
+                    </div>
+                    <img src="img/post-like.svg" alt="like-icon">
                 </div>
-                <img src="img/post-like.svg" alt="like-icon">
-            </div>
-            <div class="comment-item">
-                <div>
-                    <img src="img/storie-image.png" alt="user-image">
-                    <p class="username">darius</p>
-                    <p class="comment-text">Esto es un comentario</p>
+                {% endfor %}
+                {% else %}
+                <div class="comment-item">
+                    <p>SIN COMENTARIOS</p>
                 </div>
-                <img src="img/post-like.svg" alt="like-icon">
-            </div>
-            <div class="comment-item">
-                <div>
-                    <img src="img/storie-image.png" alt="user-image">
-                    <p class="username">darius</p>
-                    <p class="comment-text">Esto es un comentario</p>
-                </div>
-                <img src="img/post-like.svg" alt="like-icon">
-            </div>
-            <div class="comment-item">
-                <div>
-                    <img src="img/storie-image.png" alt="user-image">
-                    <p class="username">darius</p>
-                    <p class="comment-text">Esto es un comentario</p>
-                </div>
-                <img src="img/post-like.svg" alt="like-icon">
-            </div>
-            <div class="comment-item">
-                <div>
-                    <img src="img/storie-image.png" alt="user-image">
-                    <p class="username">darius</p>
-                    <p class="comment-text">Esto es un comentario</p>
-                </div>
-                <img src="img/post-like.svg" alt="like-icon">
+                {% endif %}
             </div>
         </div>
-        <div class="post-options">
-            <div class="post-option">
-                <a href="#"><img src="img/post-like.svg" alt="like"></a>
-                <a href="#"><img src="img/post-share.svg" alt="share" class="share"></a>
+        <div>
+            <div class="post-options">
+                <div class="post-option">
+                    <a href="#"><img src="img/post-like.svg" alt="like"></a>
+                    <a href="#"><img src="img/post-share.svg" alt="share" class="share"></a>
+                </div>
+                <div class="post-option-save">
+                    <a href="#"><img src="img/post-save.svg" alt="save"></a>
+                </div>
             </div>
-            <div class="post-option-save">
-                <a href="#"><img src="img/post-save.svg" alt="save"></a>
+            <div class="likes-description">
+                <p>Liked by <span>you</span> and <span>10 others</span></p>
+                <p class="time">HOUR AGO</p>
             </div>
-        </div>
-        <div class="likes-description">
-            <p>Liked by <span>you</span> and <span>10 others</span></p>
-            <p class="time">HOUR AGO</p>
-        </div>
-        <div class="post-comment">
-            <div>
-                <a href="#" class="emoji"><img src="img/post-emoji-icon.svg" alt="emoji-icon">
-                </a>
-                <input type="text" placeholder="Add a comment..." class="comment-input">
+            <div class="post-comment">
+                <div>
+                    <a href="#" class="emoji"><img src="img/post-emoji-icon.svg" alt="emoji-icon">
+                    </a>
+                    <input type="text" placeholder="Add a comment..." class="comment-input">
+                </div>
+                <button class="publish" disabled>Publish</button>
             </div>
-            <button class="publish" disabled>Publish</button>
         </div>
     </div>
 </article>

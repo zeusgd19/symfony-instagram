@@ -1,9 +1,34 @@
 window.onload = () => {
     const emojiModal = document.getElementById("modalEmoji");
-    const comments = document.querySelectorAll(".comment");
-    const commentModal = document.getElementById('commentModal');
+    const comments = $(".comment");
     const emojis = $('#modalEmoji').find('p');
     const messages = document.getElementById('messages');
+    let commentModal;
+
+    // Selecciona todas las imágenes con la clase lazy-load
+    const lazyImages = document.querySelectorAll("img.lazy-load");
+
+    // Configura el Intersection Observer
+    const observer = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                // Obtiene la imagen y asigna el src desde el data-src
+                const img = entry.target;
+                img.src = img.getAttribute("data-src");
+
+                // Remueve data-src para evitar que vuelva a cargarse
+                img.removeAttribute("data-src");
+
+                // Deja de observar esta imagen
+                observer.unobserve(img);
+            }
+        });
+    }, {
+        rootMargin: "0px 0px 0px 0px" // Carga un poco antes de que sea visible
+    });
+
+    // Observa cada imagen con lazy loading
+    lazyImages.forEach(img => observer.observe(img));
 
     $("#formSearchUsers").submit((ev) => {
         ev.preventDefault();
@@ -151,7 +176,7 @@ window.onload = () => {
             let saturacion = 100;
             let contraste = 100;
 
-// Función para crear un Blob a partir de la imagen procesada en el canvas
+    // Función para crear un Blob a partir de la imagen procesada en el canvas
             function obtenerImagenProcesada() {
                 const canvas = document.createElement('canvas');
                 const ctx = canvas.getContext('2d');
@@ -252,31 +277,6 @@ window.onload = () => {
         });
     });
 
-    // Selecciona todas las imágenes con la clase lazy-load
-    const lazyImages = document.querySelectorAll("img.lazy-load");
-
-    // Configura el Intersection Observer
-    const observer = new IntersectionObserver((entries, observer) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                // Obtiene la imagen y asigna el src desde el data-src
-                const img = entry.target;
-                img.src = img.getAttribute("data-src");
-
-                // Remueve data-src para evitar que vuelva a cargarse
-                img.removeAttribute("data-src");
-
-                // Deja de observar esta imagen
-                observer.unobserve(img);
-            }
-        });
-    }, {
-        rootMargin: "0px 0px 0px 0px" // Carga un poco antes de que sea visible
-    });
-
-    // Observa cada imagen con lazy loading
-    lazyImages.forEach(img => observer.observe(img));
-
 
     if (messages) messages.scrollTop = messages.scrollHeight;
     // Desvincula eventos previos para evitar duplicados
@@ -354,29 +354,67 @@ window.onload = () => {
             e.preventDefault();
             input.val(input.val() + $(e.target).text()); // Añade el emoji al input
         });
-    });
-
-    comments.forEach(button => {
-        button.addEventListener('click', (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            commentModal.classList.toggle('hide');
-
-            if (!commentModal.classList.contains('hide')) {
-                document.body.style.overflow = "hidden";
+        $(document).on('click', function (event) {
+            if (!$(event.target).closest(emojiModal).length && !$(event.target).is($(emojis))) {
+                $(emojiModal).addClass('hide');
+                document.body.style.overflow = ""; // Restaurar scroll
+                $(document).off('click'); // Remover este evento
             }
         });
     });
 
+    // Asociar el evento click solo una vez
+    $(comments).off().on('click', function (ev) {
+        ev.preventDefault(); // Prevenir el comportamiento predeterminado del botón/enlace
+        console.log('Hola');
+        const postId = $(this).attr('id'); // ID del post asociado al botón
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', `/comments/${postId}`);
+        xhr.addEventListener('readystatechange', (ev) => {
+            if (xhr.readyState !== 4) return;
+
+            if (xhr.status >= 200 && xhr.status < 300) {
+                // Reemplazar el contenido del modal dinámico
+                document.getElementById('modalComment').innerHTML = xhr.responseText;
+
+                // Seleccionar el modal recién cargado
+                const commentModal = $('#postSection').find('#commentModal');
+                $(commentModal).removeClass('hide'); // Mostrar modal
+                document.body.style.overflow = "hidden"; // Desactivar scroll
+
+                // Cerrar el modal al hacer clic fuera de él
+                $(document).off('click.modal').on('click.modal', function (event) {
+                    if (
+                        !$(event.target).closest(commentModal).length && // Clic fuera del modal
+                        !$(event.target).is($(comments)) // No es el botón que lo abrió
+                    ) {
+                        $(commentModal).addClass('hide'); // Ocultar modal
+                        document.body.style.overflow = ""; // Restaurar scroll
+                        $(document).off('click.modal'); // Limpiar eventos
+                    }
+                });
+            }
+        });
+
+        xhr.send();
+    });
+
+
+
+
+    /*
     document.addEventListener("click", (e) => {
         console.log(e.target)
-        if (!emojiModal.contains(e.target) && !e.target.classList.contains("emoji") && !commentModal.contains(e.target) && !e.target.classList.contains('formulario-post') && !document.getElementById('formPost').contains(e.target) && e.target.id !== 'create-post') {
+        if (!emojiModal.contains(e.target) && !e.target.classList.contains("emoji") && !$(commentModal).has(e.target) && !e.target.classList.contains('formulario-post') && !document.getElementById('formPost').contains(e.target) && e.target.id !== 'create-post') {
             emojiModal.classList.add("hide");
-            commentModal.classList.add('hide');
+            $(commentModal).addClass('hide');
+            console.log('Hola')
             document.body.style.overflow = "auto";
             document.getElementById('formPost').classList.add('hide');
         }
     });
+
+     */
 
     const followButton = $('.follow-btn');
     $(followButton).click((ev) => {
@@ -414,28 +452,6 @@ window.onload = () => {
             }
         })
         XHR.send();
-    })
-
-    publicaciones_title = document.getElementById("publicaciones-title");
-    guardados = document.getElementById("guardados");
-
-    posts = document.getElementById("publicaciones");
-    postGuardados = document.getElementById("publicaciones-guardadas");
-
-
-    publicaciones_title.addEventListener("click", function () {
-        postGuardados.style.display = "none";
-        posts.style.display = "grid";
-        publicaciones_title.classList.add("active");
-        guardados.classList.remove("active");
-    })
-
-
-    guardados.addEventListener("click", function () {
-        posts.style.display = "none";
-        postGuardados.style.display = "grid";
-        publicaciones_title.classList.remove("active");
-        guardados.classList.add("active");
     })
 }
 
