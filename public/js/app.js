@@ -399,6 +399,54 @@ window.onload = () => {
         xhr.send();
     });
 
+    $(document).on('click', '.unlikedPost, .likedPost', function (ev) {
+        ev.preventDefault();
+        let postId = $(this).attr('id');
+        const isLiked = $(this).hasClass('likedPost'); // Comprobamos si es un like o un unlike
+
+        // Seleccionamos la URL dependiendo de si es un like o un unlike
+        const url = isLiked ? `/removeLike/${postId}` : `/addLike/${postId}`;
+
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', url);
+
+        xhr.addEventListener('readystatechange', (ev) => {
+            if (xhr.readyState !== 4) return;
+
+            if (xhr.status >= 200 && xhr.status < 300) {
+                let json = JSON.parse(xhr.responseText);
+
+                // Actualizamos el número total de likes y el mensaje
+                $(`#post-${postId}`).find('.likesByOthers').text(json.totalLikes + " people");
+                let likedByYou = json.likedBYYou;
+                let othersLikes = json.totalLikes - (likedByYou ? 1 : 0);
+
+                // Actualizamos el texto del like y el mensaje en la UI
+                let likeMessage = "";
+                if (likedByYou) {
+                    $(`#post-${postId}`).find('.imgLike').attr('src', 'img/post-like-liked.svg');
+                    $('#commentModal').find('.imgLike').attr('src', 'img/post-like-liked.svg');
+                    if (othersLikes > 0) {
+                        likeMessage = "Liked by " + "<span>you</span> " + `and <span>${othersLikes} others</span>`;
+                    } else {
+                        likeMessage = "Liked by <span>you</span>";
+                    }
+                    $(this).removeClass('unlikedPost').addClass('likedPost'); // Cambiamos la clase
+                } else {
+                    $(`#post-${postId}`).find('.imgLike').attr('src', 'img/post-like.svg');
+                    $('#commentModal').find('.imgLike').attr('src', 'img/post-like.svg');
+                    likeMessage = `Liked by <span>${json.totalLikes} people</span>`;
+                    $(this).removeClass('likedPost').addClass('unlikedPost'); // Cambiamos la clase
+                }
+
+                // Actualizamos el mensaje en la UI
+                $(`#post-${postId}`).find('.likeMessage').html(likeMessage);
+                $(`#commentModal`).find('.likeMessage').html(likeMessage);
+            }
+        });
+
+        xhr.send();
+    });
 
 
 
@@ -452,6 +500,23 @@ window.onload = () => {
             }
         })
         XHR.send();
+    })
+
+    postGuardados = document.getElementById("publicaciones-guardadas");
+    publicaciones_title = document.getElementById('publicaciones-title');
+    guardados = document.getElementById('guardados');
+    posts = document.getElementById('publicaciones')
+    publicaciones_title.addEventListener("click", function () {
+        postGuardados.style.display = "none";
+        posts.style.display = "grid";
+        publicaciones_title.classList.add("active");
+        guardados.classList.remove("active");
+    })
+    guardados.addEventListener("click", function () {
+        posts.style.display = "none";
+        postGuardados.style.display = "grid";
+        publicaciones_title.classList.remove("active");
+        guardados.classList.add("active");
     })
 }
 

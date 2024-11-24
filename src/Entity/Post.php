@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\PostRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: PostRepository::class)]
@@ -23,6 +25,14 @@ class Post
     #[ORM\ManyToOne(targetEntity: UserPostgres::class)]
     #[ORM\JoinColumn(name: 'user_id', referencedColumnName: 'id', nullable: false)]  // Especifica el nombre de la columna 'user_id'
     private ?UserPostgres $user;
+
+    #[ORM\ManyToMany(targetEntity: UserPostgres::class, mappedBy: 'likedPosts')]
+    private Collection $likedBy;
+
+    public function __construct()
+    {
+        $this->likedBy = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -61,6 +71,30 @@ class Post
     public function setUser(?UserPostgres $user): self
     {
         $this->user = $user;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, UserPostgres>
+     */
+    public function getLikedBy(): Collection
+    {
+        return $this->likedBy;
+    }
+
+    public function addLikedBy(UserPostgres $likedBy): static
+    {
+        if (!$this->likedBy->contains($likedBy)) {
+            $this->likedBy->add($likedBy);
+        }
+
+        return $this;
+    }
+
+    public function removeLikedBy(UserPostgres $likedBy): static
+    {
+        $this->likedBy->removeElement($likedBy);
 
         return $this;
     }

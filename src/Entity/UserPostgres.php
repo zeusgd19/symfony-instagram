@@ -47,11 +47,16 @@ class UserPostgres implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\ManyToMany(targetEntity: self::class, mappedBy: 'follower')]
     private Collection $following;
 
+    #[ORM\ManyToMany(targetEntity: Post::class, inversedBy: 'likedBy')]
+    #[ORM\JoinTable(name: 'likes')]
+    private Collection $likedPosts;
+
     public function __construct(){
         $this->photo = 'https://firebasestorage.googleapis.com/v0/b/pdf-resummer-d822e.appspot.com/o/profile-images%2Fsin-imagen.png?alt=media';
         $this->description = '';
         $this->follower = new ArrayCollection();
         $this->following = new ArrayCollection();
+        $this->likedPosts = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -194,6 +199,30 @@ class UserPostgres implements UserInterface, PasswordAuthenticatedUserInterface
         if ($this->following->removeElement($following)) {
             $following->removeFollower($this);
         }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Post>
+     */
+    public function getLikedPosts(): Collection
+    {
+        return $this->likedPosts;
+    }
+
+    public function addLikedPost(Post $likedPost): static
+    {
+        if (!$this->likedPosts->contains($likedPost)) {
+            $this->likedPosts->add($likedPost);
+        }
+
+        return $this;
+    }
+
+    public function removeLikedPost(Post $likedPost): static
+    {
+        $this->likedPosts->removeElement($likedPost);
 
         return $this;
     }

@@ -33,7 +33,11 @@
         <div>
             <div class="post-options">
                 <div class="post-option">
-                    <a href="#"><img src="img/post-like.svg" alt="like"></a>
+                    {% if post.likedBy.contains(app.user) %}
+                        <a href="" class="likedPost" id="{{ post.id }}"><img src="{{ asset('img/post-like-liked.svg') }}" alt="like" class="lazy-load imgLike"></a>
+                    {% else %}
+                        <a href="" class="unlikedPost" id="{{ post.id }}"><img src="{{ asset('img/post-like.svg') }}" alt="like" class="lazy-load imgLike"></a>
+                    {% endif%}
                     <a href="#"><img src="img/post-share.svg" alt="share" class="share"></a>
                 </div>
                 <div class="post-option-save">
@@ -41,7 +45,20 @@
                 </div>
             </div>
             <div class="likes-description">
-                <p>Liked by <span>you</span> and <span>10 others</span></p>
+                {% set totalLikes = post.getLikedBy|length %}
+                {% set likedByYou = post.likedBy.contains(app.user) %}
+                {% set othersLikes = likedByYou ? totalLikes - 1 : totalLikes %}
+
+
+                {% if likedByYou %}
+                    {% if othersLikes > 0 %}
+                        <p class="likeMessage">Liked by <span>you</span> and <span class="likesByOthers">{{ othersLikes }} others</span></p>
+                    {% else %}
+                        <p class="likeMessage">Liked by <span>you</span></p>
+                    {% endif %}
+                {% else %}
+                    <p class="likeMessage">Liked by <span class="likesByOthers">{{ totalLikes }} people</span></p>
+                {% endif %}
                 <p class="time">HOUR AGO</p>
             </div>
             <div class="post-comment">

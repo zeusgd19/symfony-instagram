@@ -100,4 +100,38 @@ class PostController extends AbstractController
 
         return $this->json(['success' => true, 'id' => $id]);
     }
+
+    #[Route('/addLike/{postId}', name: 'addLike_post')]
+    public function addLike(int $postId,ManagerRegistry $doctrine){
+        $repository = $doctrine->getRepository(Post::class);
+        $manager = $doctrine->getManager();
+        $post = $repository->find($postId);
+        $user = $this->getUser();
+        if($post){
+            $user->addLikedPost($post);
+            $manager->persist($user);
+            $manager->flush();
+        }
+        $totalLikes = count($post->getLikedBy());
+        $likedBYYou = $post->getLikedBy()->contains($user);
+
+        return $this->json(['totalLikes' => $totalLikes,'likedBYYou' => $likedBYYou]);
+    }
+
+    #[Route('/removeLike/{postId}', name: 'removeLike_post')]
+    public function removeLike(int $postId,ManagerRegistry $doctrine){
+        $repository = $doctrine->getRepository(Post::class);
+        $manager = $doctrine->getManager();
+        $post = $repository->find($postId);
+        $user = $this->getUser();
+        if($post){
+            $user->removeLikedPost($post);
+            $manager->persist($user);
+            $manager->flush();
+        }
+        $totalLikes = count($post->getLikedBy());
+        $likedBYYou = $post->getLikedBy()->contains($user);
+
+        return $this->json(['totalLikes' => $totalLikes,'likedBYYou' => $likedBYYou]);
+    }
 }
