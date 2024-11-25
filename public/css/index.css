@@ -7,7 +7,6 @@ body {
     background-color: #FAFAFA;
     user-select: none;
     overflow: scroll;
-    content-visibility: auto;
 }
 
 span {
