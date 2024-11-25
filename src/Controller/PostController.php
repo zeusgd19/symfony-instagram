@@ -25,7 +25,7 @@ class PostController extends AbstractController
         $this->firebaseService = $firebaseService;
     }
     #[Route('/post/new', name: 'new_post', methods: 'POST')]
-    public function index(ManagerRegistry $doctrine, Request $request, SluggerInterface $slugger, FirebaseService $firebaseService): Response
+    public function index(ManagerRegistry $doctrine, Request $request, SluggerInterface $slugger): Response
     {
 
         $post = new Post();

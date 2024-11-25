@@ -6,7 +6,7 @@
         <div>
             <div class="post-user-up">
                 <div class="user-info">
-                    <img src="{{ post.user.photo }}" alt="user-image">
+                    <img src="data:image/jpeg;base64,{{ userImage }}" alt="user-image">
                     <p>{{ post.user.username }}</p>
                 </div>
                 <button>...</button>
@@ -16,7 +16,7 @@
                 {% for comment in comments %}
                 <div class="comment-item">
                     <div>
-                        <img src="{{ comment.user.photo }}" alt="user-image">
+                        <img src="data:image/jpeg;base64,{{ commentPhoto[comment.id] }}" alt="user-image">
                         <p class="username">{{ comment.user.username }}</p>
                         <p class="comment-text">{{ comment.text }}</p>
                     </div>
