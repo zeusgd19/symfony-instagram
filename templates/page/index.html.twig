@@ -7,14 +7,14 @@
             <article class="stories-box">
                 {{ include('partials/_storie-item.html.twig') }}
             </article>
-            {{ include('partials/_posts.html.twig', {'posts':posts,'form':form}) }}
+            {{ include('partials/_posts.html.twig', {'posts':posts,'form':form,'images':images,'profileImage':profileImage}) }}
             <div id="modalComment">
             </div>
         </section>
         <aside>
             <article class="suggestions">
                 <p>Suggestions For You</p>
-                {{ include('partials/_suggestions.html.twig',{'users':users}) }}
+                {{ include('partials/_suggestions.html.twig',{'users':users,'profileImage':profileImage}) }}
             </article>
             <footer>
                 <ul class="footer-ul">

@@ -6,6 +6,7 @@ use App\Entity\Comment;
 use App\Entity\Post;
 use App\Entity\UserPostgres;
 use App\Form\CommentFormType;
+use App\Service\FirebaseImageCache;
 use App\Service\FirebaseService;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -23,23 +24,29 @@ class IndexController extends AbstractController
         $this->firebaseService = $firebaseService;
     }
     #[Route('/', name: 'index')]
-    public function index(ManagerRegistry $doctrine, Request $request): Response
+    public function index(ManagerRegistry $doctrine, Request $request, FirebaseImageCache $imageCache): Response
     {
         $repository = $doctrine->getRepository(UserPostgres::class);
         $allUsers = $repository->findAll();
         $users = [];
-
+        $profileImages = [];
+        $base64Profile = [];
         $repositoryPosts = $doctrine->getRepository(Post::class);
         $posts = $repositoryPosts->findAll();
         foreach ($allUsers as $user) {
             if($user != $this->getUser()) {
                 $users[] = $user;
             }
+            $profileImages[$user->getId()] = $imageCache->getImage($user->getPhoto());
+            $base64Profile[$user->getId()] = base64_encode($profileImages[$user->getId()]);
         }
 
         $commentForms = [];
-
+        $images = [];
+        $base64 = [];
         foreach ($posts as $post) {
+            $images[$post->getId()] = $imageCache->getImage($post->getPhoto());
+            $base64[$post->getId()] = base64_encode($images[$post->getId()]);
             // Creamos una entidad de comentario nueva para cada post
             $comment = new Comment();
 
@@ -69,8 +76,10 @@ class IndexController extends AbstractController
         }
         return $this->render('page/index.html.twig',[
             'users'=> $users,
+            'profileImage' => $base64Profile,
             'user' => $this->getUser(),
             'posts' => $posts,
+            'images' => $base64,
             'form' =>  array_map(fn($form) => $form->createView(), $commentForms),
         ]);
     }

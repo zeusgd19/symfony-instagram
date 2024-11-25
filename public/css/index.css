@@ -7,6 +7,7 @@ body {
     background-color: #FAFAFA;
     user-select: none;
     overflow: scroll;
+    content-visibility: auto;
 }
 
 span {
@@ -375,6 +376,7 @@ footer p {
     z-index: 1000;
     border-radius: 10px;
     border: 1px solid #dbdbdb;
+    box-shadow: 0 0 400px 400px rgba(0, 0, 0, 0.5);
 }
 
 
@@ -384,11 +386,15 @@ footer p {
     display: flex;
     align-items: center;
     justify-content: center;
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
 }
 
 .modal-image img {
     width: 400px;
     height: 500px;
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
 }
 
 .modal-comments {
