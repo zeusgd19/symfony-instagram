@@ -25,6 +25,8 @@ services:
     App\Service\FirebaseService:
         arguments:
             $firebaseCredentials: '%kernel.project_dir%/config/firebase_credentials.json'
-
+    App\Service\FirebaseImageCache:
+        arguments:
+            $projectDir: '%kernel.project_dir%'
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
