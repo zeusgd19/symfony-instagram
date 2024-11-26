@@ -1,12 +1,12 @@
 <article class="modal hide" id="commentModal">
     <div class="modal-image">
-        <img src="data:image/jpeg;base64,{{ image }}" alt="">
+        <img src="data:image/jpeg;base64,{{ image }}" alt="" loading="lazy">
     </div>
     <div class="modal-comments">
         <div>
             <div class="post-user-up">
                 <div class="user-info">
-                    <img src="data:image/jpeg;base64,{{ userImage }}" alt="user-image">
+                    <img src="data:image/jpeg;base64,{{ userImage }}" alt="user-image" loading="lazy">
                     <p>{{ post.user.username }}</p>
                 </div>
                 <button>...</button>
@@ -16,11 +16,11 @@
                 {% for comment in comments %}
                 <div class="comment-item">
                     <div>
-                        <img src="data:image/jpeg;base64,{{ commentPhoto[comment.id] }}" alt="user-image">
+                        <img src="data:image/jpeg;base64,{{ commentPhoto[comment.id] }}" alt="user-image" loading="lazy">
                         <p class="username">{{ comment.user.username }}</p>
                         <p class="comment-text">{{ comment.text }}</p>
                     </div>
-                    <img src="img/post-like.svg" alt="like-icon">
+                    <img src="img/post-like.svg" alt="like-icon" loading="lazy">
                 </div>
                 {% endfor %}
                 {% else %}
@@ -34,14 +34,14 @@
             <div class="post-options">
                 <div class="post-option">
                     {% if post.likedBy.contains(app.user) %}
-                        <a href="" class="likedPost" id="{{ post.id }}"><img src="{{ asset('img/post-like-liked.svg') }}" alt="like" class="lazy-load imgLike"></a>
+                        <a href="" class="likedPost" id="{{ post.id }}"><img src="{{ asset('img/post-like-liked.svg') }}" alt="like" loading="lazy" class="lazy-load imgLike"></a>
                     {% else %}
-                        <a href="" class="unlikedPost" id="{{ post.id }}"><img src="{{ asset('img/post-like.svg') }}" alt="like" class="lazy-load imgLike"></a>
+                        <a href="" class="unlikedPost" id="{{ post.id }}"><img src="{{ asset('img/post-like.svg') }}" alt="like" loading="lazy" class="lazy-load imgLike"></a>
                     {% endif%}
-                    <a href="#"><img src="img/post-share.svg" alt="share" class="share"></a>
+                    <a href="#"><img src="img/post-share.svg" alt="share" class="share" loading="lazy"></a>
                 </div>
                 <div class="post-option-save">
-                    <a href="#"><img src="img/post-save.svg" alt="save"></a>
+                    <a href="#"><img src="img/post-save.svg" alt="save" loading="lazy"></a>
                 </div>
             </div>
             <div class="likes-description">
@@ -63,7 +63,7 @@
             </div>
             <div class="post-comment">
                 <div>
-                    <a href="#" class="emoji"><img src="img/post-emoji-icon.svg" alt="emoji-icon">
+                    <a href="#" class="emoji"><img src="img/post-emoji-icon.svg" alt="emoji-icon" loading="lazy">
                     </a>
                     <input type="text" placeholder="Add a comment..." class="comment-input">
                 </div>

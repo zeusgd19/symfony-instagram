@@ -3,7 +3,6 @@ window.onload = () => {
     const comments = $(".comment");
     const emojis = $('#modalEmoji').find('p');
     const messages = document.getElementById('messages');
-    let commentModal;
 
     // Selecciona todas las imágenes con la clase lazy-load
     const lazyImages = document.querySelectorAll("img.lazy-load");
@@ -246,6 +245,7 @@ window.onload = () => {
                         console.log(response.message)// Muestra un mensaje de éxito
                         $('#formPost').addClass('hide');// Oculta el formulario
                         document.body.style.overflow = 'scroll';
+                        window.location.reload()
                         const newDeleteButton = $('#postSection').find('button.deleteImage');
 
                         $(newDeleteButton).click((ev) => {
@@ -267,8 +267,6 @@ window.onload = () => {
                             });
                         });
                     }
-
-                    window.location.reload()
                 },
                 error: function () {
                     alert('Hubo un error al enviar el formulario');

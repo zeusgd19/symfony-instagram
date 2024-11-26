@@ -43,7 +43,7 @@ class FirebaseImageCache {
                 $valueToCache = 'valid:' . base64_encode($imageData);
                 $item->set($valueToCache);
                 dump("Guardando en caché: $valueToCache"); // Debug
-                return $valueToCache;
+                return base64_encode($imageData);
 
             } catch (\Exception $e) {
                 $this->logger->error("No se pudo descargar la imagen desde Firebase: {$e->getMessage()}");
@@ -63,4 +63,8 @@ class FirebaseImageCache {
         return $cachedImage && str_starts_with($cachedImage, 'valid:');
     }
 
+    public function deleteImageFromCache(string $imageUrl): void
+    {
+        $this->cache->delete($imageUrl);
+    }
 }

@@ -39,4 +39,11 @@ class ImageService{
     {
         return $this->getBase64Image($post->getPhoto());
     }
+
+    public function updateUserProfileImage(string $newImageUrl): void
+    {
+        $cacheKey = md5($newImageUrl);
+        $this->imageCache->deleteImageFromCache($cacheKey);
+
+    }
 }

@@ -8,7 +8,7 @@
     <main>
         <div id="content">
             <div id="profile">
-                <img src="{{ user.photo }}" id="narutoProfilePic" draggable="false">
+                <img src="{{ user.photo }}" id="narutoProfilePic" draggable="false" loading="lazy">
                 <div class="profile-data">
                     <div id="profile-options" class="profile-options">
                         <p id="profile-name" data-id="{{ user.id }}">{{ user.username }}</p>
@@ -46,7 +46,7 @@
                         </div>
                         {% endif %}
 
-                        <img id="three-dots" src="{{ asset("img/three-dots.svg") }}">
+                        <img id="three-dots" src="{{ asset("img/three-dots.svg") }}" loading="lazy">
                     </div>
                     <div class="followers">
                         <p>{{ posts|length }} Posts</p>
@@ -66,7 +66,7 @@
             <div id="publicaciones" class="publicaciones">
                 {% for post in posts %}
                 <div>
-                    <img class="foto" src="{{ post.photo }}">
+                    <img class="foto" src="{{ post.photo }}" loading="lazy">
                 </div>
                 {% endfor %}
             </div>

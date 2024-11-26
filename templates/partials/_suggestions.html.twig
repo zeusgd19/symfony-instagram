@@ -1,7 +1,7 @@
 <div>
     {% for user in users %}
     <div class="suggestion-item" data-id="{{ user.id }}">
-        <a href="/profile/{{ user.username }}"><img src="data:image/jpeg;base64,{{ profileImage[user.id] }}" alt="profil-pic"></a>
+        <a href="/profile/{{ user.username }}"><img src="data:image/jpeg;base64,{{ profileImage[user.id] }}" alt="profil-pic" loading="lazy"></a>
         <div>
             <p>{{ user.username }}</p>
             <p class="followed">Followed by mark + 2more</p>

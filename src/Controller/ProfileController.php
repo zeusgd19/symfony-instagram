@@ -5,7 +5,9 @@ namespace App\Controller;
 use App\Entity\Post;
 use App\Entity\UserPostgres;
 use App\Form\UserFormType;
+use App\Service\FirebaseImageCache;
 use App\Service\FirebaseService;
+use App\Service\ImageService;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
@@ -19,12 +21,12 @@ class ProfileController extends AbstractController
 
     private FirebaseService $firebaseService;
 
-    public function __construct(FirebaseService $firebaseService)
+    public function __construct(FirebaseService $firebaseService,FirebaseImageCache $firebaseImageCache)
     {
         $this->firebaseService = $firebaseService;
     }
     #[Route('/profile/{username}', name: 'profile_page')]
-    public function profile(string $username, ManagerRegistry $doctrine, Request $request, SluggerInterface $slugger): Response
+    public function profile(string $username, ManagerRegistry $doctrine, Request $request, SluggerInterface $slugger,ImageService $imageCache): Response
     {
         $user = $doctrine->getRepository(UserPostgres::class)->findOneBy(['username'=>$username]);
 
@@ -70,6 +72,7 @@ class ProfileController extends AbstractController
 
                 //  actualiza la propiedad $filename de $file para que guarde
                 // el nombre del PDF en vez de su contenido
+                $imageCache->updateUserProfileImage($user->getPhoto());
                 $user->setPhoto($firebaseUrl);
             }
             $manager = $doctrine->getManager();

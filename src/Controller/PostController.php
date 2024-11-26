@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Comment;
 use App\Entity\Post;
 use App\Form\PostFormType;
+use App\Service\FirebaseImageCache;
 use App\Service\FirebaseService;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -20,7 +21,8 @@ class PostController extends AbstractController
 
     private FirebaseService $firebaseService;
 
-    public function __construct(FirebaseService $firebaseService)
+
+    public function __construct(FirebaseService $firebaseService,FirebaseImageCache $firebaseImageCache)
     {
         $this->firebaseService = $firebaseService;
     }
@@ -62,7 +64,7 @@ class PostController extends AbstractController
             return $this->json([
                 'status' => 'success',
                 'message' => 'Post creado con éxito'
-            ]);
+                ]);
         }
 
         return $this->render('partials/_postForm.html.twig', [
