@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Login</title>
     <link rel="stylesheet" href="{{ asset('css/login.css') }}">
+    <script src="{{ asset('js/jquery.min.js') }}"></script>
+    <script src="{{ asset('js/login.js') }}"></script>
 </head>
 <body>
 <div id="allContent">
@@ -27,7 +29,7 @@
             <a href="#">Forgot password?</a>
         </div>
 
-        <button class="login-button">Log In</button>
+        <button id="login-button" class="login-button" disabled>Log In</button>
 
         <div class="signup-prompt">
             Don't have an account? <a href="{{ path('app_register') }}">Sign up</a>

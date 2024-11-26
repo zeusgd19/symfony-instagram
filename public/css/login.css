@@ -90,10 +90,23 @@ input::placeholder {
     color: #8e8e8e;
 }
 
-.login-button {
+.login-button:disabled {
     width: 100%;
     padding: 12px;
     background-color: #b2dffc;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 600;
+    margin: 8px 0;
+    cursor: pointer;
+}
+
+.login-button {
+    width: 100%;
+    padding: 12px;
+    background-color: #2ca7f6;
     color: white;
     border: none;
     border-radius: 4px;
