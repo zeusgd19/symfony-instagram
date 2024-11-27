@@ -16,12 +16,12 @@ class CommentController extends AbstractController{
         $postRepository = $doctrine->getRepository(Post::class);
         $post = $postRepository->find($PostId);
         $comments = $respository->findBy(['post' => $post]);
-        $image = $imageCache->getPostImage($post);
-        $profilePostUser = $imageCache->getUserProfileImage($post->getUser());
+        $image = $imageCache->getPostImage($post->getPhoto());
+        $profilePostUser = $imageCache->getUserProfileImage($post->getUser()->getPhoto());
 
         $profileCommentUsers = [];
         foreach ($comments as $comment){
-            $profileCommentUsers[$comment->getId()] = $imageCache->getUserProfileImage($comment->getUser());
+            $profileCommentUsers[$comment->getId()] = $imageCache->getUserProfileImage($comment->getUser()->getPhoto());
         }
         return $this->render('partials/_comment-modal.html.twig', ['comments' => $comments, 'post' => $post, 'image' => $image,'userImage' => $profilePostUser,'commentPhoto'=>$profileCommentUsers]);
     }

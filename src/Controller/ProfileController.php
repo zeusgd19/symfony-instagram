@@ -21,7 +21,7 @@ class ProfileController extends AbstractController
 
     private FirebaseService $firebaseService;
 
-    public function __construct(FirebaseService $firebaseService)
+    public function __construct(FirebaseService $firebaseService,FirebaseImageCache $firebaseImageCache)
     {
         $this->firebaseService = $firebaseService;
     }

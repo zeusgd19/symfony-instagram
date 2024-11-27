@@ -40,7 +40,7 @@ class IndexController extends AbstractController
             if(!$firebaseImageCache->existCachedImagen($user->getPhoto())) {
                 $firebaseImageCache->getImage($user->getPhoto());
             }
-            $profileImages[$user->getId()] = $imageCache->getUserProfileImage($user);
+            $profileImages[$user->getId()] = $imageCache->getUserProfileImage($user->getPhoto());
         }
 
         $commentForms = [];
@@ -49,7 +49,7 @@ class IndexController extends AbstractController
             if(!$firebaseImageCache->existCachedImagen($post->getPhoto())) {
                 $firebaseImageCache->getImage($post->getPhoto());
             }
-            $images[$post->getId()] = $imageCache->getPostImage($post);
+            $images[$post->getId()] = $imageCache->getPostImage($post->getPhoto());
             // Creamos una entidad de comentario nueva para cada post
             $comment = new Comment();
 

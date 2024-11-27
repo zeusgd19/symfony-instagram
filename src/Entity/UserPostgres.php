@@ -47,11 +47,11 @@ class UserPostgres implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\ManyToMany(targetEntity: self::class, mappedBy: 'follower')]
     private Collection $following;
 
-    #[ORM\ManyToMany(targetEntity: Post::class, inversedBy: 'likedBy')]
+    #[ORM\ManyToMany(targetEntity: Post::class, inversedBy: 'likedBy', fetch: 'EAGER')]
     #[ORM\JoinTable(name: 'likes')]
     private Collection $likedPosts;
 
-    #[ORM\ManyToMany(targetEntity: Post::class, inversedBy: 'savedBy')]
+    #[ORM\ManyToMany(targetEntity: Post::class, inversedBy: 'savedBy', fetch: 'EAGER')]
     #[ORM\JoinTable(name: 'saved_posts')]
     private Collection $savedPosts;
 

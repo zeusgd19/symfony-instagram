@@ -27,7 +27,7 @@ class PostController extends AbstractController
         $this->firebaseService = $firebaseService;
     }
     #[Route('/post/new', name: 'new_post', methods: 'POST')]
-    public function index(ManagerRegistry $doctrine, Request $request, SluggerInterface $slugger): Response
+    public function index(ManagerRegistry $doctrine, Request $request, SluggerInterface $slugger,FirebaseImageCache $firebaseImageCache): Response
     {
 
         $post = new Post();
@@ -61,10 +61,13 @@ class PostController extends AbstractController
             $entityManager->persist($post);
             $entityManager->flush();
 
+            if(!$firebaseImageCache->existCachedImagen($post->getPhoto())) {
+                $firebaseImageCache->getImage($post->getPhoto());
+            }
             return $this->json([
                 'status' => 'success',
                 'message' => 'Post creado con éxito'
-            ]);
+                ]);
         }
 
         return $this->render('partials/_postForm.html.twig', [
@@ -154,7 +157,7 @@ class PostController extends AbstractController
     }
 
     #[Route('/removeSave/{postId}', name: 'removeSave_post')]
-    public function removeSaved(int $postId,ManagerRegistry $doctrine){
+    public function removeSave(int $postId,ManagerRegistry $doctrine){
         $repository = $doctrine->getRepository(Post::class);
         $manager = $doctrine->getManager();
         $post = $repository->find($postId);

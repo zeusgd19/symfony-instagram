@@ -21,21 +21,21 @@ class ImageService{
 
         // Verificamos si la imagen en caché es válida
         if ($this->imageCache->isCachedImageValid($cacheKey)) {
-            return substr($this->imageCache->getImage($path), 6); // Quitamos el prefijo "valid:"
+            return $this->imageCache->getImage($path); // Quitamos el prefijo "valid:"
         }
         // Si no es válida, intentamos actualizar la caché descargando de nuevo
         return $this->imageCache->getImage($path);
     }
 
 
-    public function getUserProfileImage(UserPostgres $user): ?string
+    public function getUserProfileImage(string $user): ?string
     {
-        return $this->getBase64Image($user->getPhoto());
+        return $this->getBase64Image($user);
     }
 
-    public function getPostImage(Post $post): ?string
+    public function getPostImage(string $post): ?string
     {
-        return $this->getBase64Image($post->getPhoto());
+        return $this->getBase64Image($post);
     }
 
     public function updateUserProfileImage(string $newImageUrl): void

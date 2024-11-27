@@ -465,6 +465,8 @@ window.onload = () => {
 
                 let savedByYou = json.savedBYYou;
 
+                console.log(savedByYou);
+
                 if (savedByYou) {
                     $(`#post-${postId}`).find('.imgSave').attr('src', 'img/post-save-saved.svg');
                     $('#commentModal').find('.imgSave').attr('src', 'img/post-save-saved.svg');
