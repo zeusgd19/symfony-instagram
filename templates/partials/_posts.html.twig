@@ -1,63 +1,67 @@
 {% for post in posts %}
-<article class="post-box" id="post-{{ post.id }}">
-    <div class="post-user-up">
-        <div>
-            <a href="/profile/{{ post.user.username }}">
-                <img data-src="data:image/jpeg;base64,{{ profileImage[post.user.id] }}" alt="image" class="lazy-load" loading="lazy">
-            </a>
-            <p>{{ post.user.username }}</p>
-        </div>
-        <button class="deleteImage" data-id="{{ post.id }}">...
-            {% if app.user == post.user %}
-                <a href="" class="hide delete-anchor" data-id="{{ post.id }}">Delete image</a>
-            {% endif %}
-        </button>
-    </div>
-    <div class="post-item">
-        <img data-src="data:image/jpeg;base64,{{ images[post.id] }}" alt="image" class="lazy-load" loading="lazy">
-        <div class="post-options">
-            <div class="post-option">
-                {% if post.likedBy.contains(app.user) %}
-                <a href="" class="likedPost" id="{{ post.id }}"><img loading="lazy" data-src="img/post-like-liked.svg" alt="like" class="lazy-load imgLike"></a>
-                {% else %}
-                <a href="" class="unlikedPost" id="{{ post.id }}"><img loading="lazy" data-src="img/post-like.svg" alt="like" class="lazy-load imgLike"></a>
-                {% endif%}
-                <a href="" class="comment" id="{{ post.id }}"><img loading="lazy" data-src="img/post-comment.svg" alt="comment" class="lazy-load"></a>
-                <a href=""><img loading="lazy" data-src="img/post-share.svg" alt="share" class="share lazy-load" ></a>
+    <article class="post-box" id="post-{{ post.id }}">
+        <div class="post-user-up">
+            <div>
+                <a href="/profile/{{ post.user.username }}">
+                    <img data-src="data:image/jpeg;base64,{{ profileImage[post.user.id] }}" alt="image" class="lazy-load" loading="lazy">
+                </a>
+                <p>{{ post.user.username }}</p>
             </div>
-            <div class="post-option-save">
-                <a href=""><img loading="lazy" data-src="img/post-save.svg" alt="" class="lazy-load"></a>
-            </div>
-        </div>
-        <div class="likes-description">
-            {% set totalLikes = post.getLikedBy|length %}
-            {% set likedByYou = post.likedBy.contains(app.user) %}
-            {% set othersLikes = likedByYou ? totalLikes - 1 : totalLikes %}
-
-
-            {% if likedByYou %}
-                {% if othersLikes > 0 %}
-                    <p class="likeMessage">Liked by <span>you</span> and <span class="likesByOthers">{{ othersLikes }} others</span></p>
-                {% else %}
-                    <p class="likeMessage">Liked by <span>you</span></p>
+            <button class="deleteImage" data-id="{{ post.id }}">...
+                {% if app.user == post.user %}
+                    <a href="" class="hide delete-anchor" data-id="{{ post.id }}">Delete image</a>
                 {% endif %}
-            {% else %}
-                <p class="likeMessage">Liked by <span class="likesByOthers">{{ totalLikes }} people</span></p>
-            {% endif %}
+            </button>
+        </div>
+        <div class="post-item">
+            <img data-src="data:image/jpeg;base64,{{ images[post.id] }}" alt="image" class="lazy-load" loading="lazy">
+            <div class="post-options">
+                <div class="post-option">
+                    {% if post.likedBy.contains(app.user) %}
+                        <a href="" class="likedPost" id="{{ post.id }}"><img loading="lazy" data-src="img/post-like-liked.svg" alt="like" class="lazy-load imgLike"></a>
+                    {% else %}
+                        <a href="" class="unlikedPost" id="{{ post.id }}"><img loading="lazy" data-src="img/post-like.svg" alt="like" class="lazy-load imgLike"></a>
+                    {% endif%}
+                    <a href="" class="comment" id="{{ post.id }}"><img loading="lazy" data-src="img/post-comment.svg" alt="comment" class="lazy-load"></a>
+                    <a href=""><img loading="lazy" data-src="img/post-share.svg" alt="share" class="share lazy-load" ></a>
+                </div>
+                <div class="post-option-save">
+                    {% if post.savedBy.contains(app.user) %}
+                        <a href="" class="savedPost" id="{{ post.id }}"><img loading="lazy" data-src="img/post-save-saved.svg" alt="" class="lazy-load imgSave"></a>
+                    {% else %}
+                        <a href="" class="unsavedPost" id="{{ post.id }}"><img loading="lazy" data-src="img/post-save.svg" alt="" class="lazy-load imgSave"></a>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="likes-description">
+                {% set totalLikes = post.getLikedBy|length %}
+                {% set likedByYou = post.likedBy.contains(app.user) %}
+                {% set othersLikes = likedByYou ? totalLikes - 1 : totalLikes %}
 
-            <p>{{ post.description }}</p>
-            <a href="" class="view-comments">View all 103 comments</a>
-            <p class="time">HOUR AGO</p>
+
+                {% if likedByYou %}
+                    {% if othersLikes > 0 %}
+                        <p class="likeMessage">Liked by <span>you</span> and <span class="likesByOthers">{{ othersLikes }} others</span></p>
+                    {% else %}
+                        <p class="likeMessage">Liked by <span>you</span></p>
+                    {% endif %}
+                {% else %}
+                    <p class="likeMessage">Liked by <span class="likesByOthers">{{ totalLikes }} people</span></p>
+                {% endif %}
+
+                <p>{{ post.description }}</p>
+                <a href="" class="view-comments">View all 103 comments</a>
+                <p class="time">HOUR AGO</p>
+            </div>
         </div>
-    </div>
-    <div class="post-comment">
-        {{ form_start(form[post.id]) }}
-        <div>
-            <a href="" class="emoji"><img loading="lazy" data-src="img/post-emoji-icon.svg" alt="emoji-icon" class="lazy-load"></a>
-            {{form_widget(form[post.id].text, {'attr': {'placeholder': 'Add a comment...', 'class': 'comment-input'}})}}
+        <div class="post-comment">
+            {{ form_start(form[post.id]) }}
+            <div>
+                <a href="" class="emoji"><img loading="lazy" data-src="img/post-emoji-icon.svg" alt="emoji-icon" class="lazy-load"></a>
+                {{form_widget(form[post.id].text, {'attr': {'placeholder': 'Add a comment...', 'class': 'comment-input'}})}}
+            </div>
+            {{ form_widget(form[post.id].submit, {'attr': {'class': 'publish','disabled':'true'}}) }}
+            {{ form_end(form[post.id]) }}
         </div>
-        {{ form_widget(form[post.id].submit, {'attr': {'class': 'publish','disabled':'true'}}) }}
-        {{ form_end(form[post.id]) }}
-    </div>
-</article>
+    </article>
 {% endfor %}

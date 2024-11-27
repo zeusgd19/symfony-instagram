@@ -25,7 +25,6 @@ class FirebaseImageCache {
 
         // Intentamos obtener el valor directamente desde la caché sin crear uno nuevo
         $cachedImage = $this->cache->getItem($cacheKey)->get();
-        $this->logger->info("Eliminando la cache $cachedImage. Intentando descargar de nuevo.");
         if ($cachedImage && !str_starts_with($cachedImage, 'valid:')) {
             // Si la imagen cacheada es un error, eliminamos la entrada de la caché
             $this->cache->delete($cacheKey);
@@ -43,11 +42,9 @@ class FirebaseImageCache {
                 $valueToCache = 'valid:' . base64_encode($imageData);
                 $item->set($valueToCache);
                 dump("Guardando en caché: $valueToCache"); // Debug
-                return base64_encode($imageData);
+                return $valueToCache;
 
             } catch (\Exception $e) {
-                $this->logger->error("No se pudo descargar la imagen desde Firebase: {$e->getMessage()}");
-
                 // Si falla, guardamos la imagen de "no encontrada" como "error" en caché
                 $noFoundImage = file_get_contents($this->projectDir . '/public/img/imagen-no-encontrada.png');
                 $valueToCache = 'error:' . base64_encode($noFoundImage);
@@ -66,5 +63,14 @@ class FirebaseImageCache {
     public function deleteImageFromCache(string $imageUrl): void
     {
         $this->cache->delete($imageUrl);
+    }
+
+    public function existCachedImagen(string $posibleCachedImage){
+        $cacheKey = md5($posibleCachedImage);
+        if ($this->cache->getItem($cacheKey)) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }

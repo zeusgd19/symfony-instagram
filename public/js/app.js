@@ -175,7 +175,7 @@ window.onload = () => {
             let saturacion = 100;
             let contraste = 100;
 
-    // Función para crear un Blob a partir de la imagen procesada en el canvas
+            // Función para crear un Blob a partir de la imagen procesada en el canvas
             function obtenerImagenProcesada() {
                 const canvas = document.createElement('canvas');
                 const ctx = canvas.getContext('2d');
@@ -440,6 +440,41 @@ window.onload = () => {
                 // Actualizamos el mensaje en la UI
                 $(`#post-${postId}`).find('.likeMessage').html(likeMessage);
                 $(`#commentModal`).find('.likeMessage').html(likeMessage);
+            }
+        });
+
+        xhr.send();
+    });
+
+    $(document).on('click', '.unsavedPost, .savedPost', function (ev) {
+        ev.preventDefault();
+        let postId = $(this).attr('id');
+        const isSaved = $(this).hasClass('savedPost'); // Comprobamos si es un like o un unlike
+
+        // Seleccionamos la URL dependiendo de si es un like o un unlike
+        const url = isSaved ? `/removeSave/${postId}` : `/addSave/${postId}`;
+
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', url);
+
+        xhr.addEventListener('readystatechange', (ev) => {
+            if (xhr.readyState !== 4) return;
+
+            if (xhr.status >= 200 && xhr.status < 300) {
+                let json = JSON.parse(xhr.responseText);
+
+                let savedByYou = json.savedBYYou;
+
+                if (savedByYou) {
+                    $(`#post-${postId}`).find('.imgSave').attr('src', 'img/post-save-saved.svg');
+                    $('#commentModal').find('.imgSave').attr('src', 'img/post-save-saved.svg');
+
+                    $(this).removeClass('unsavedPost').addClass('savedPost'); // Cambiamos la clase
+                } else {
+                    $(`#post-${postId}`).find('.imgSave').attr('src', 'img/post-save.svg');
+                    $('#commentModal').find('.imgSave').attr('src', 'img/post-save.svg');
+                    $(this).removeClass('savedPost').addClass('unsavedPost'); // Cambiamos la clase
+                }
             }
         });
 

@@ -25,25 +25,25 @@
                         <div class="modify-profile">
                             <img id="more-options" src="{{ asset("img/more-options.svg") }}">
                             {% if user.id == app.user.id %}
-                            <div class="dropdown-content">
-                                <a href="#cambiarFoto" id="change-photo">Cambiar foto del perfil</a>
-                                <a href="#cambiarNombre" id="change-name">Cambiar nombre del perfil</a>
-                                <a href="#cambiarDescripcion" id="change-description">Cambiar descripcion del perfil</a>
-                            </div>
+                                <div class="dropdown-content">
+                                    <a href="#cambiarFoto" id="change-photo">Cambiar foto del perfil</a>
+                                    <a href="#cambiarNombre" id="change-name">Cambiar nombre del perfil</a>
+                                    <a href="#cambiarDescripcion" id="change-description">Cambiar descripcion del perfil</a>
+                                </div>
                             {% endif %}
                         </div>
                         {% if user.id == app.user.id %}
-                        <div id="modal" class="modal">
-                            <div class="modal-content">
-                                <span class="close">&times;</span>
-                                <h2 id="modal-title"></h2>
-                                <div id="formulario">
-                                    {{ form_start(formulario) }}
-                                    {{ form_widget(formulario.photo) }}
-                                    {{ form_end(formulario) }}
+                            <div id="modal" class="modal">
+                                <div class="modal-content">
+                                    <span class="close">&times;</span>
+                                    <h2 id="modal-title"></h2>
+                                    <div id="formulario">
+                                        {{ form_start(formulario) }}
+                                        {{ form_widget(formulario.photo) }}
+                                        {{ form_end(formulario) }}
+                                    </div>
                                 </div>
                             </div>
-                        </div>
                         {% endif %}
 
                         <img id="three-dots" src="{{ asset("img/three-dots.svg") }}" loading="lazy">
@@ -65,9 +65,9 @@
             </div>
             <div id="publicaciones" class="publicaciones">
                 {% for post in posts %}
-                <div>
-                    <img class="foto" src="{{ post.photo }}" loading="lazy">
-                </div>
+                    <div>
+                        <img class="foto" src="{{ post.photo }}" loading="lazy">
+                    </div>
                 {% endfor %}
             </div>
             <div id="publicaciones-guardadas" class="publicaciones">

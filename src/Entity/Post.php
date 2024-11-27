@@ -29,9 +29,13 @@ class Post
     #[ORM\ManyToMany(targetEntity: UserPostgres::class, mappedBy: 'likedPosts')]
     private Collection $likedBy;
 
+    #[ORM\ManyToMany(targetEntity: UserPostgres::class, mappedBy: 'savedPosts')]
+    private Collection $savedBy;
+
     public function __construct()
     {
         $this->likedBy = new ArrayCollection();
+        $this->savedBy = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -95,6 +99,30 @@ class Post
     public function removeLikedBy(UserPostgres $likedBy): static
     {
         $this->likedBy->removeElement($likedBy);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, UserPostgres>
+     */
+    public function getSavedBy(): Collection
+    {
+        return $this->savedBy;
+    }
+
+    public function addSavedBy(UserPostgres $savedBy): static
+    {
+        if (!$this->savedBy->contains($savedBy)) {
+            $this->savedBy->add($savedBy);
+        }
+
+        return $this;
+    }
+
+    public function removeSavedBy(UserPostgres $savedBy): static
+    {
+        $this->savedBy->removeElement($savedBy);
 
         return $this;
     }

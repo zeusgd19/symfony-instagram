@@ -64,7 +64,7 @@ class PostController extends AbstractController
             return $this->json([
                 'status' => 'success',
                 'message' => 'Post creado con éxito'
-                ]);
+            ]);
         }
 
         return $this->render('partials/_postForm.html.twig', [
@@ -135,5 +135,37 @@ class PostController extends AbstractController
         $likedBYYou = $post->getLikedBy()->contains($user);
 
         return $this->json(['totalLikes' => $totalLikes,'likedBYYou' => $likedBYYou]);
+    }
+
+    #[Route('/addSave/{postId}', name: 'addSave_post')]
+    public function addSave(int $postId,ManagerRegistry $doctrine){
+        $repository = $doctrine->getRepository(Post::class);
+        $manager = $doctrine->getManager();
+        $post = $repository->find($postId);
+        $user = $this->getUser();
+        if($post){
+            $user->addSavedPost($post);
+            $manager->persist($user);
+            $manager->flush();
+        }
+        $savedBYYou = $post->getSavedBy()->contains($user);
+
+        return $this->json(['savedBYYou' => $savedBYYou]);
+    }
+
+    #[Route('/removeSave/{postId}', name: 'removeSave_post')]
+    public function removeSaved(int $postId,ManagerRegistry $doctrine){
+        $repository = $doctrine->getRepository(Post::class);
+        $manager = $doctrine->getManager();
+        $post = $repository->find($postId);
+        $user = $this->getUser();
+        if($post){
+            $user->removeSavedPost($post);
+            $manager->persist($user);
+            $manager->flush();
+        }
+        $savedBYYou = $post->getSavedBy()->contains($user);
+
+        return $this->json(['savedBYYou' => $savedBYYou]);
     }
 }

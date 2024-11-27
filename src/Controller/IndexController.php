@@ -6,6 +6,7 @@ use App\Entity\Comment;
 use App\Entity\Post;
 use App\Entity\UserPostgres;
 use App\Form\CommentFormType;
+use App\Service\FirebaseImageCache;
 use App\Service\FirebaseService;
 use App\Service\ImageService;
 use Doctrine\Persistence\ManagerRegistry;
@@ -24,7 +25,7 @@ class IndexController extends AbstractController
         $this->firebaseService = $firebaseService;
     }
     #[Route('/', name: 'index')]
-    public function index(ManagerRegistry $doctrine, Request $request, ImageService $imageCache): Response
+    public function index(ManagerRegistry $doctrine, Request $request, ImageService $imageCache, FirebaseImageCache $firebaseImageCache): Response
     {
         $repository = $doctrine->getRepository(UserPostgres::class);
         $allUsers = $repository->findAll();
@@ -36,12 +37,18 @@ class IndexController extends AbstractController
             if($user != $this->getUser()) {
                 $users[] = $user;
             }
+            if(!$firebaseImageCache->existCachedImagen($user->getPhoto())) {
+                $firebaseImageCache->getImage($user->getPhoto());
+            }
             $profileImages[$user->getId()] = $imageCache->getUserProfileImage($user);
         }
 
         $commentForms = [];
         $images = [];
         foreach ($posts as $post) {
+            if(!$firebaseImageCache->existCachedImagen($post->getPhoto())) {
+                $firebaseImageCache->getImage($post->getPhoto());
+            }
             $images[$post->getId()] = $imageCache->getPostImage($post);
             // Creamos una entidad de comentario nueva para cada post
             $comment = new Comment();

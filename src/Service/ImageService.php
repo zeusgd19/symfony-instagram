@@ -21,10 +21,8 @@ class ImageService{
 
         // Verificamos si la imagen en caché es válida
         if ($this->imageCache->isCachedImageValid($cacheKey)) {
-            $this->logger->info("La imagen está en caché y es válida. Clave: $cacheKey");
             return substr($this->imageCache->getImage($path), 6); // Quitamos el prefijo "valid:"
         }
-        $this->logger->info("La imagen no es válida o no está en caché. Clave: $cacheKey. Intentando descargar de nuevo.");
         // Si no es válida, intentamos actualizar la caché descargando de nuevo
         return $this->imageCache->getImage($path);
     }
