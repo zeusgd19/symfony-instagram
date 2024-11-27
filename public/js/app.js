@@ -499,42 +499,29 @@ window.onload = () => {
 
      */
 
-    const followButton = $('.follow-btn');
-    $(followButton).click((ev) => {
+    $(document).on('click','.follow-btn, .unfollow-btn',function(ev) {
         ev.preventDefault();
-        XHR = new XMLHttpRequest();
         const id = ev.target.parentElement.getAttribute('data-id');
-        XHR.open("POST", `/addFollowing/${id}`);
-        XHR.addEventListener("readystatechange", function () {
-            if (XHR.readyState !== 4) {
-                return;
-            }
-            if (XHR.status === 200) {
-                ev.target.textContent = "Following";
-                const jsonFollowers = JSON.parse(XHR.responseText);
-                $('#followers').text(jsonFollowers.followers + " Followers");
-            }
-        })
-        XHR.send();
-    })
+        const isFollowed = $(this).hasClass('followed');
+        const url = isFollowed ? `/removeFollowing/${id}` : `/addFollowing/${id}`;
 
-    const unfollowButton = $('.unfollow-btn');
-    $(unfollowButton).click((ev) => {
-        ev.preventDefault();
-        XHR = new XMLHttpRequest();
-        const id = ev.target.parentElement.getAttribute('data-id');
-        XHR.open("POST", `/removeFollowing/${id}`);
-        XHR.addEventListener("readystatechange", function () {
-            if (XHR.readyState !== 4) {
-                return;
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', url);
+        xhr.addEventListener('readystatechange', (ev) => {
+            if (xhr.readyState !== 4) return;
+
+            if (xhr.status >= 200 && xhr.status < 300) {
+
+                if (isFollowed) {
+                    $(this).text('Follow');
+                    $(this).removeClass('followed').addClass('unfollowed'); // Cambiamos la clase
+                } else {
+                    $(this).text('Following');
+                    $(this).removeClass('unfollowed').addClass('followed'); // Cambiamos la clase
+                }
             }
-            if (XHR.status === 200) {
-                ev.target.textContent = "Follow";
-                const jsonFollowers = JSON.parse(XHR.responseText);
-                $('#followers').text(jsonFollowers.followers + " Followers");
-            }
-        })
-        XHR.send();
+        });
+        xhr.send();
     })
 
     postGuardados = document.getElementById("publicaciones-guardadas");

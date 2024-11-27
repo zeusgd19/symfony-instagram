@@ -8,7 +8,7 @@
                 <p>{{ post.user.username }}</p>
             </div>
             <button class="deleteImage" data-id="{{ post.id }}">...
-                {% if app.user == post.user %}
+                {% if app.user.id == post.user.id %}
                     <a href="" class="hide delete-anchor" data-id="{{ post.id }}">Delete image</a>
                 {% endif %}
             </button>
@@ -17,7 +17,7 @@
             <img data-src="data:image/jpeg;base64,{{ images[post.id] }}" alt="image" class="lazy-load" loading="lazy">
             <div class="post-options">
                 <div class="post-option">
-                    {% if post.likedBy.contains(app.user) %}
+                    {% if isLikedByUser[post.id] %}
                         <a href="" class="likedPost" id="{{ post.id }}"><img loading="lazy" data-src="img/post-like-liked.svg" alt="like" class="lazy-load imgLike"></a>
                     {% else %}
                         <a href="" class="unlikedPost" id="{{ post.id }}"><img loading="lazy" data-src="img/post-like.svg" alt="like" class="lazy-load imgLike"></a>
@@ -26,7 +26,7 @@
                     <a href=""><img loading="lazy" data-src="img/post-share.svg" alt="share" class="share lazy-load" ></a>
                 </div>
                 <div class="post-option-save">
-                    {% if post.savedBy.contains(app.user) %}
+                    {% if isSavedByUser[post.id] %}
                         <a href="" class="savedPost" id="{{ post.id }}"><img loading="lazy" data-src="img/post-save-saved.svg" alt="" class="lazy-load imgSave"></a>
                     {% else %}
                         <a href="" class="unsavedPost" id="{{ post.id }}"><img loading="lazy" data-src="img/post-save.svg" alt="" class="lazy-load imgSave"></a>
@@ -34,8 +34,8 @@
                 </div>
             </div>
             <div class="likes-description">
-                {% set totalLikes = post.getLikedBy|length %}
-                {% set likedByYou = post.likedBy.contains(app.user) %}
+                {% set totalLikes = post.likedBy|length %}
+                {% set likedByYou = isLikedByUser[post.id] %}
                 {% set othersLikes = likedByYou ? totalLikes - 1 : totalLikes %}
 
 

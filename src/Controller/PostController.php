@@ -15,6 +15,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\String\Slugger\SluggerInterface;
+use Symfony\Contracts\Cache\CacheInterface;
 
 class PostController extends AbstractController
 {
@@ -27,7 +28,7 @@ class PostController extends AbstractController
         $this->firebaseService = $firebaseService;
     }
     #[Route('/post/new', name: 'new_post', methods: 'POST')]
-    public function index(ManagerRegistry $doctrine, Request $request, SluggerInterface $slugger,FirebaseImageCache $firebaseImageCache): Response
+    public function index(ManagerRegistry $doctrine, Request $request, SluggerInterface $slugger,FirebaseImageCache $firebaseImageCache, CacheInterface $cache): Response
     {
 
         $post = new Post();
@@ -61,6 +62,8 @@ class PostController extends AbstractController
             $entityManager->persist($post);
             $entityManager->flush();
 
+            $cache->delete('posts_list_cache_key');
+
             if(!$firebaseImageCache->existCachedImagen($post->getPhoto())) {
                 $firebaseImageCache->getImage($post->getPhoto());
             }
@@ -76,7 +79,7 @@ class PostController extends AbstractController
     }
 
     #[Route('/post/delete/{id}', name: 'delete_post')]
-    public function deletePost(int $id, ManagerRegistry $doctrine): JsonResponse
+    public function deletePost(int $id, ManagerRegistry $doctrine,CacheInterface $cache): JsonResponse
     {
         $repository = $doctrine->getRepository(Post::class);
         $post = $repository->find($id);
@@ -101,13 +104,15 @@ class PostController extends AbstractController
             // Eliminamos el post de la base de datos
             $manager->remove($post);
             $manager->flush();
+
+            $cache->delete('posts_list_cache_key');
         }
 
         return $this->json(['success' => true, 'id' => $id]);
     }
 
     #[Route('/addLike/{postId}', name: 'addLike_post')]
-    public function addLike(int $postId,ManagerRegistry $doctrine){
+    public function addLike(int $postId,ManagerRegistry $doctrine, CacheInterface $cache){
         $repository = $doctrine->getRepository(Post::class);
         $manager = $doctrine->getManager();
         $post = $repository->find($postId);
@@ -118,13 +123,16 @@ class PostController extends AbstractController
             $manager->flush();
         }
         $totalLikes = count($post->getLikedBy());
+
+        $cache->delete('posts_list_cache_key');
+
         $likedBYYou = $post->getLikedBy()->contains($user);
 
         return $this->json(['totalLikes' => $totalLikes,'likedBYYou' => $likedBYYou]);
     }
 
     #[Route('/removeLike/{postId}', name: 'removeLike_post')]
-    public function removeLike(int $postId,ManagerRegistry $doctrine){
+    public function removeLike(int $postId,ManagerRegistry $doctrine,CacheInterface $cache){
         $repository = $doctrine->getRepository(Post::class);
         $manager = $doctrine->getManager();
         $post = $repository->find($postId);
@@ -135,13 +143,14 @@ class PostController extends AbstractController
             $manager->flush();
         }
         $totalLikes = count($post->getLikedBy());
+        $cache->delete('posts_list_cache_key');
         $likedBYYou = $post->getLikedBy()->contains($user);
 
         return $this->json(['totalLikes' => $totalLikes,'likedBYYou' => $likedBYYou]);
     }
 
     #[Route('/addSave/{postId}', name: 'addSave_post')]
-    public function addSave(int $postId,ManagerRegistry $doctrine){
+    public function addSave(int $postId,ManagerRegistry $doctrine, CacheInterface $cache){
         $repository = $doctrine->getRepository(Post::class);
         $manager = $doctrine->getManager();
         $post = $repository->find($postId);
@@ -151,13 +160,14 @@ class PostController extends AbstractController
             $manager->persist($user);
             $manager->flush();
         }
+        $cache->delete('posts_list_cache_key');
         $savedBYYou = $post->getSavedBy()->contains($user);
 
         return $this->json(['savedBYYou' => $savedBYYou]);
     }
 
     #[Route('/removeSave/{postId}', name: 'removeSave_post')]
-    public function removeSave(int $postId,ManagerRegistry $doctrine){
+    public function removeSave(int $postId,ManagerRegistry $doctrine, CacheInterface $cache){
         $repository = $doctrine->getRepository(Post::class);
         $manager = $doctrine->getManager();
         $post = $repository->find($postId);
@@ -167,6 +177,7 @@ class PostController extends AbstractController
             $manager->persist($user);
             $manager->flush();
         }
+        $cache->delete('posts_list_cache_key');
         $savedBYYou = $post->getSavedBy()->contains($user);
 
         return $this->json(['savedBYYou' => $savedBYYou]);
