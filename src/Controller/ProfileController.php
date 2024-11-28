@@ -34,7 +34,7 @@ class ProfileController extends AbstractController
         $allPosts = $doctrine->getRepository(Post::class)->findAll();
 
         $posts = [];
-
+        $savedPosts = $user->getSavedPosts();
         foreach ($allPosts as $post){
             if(!$post){
                 throw $this->createNotFoundException("No hay posts.");
@@ -85,7 +85,7 @@ class ProfileController extends AbstractController
 
         $isFollowing = $this->getUser()->getFollowing()->contains($user);
 
-        return $this->render('page/profile.html.twig',['user'=>$user,'posts'=>$posts,'isFollowing' => $isFollowing,'formulario'=>$formulario->createView()]);
+        return $this->render('page/profile.html.twig',['user'=>$user,'posts'=>$posts,'isFollowing' => $isFollowing,'formulario'=>$formulario->createView(),'savedPosts' => $savedPosts]);
     }
 
     #[Route('/addFollowing/{id}', name: 'add_following')]

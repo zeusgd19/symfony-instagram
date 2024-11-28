@@ -70,7 +70,7 @@ class PostController extends AbstractController
             return $this->json([
                 'status' => 'success',
                 'message' => 'Post creado con éxito'
-                ]);
+            ]);
         }
 
         return $this->render('partials/_postForm.html.twig', [

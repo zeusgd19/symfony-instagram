@@ -9,6 +9,7 @@ use App\Form\CommentFormType;
 use App\Service\FirebaseImageCache;
 use App\Service\FirebaseService;
 use App\Service\ImageService;
+use Carbon\Carbon;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -78,6 +79,7 @@ class IndexController extends AbstractController
                     'id' => $post->getId(),
                     'photo' => $post->getPhoto(),
                     'description' => $post->getDescription(),
+                    'createdAt' => $post->getCreatedAt(),
                     'user' =>  [
                         'id' => $post->getUser()->getId(),
                         'username' => $post->getUser()->getUsername(),
@@ -106,10 +108,10 @@ class IndexController extends AbstractController
         $posts = [];
         $isLikedByUser = [];
         $isSavedByUser = [];
-
+        $timeElapsed = [];
         foreach ($allPosts as $post) {
             $posts[] = $post;
-
+            $timeElapsed[$post['id']] = Carbon::parse($post['createdAt'])->diffForHumans();
             $isLikedByUser[$post['id']] = in_array($this->getUser()->getId(), array_column($post['likedBy'], 'id'));
             $isSavedByUser[$post['id']] = in_array($this->getUser()->getId(), array_column($post['savedBy'], 'id'));
 
@@ -152,7 +154,8 @@ class IndexController extends AbstractController
             'form' => array_map(fn($form) => $form->createView(), $commentForms),
             'isLikedByUser' => $isLikedByUser,
             'isSavedByUser' => $isSavedByUser,
-            'isFollowing' => $isFollowing
+            'isFollowing' => $isFollowing,
+            'timeElapsed' => $timeElapsed
         ]);
     }
 }
