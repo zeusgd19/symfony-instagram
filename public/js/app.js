@@ -524,6 +524,49 @@ window.onload = () => {
         xhr.send();
     })
 
+    let user = sessionStorage.getItem('selectedUser');
+    if (user) {
+        user = JSON.parse(user);
+
+        // Añadir el usuario al contenedor de mensajes
+        $('.message-user-item').append(`
+            <div class="user-item" data-id="${user.userId}" data-sender-id="${user.senderId}">
+                <img src="${user.photo}" alt="Photo" />
+                <div>
+                    <p id="usernameMessageItem">${user.username}</p>
+                    <p>message</p>
+                </div>
+            </div>
+        `);
+
+        // Opcional: Limpiar los datos del sessionStorage
+        sessionStorage.removeItem('selectedUser');
+    }
+
+    $('.user-item').on('click',function(){
+        $('.message-item-user-info').find('img').remove();
+        $('.message-item-user-info').find('p').remove();
+        $('.message').remove();
+        $('.message-item-user-info').append(
+            `
+            <img src="${$(this).find('img').attr('src')}"/>
+            <p>${$(this).find('#usernameMessageItem').text()}</p>
+            `
+        );
+    });
+
+    $('.send-messages').find('img').on('click',function(){
+       let value =  $('.send-messages').find('input').val();
+
+       $('.message-item').find('ul').append(
+           `
+           <li class="message other">
+               <p>${value}</p>
+            </li>
+           `
+       )
+    })
+
     postGuardados = document.getElementById("publicaciones-guardadas");
     publicaciones_title = document.getElementById('publicaciones-title');
     guardados = document.getElementById('guardados');

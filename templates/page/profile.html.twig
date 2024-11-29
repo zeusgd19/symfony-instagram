@@ -11,7 +11,7 @@
                 <img src="{{ user.photo }}" id="narutoProfilePic" draggable="false" loading="lazy">
                 <div class="profile-data">
                     <div id="profile-options" class="profile-options">
-                        <p id="profile-name" data-id="{{ user.id }}">{{ user.username }}</p>
+                        <p id="profile-name" data-sender-id="{{ app.user.id }}" data-id="{{ user.id }}">{{ user.username }}</p>
                         <p id="profile-send-message">send a message</p>
                         {% if user.id != app.user.id %}
                             {% if isFollowing %}

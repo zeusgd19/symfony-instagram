@@ -36,6 +36,8 @@ main {
     display: flex;
     flex-direction: column;
     overflow: scroll;
+    overflow: scroll;
+    height: 500px ;
 }
 
 .message-user-item > div {
@@ -167,4 +169,8 @@ main {
     border-radius: 20px;
     border: 1px solid #DBDBDB;
     padding-left: 10px;
+}
+
+.send-messages img {
+    cursor: pointer;
 }
