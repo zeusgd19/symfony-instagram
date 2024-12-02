@@ -24,8 +24,6 @@ class MessageController extends AbstractController
 
         $manager->persist($message);
         $manager->flush();
-        return $this->render('message/index.html.twig', [
-            'controller_name' => 'MessageController',
-        ]);
+        return $this->json(['messageId'=>$message->getId(),'messageSender'=>$message->getSender()->getId(),'messageReceiver'=>$message->getReceiver()->getId(),'message'=>$message->getContent()]);
     }
 }
