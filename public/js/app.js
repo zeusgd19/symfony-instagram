@@ -550,6 +550,7 @@ window.onload = () => {
         $('.message-item-user-info').find('p').remove();
         $('.message').remove();
         $('.message-item-user-info').attr('data-id',userId);
+        $('.message-item-user-info').attr('data-sender-id',userId);
         $('.message-item-user-info').append(
             `
             <img src="${$(this).find('img').attr('src')}"/>
@@ -575,7 +576,36 @@ window.onload = () => {
                 )
             }
         });
+
+        const supabaseUrl = 'https://fnofdrpcrthobxniqwkw.supabase.co';
+        const supabaseKey = '';
+
+        const cliente = supabase.createClient(supabaseUrl, supabaseKey);
+
+        // Configuración para Realtime
+        cliente
+            .channel('mensajes')
+            .on(
+                'postgres_changes',
+                { event: 'insert', schema: 'public', table: 'message' },
+                (payload) => {
+                    let {sender_id, receiver_id, content} = payload.new;
+                    let logedId = $(this).parent().parent().find('.message-item-user-info').attr('data-sender-id');
+
+                    if(receiver_id === logedId){
+                        $('.message-item').find('ul').append(
+                            `
+                            <li class="message other">
+                            <p>${content}</p>
+                            </li>
+                           `
+                        )
+                    }
+
+                })
+            .subscribe();
     })
+
 
     postGuardados = document.getElementById("publicaciones-guardadas");
     publicaciones_title = document.getElementById('publicaciones-title');
