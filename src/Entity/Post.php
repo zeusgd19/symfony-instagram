@@ -32,6 +32,7 @@ class Post
     public function __construct()
     {
         $this->likedBy = new ArrayCollection();
+        $this->notifications = new ArrayCollection();
     }
 
     public function getId(): ?int
