@@ -15,15 +15,16 @@
                 <p>GENERAL</p>
             </div>
             <div class="message-user-item">
-                {{ include('partials/_message-user-item.html.twig') }}
+                {{ include('partials/_message-user-item.html.twig',{'conversations':conversations}) }}
             </div>
         </div>
         <div class="message-item">
             <div class="message-item-user-info">
-                <img src="{{ asset('img/storie-image.png') }}" alt="profile-pic">
-                <p>darius</p>
+                <img src="{{ conversations[0].photo }}" alt="profile-pic">
+                <p>{{ conversations[0].username }}</p>
             </div>
-            {{ include('partials/_messages.html.twig') }}
+            <div class="messagesUl messages">
+            </div>
             <div class="send-messages">
                 <input type="text" placeholder="Message...">
                 <img src="{{ asset('img/send-button.svg') }}"/>

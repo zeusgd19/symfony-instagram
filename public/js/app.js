@@ -534,7 +534,6 @@ window.onload = () => {
                 <img src="${user.photo}" alt="Photo" />
                 <div>
                     <p id="usernameMessageItem">${user.username}</p>
-                    <p>message</p>
                 </div>
             </div>
         `);
@@ -542,6 +541,16 @@ window.onload = () => {
         // Opcional: Limpiar los datos del sessionStorage
         sessionStorage.removeItem('selectedUser');
     }
+    const firstUserInList = $('.message-user-item').find('.user-item')[0]
+    const userId = firstUserInList.getAttribute('data-id')
+    $.ajax({
+        type: "GET",
+        url: `/messages/${userId}`,
+        dataType: 'json',
+        success: function (response) {
+            $('.messagesUl').html(response.messages)
+        }
+    });
 
     $('.user-item').on('click',function(){
 
@@ -559,6 +568,15 @@ window.onload = () => {
             <p>${$(this).find('#usernameMessageItem').text()}</p>
             `
         );
+
+        $.ajax({
+            type: "GET",
+            url: `/messages/${userId}`,
+            dataType: 'json',
+            success: function (response) {
+                $('.messagesUl').html(response.messages)
+            }
+        });
     });
 
     $('.send-messages').find('img').on('click',function(){
@@ -581,7 +599,7 @@ window.onload = () => {
     })
 
     const supabaseUrl = 'https://fnofdrpcrthobxniqwkw.supabase.co';
-    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZub2ZkcnBjcnRob2J4bmlxd2t3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzI3MDMwMDQsImV4cCI6MjA0ODI3OTAwNH0.QI5Kryk5SWEmpEjQtOMzfkGZQv9HwkCEVwyqFuWBrgA';
+    const supabaseKey = '';
 
     const cliente = supabase.createClient(supabaseUrl, supabaseKey);
 
@@ -595,7 +613,7 @@ window.onload = () => {
                 let {sender_id, receiver_id, content} = payload.new;
                 let logedId = sessionStorage.getItem('data-sender-id');
 
-                if(receiver_id === logedId){
+                if(receiver_id == logedId){
                     $('.message-item').find('ul').append(
                         `
                             <li class="message other">

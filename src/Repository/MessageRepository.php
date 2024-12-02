@@ -45,4 +45,30 @@ class MessageRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
+
+    public function findConversationsForUser(int $userId): array
+    {
+        return $this->createQueryBuilder('m')
+            ->select('DISTINCT s.id, s.username, s.photo') // Selecciona campos necesarios
+            ->innerJoin('m.receiver', 's')
+            ->innerJoin('m.sender', 'r')
+            ->where('m.sender = :userId') // Condición
+            ->setParameter('userId', $userId)
+            ->getQuery()
+            ->getResult();
+    }
+
+
+    public function findMessagesBetweenUsers(int $userId, int $otherUserId): array
+    {
+        return $this->createQueryBuilder('m')
+            ->where('(m.sender = :userId AND m.receiver = :otherUserId) OR (m.sender = :otherUserId AND m.receiver = :userId)')
+            ->setParameters([
+                'userId' => $userId,
+                'otherUserId' => $otherUserId,
+            ])
+            ->orderBy('m.id', 'ASC') // Orden cronológico
+            ->getQuery()
+            ->getResult();
+    }
 }
