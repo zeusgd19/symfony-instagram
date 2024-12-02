@@ -544,9 +544,12 @@ window.onload = () => {
     }
 
     $('.user-item').on('click',function(){
+
+        let userId = $(this).attr('data-id');
         $('.message-item-user-info').find('img').remove();
         $('.message-item-user-info').find('p').remove();
         $('.message').remove();
+        $('.message-item-user-info').attr('data-id',userId);
         $('.message-item-user-info').append(
             `
             <img src="${$(this).find('img').attr('src')}"/>
@@ -556,15 +559,22 @@ window.onload = () => {
     });
 
     $('.send-messages').find('img').on('click',function(){
-       let value =  $('.send-messages').find('input').val();
+       let value =  $(this).parent().find('input').val();
+       let receiverId = $(this).parent().parent().find('.message-item-user-info').attr('data-id');
 
-       $('.message-item').find('ul').append(
-           `
-           <li class="message other">
-               <p>${value}</p>
-            </li>
-           `
-       )
+        $.ajax({
+            type: "GET",
+            url: `/message/new/${receiverId}/${value}`,
+            success: function (response) {
+                $('.message-item').find('ul').append(
+                    `
+                    <li class="message owner">
+                        <p>${value}</p>
+                    </li>
+                    `
+                )
+            }
+        });
     })
 
     postGuardados = document.getElementById("publicaciones-guardadas");
