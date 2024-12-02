@@ -1,39 +1,39 @@
 {% extends "base.html.twig" %}
 {% block title %}Instagram{% endblock %}
 {% block body %}
-{% if app.user %}
-    <div class="mainContent">
-        <section id="postSection">
-            <article class="stories-box">
-                {{ include('partials/_storie-item.html.twig',{'profileImage':profileImage}) }}
-            </article>
-            {{ include('partials/_posts.html.twig', {'posts':posts,'form':form,'images':images,'profileImage':profileImage}) }}
-            <div id="modalComment">
-            </div>
-        </section>
-        <aside>
-            <article class="suggestions">
-                <p>Suggestions For You</p>
-                {{ include('partials/_suggestions.html.twig',{'users':users,'profileImage':profileImage}) }}
-            </article>
-            <footer>
-                <ul class="footer-ul">
-                    <li>About</li>
-                    <li>Press</li>
-                    <li>API</li>
-                    <li>Jobs</li>
-                    <li>Privacy</li>
-                    <li>Terms</li>
-                    <li>Locations</li>
-                    <li>TopAccounts</li>
-                    <li>Hashtags</li>
-                    <li>Language</li>
-                </ul>
-                <p>© 2021 INSTAGRAM FROM META</p>
-            </footer>
-        </aside>
-    </div>
-    <div class="formulario-post hide" id="formPost">
-    </div>
-{% endif %}
+    {% if app.user %}
+        <div class="mainContent">
+            <section id="postSection">
+                <article class="stories-box">
+                    {{ include('partials/_storie-item.html.twig',{'profileImage':profileImage}) }}
+                </article>
+                {{ include('partials/_posts.html.twig', {'posts':posts,'form':form,'images':images,'profileImage':profileImage,'isLikedByUser':isLikedByUser,'isSavedByUser':isSavedByUser,'timeElapsed':timeElapsed}) }}
+                <div id="modalComment">
+                </div>
+            </section>
+            <aside>
+                <article class="suggestions">
+                    <p>Suggestions For You</p>
+                    {{ include('partials/_suggestions.html.twig',{'users':users,'profileImage':profileImage,'isFollowing':isFollowing}) }}
+                </article>
+                <footer>
+                    <ul class="footer-ul">
+                        <li>About</li>
+                        <li>Press</li>
+                        <li>API</li>
+                        <li>Jobs</li>
+                        <li>Privacy</li>
+                        <li>Terms</li>
+                        <li>Locations</li>
+                        <li>TopAccounts</li>
+                        <li>Hashtags</li>
+                        <li>Language</li>
+                    </ul>
+                    <p>© 2021 INSTAGRAM FROM META</p>
+                </footer>
+            </aside>
+        </div>
+        <div class="formulario-post hide" id="formPost">
+        </div>
+    {% endif %}
 {% endblock %}

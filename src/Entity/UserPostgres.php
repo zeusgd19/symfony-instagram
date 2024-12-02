@@ -47,9 +47,13 @@ class UserPostgres implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\ManyToMany(targetEntity: self::class, mappedBy: 'follower')]
     private Collection $following;
 
-    #[ORM\ManyToMany(targetEntity: Post::class, inversedBy: 'likedBy')]
+    #[ORM\ManyToMany(targetEntity: Post::class, inversedBy: 'likedBy', fetch: 'EAGER')]
     #[ORM\JoinTable(name: 'likes')]
     private Collection $likedPosts;
+
+    #[ORM\ManyToMany(targetEntity: Post::class, inversedBy: 'savedBy', fetch: 'EAGER')]
+    #[ORM\JoinTable(name: 'saved_posts')]
+    private Collection $savedPosts;
 
     public function __construct(){
         $this->photo = 'https://firebasestorage.googleapis.com/v0/b/pdf-resummer-d822e.appspot.com/o/profile-images%2Fsin-imagen.png?alt=media';
@@ -57,8 +61,8 @@ class UserPostgres implements UserInterface, PasswordAuthenticatedUserInterface
         $this->follower = new ArrayCollection();
         $this->following = new ArrayCollection();
         $this->likedPosts = new ArrayCollection();
-        $this->post = new ArrayCollection();
-        $this->notifications = new ArrayCollection();
+
+        $this->savedPosts = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -225,6 +229,30 @@ class UserPostgres implements UserInterface, PasswordAuthenticatedUserInterface
     public function removeLikedPost(Post $likedPost): static
     {
         $this->likedPosts->removeElement($likedPost);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Post>
+     */
+    public function getSavedPosts(): Collection
+    {
+        return $this->savedPosts;
+    }
+
+    public function addSavedPost(Post $savedPost): static
+    {
+        if (!$this->savedPosts->contains($savedPost)) {
+            $this->savedPosts->add($savedPost);
+        }
+
+        return $this;
+    }
+
+    public function removeSavedPost(Post $savedPost): static
+    {
+        $this->savedPosts->removeElement($savedPost);
 
         return $this;
     }

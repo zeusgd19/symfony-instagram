@@ -6,10 +6,11 @@
             <p>{{ user.username }}</p>
             <p class="followed">Followed by mark + 2more</p>
         </div>
-        {% if app.user.getFollowing.contains(user) %}
-        <a href="" class="unfollow-btn">Following</a>
+
+        {% if isFollowing[user.id] %}
+        <a href="" class="unfollow-btn followed">Following</a>
         {% else %}
-        <a href="" class="follow-btn">Follow</a>
+        <a href="" class="follow-btn unfollowed">Follow</a>
         {% endif %}
     </div>
     {% endfor %}

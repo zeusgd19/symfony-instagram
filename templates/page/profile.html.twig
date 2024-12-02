@@ -11,7 +11,7 @@
                 <img src="{{ user.photo }}" id="narutoProfilePic" draggable="false" loading="lazy">
                 <div class="profile-data">
                     <div id="profile-options" class="profile-options">
-                        <p id="profile-name" data-id="{{ user.id }}">{{ user.username }}</p>
+                        <p id="profile-name" data-sender-id="{{ app.user.id }}" data-id="{{ user.id }}">{{ user.username }}</p>
                         <p id="profile-send-message">send a message</p>
                         {% if user.id != app.user.id %}
                             {% if isFollowing %}
@@ -25,25 +25,25 @@
                         <div class="modify-profile">
                             <img id="more-options" src="{{ asset("img/more-options.svg") }}">
                             {% if user.id == app.user.id %}
-                            <div class="dropdown-content">
-                                <a href="#cambiarFoto" id="change-photo">Cambiar foto del perfil</a>
-                                <a href="#cambiarNombre" id="change-name">Cambiar nombre del perfil</a>
-                                <a href="#cambiarDescripcion" id="change-description">Cambiar descripcion del perfil</a>
-                            </div>
+                                <div class="dropdown-content">
+                                    <a href="#cambiarFoto" id="change-photo">Cambiar foto del perfil</a>
+                                    <a href="#cambiarNombre" id="change-name">Cambiar nombre del perfil</a>
+                                    <a href="#cambiarDescripcion" id="change-description">Cambiar descripcion del perfil</a>
+                                </div>
                             {% endif %}
                         </div>
                         {% if user.id == app.user.id %}
-                        <div id="modal" class="modal">
-                            <div class="modal-content">
-                                <span class="close">&times;</span>
-                                <h2 id="modal-title"></h2>
-                                <div id="formulario">
-                                    {{ form_start(formulario) }}
-                                    {{ form_widget(formulario.photo) }}
-                                    {{ form_end(formulario) }}
+                            <div id="modal" class="modal">
+                                <div class="modal-content">
+                                    <span class="close">&times;</span>
+                                    <h2 id="modal-title"></h2>
+                                    <div id="formulario">
+                                        {{ form_start(formulario) }}
+                                        {{ form_widget(formulario.photo) }}
+                                        {{ form_end(formulario) }}
+                                    </div>
                                 </div>
                             </div>
-                        </div>
                         {% endif %}
 
                         <img id="three-dots" src="{{ asset("img/three-dots.svg") }}" loading="lazy">
@@ -65,22 +65,18 @@
             </div>
             <div id="publicaciones" class="publicaciones">
                 {% for post in posts %}
-                <div>
-                    <img class="foto" src="{{ post.photo }}" loading="lazy">
-                </div>
+                    <div>
+                        <img class="foto" src="{{ post.photo }}" loading="lazy">
+                    </div>
                 {% endfor %}
             </div>
+
             <div id="publicaciones-guardadas" class="publicaciones">
-                <img class="foto 1" src="{{ asset("img/naruto-meme.jpeg") }}">
-                <img class="foto 2" src="{{ asset("img/naruto-meme.jpeg") }}">
-                <img class="foto 3" src="{{ asset("img/naruto-meme.jpeg") }}">
-                <img class="foto 4" src="{{ asset("img/naruto-meme.jpeg") }}">
-                <img class="foto 5" src="{{ asset("img/naruto-meme.jpeg") }}">
-                <img class="foto 6" src="{{ asset("img/naruto-meme.jpeg") }}">
-                <img class="foto 7" src="{{ asset("img/naruto-meme.jpeg") }}">
-                <img class="foto 8" src="{{ asset("img/naruto-meme.jpeg") }}">
-                <img class="foto 9" src="{{ asset("img/naruto-meme.jpeg") }}">
+                {% for savedPost in savedPosts %}
+                    <img class="foto 1" src="{{ savedPost.photo }}">
+                {% endfor %}
             </div>
+
         </div>
 
     </main>

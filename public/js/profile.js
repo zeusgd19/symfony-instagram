@@ -111,19 +111,33 @@ const unfollowed = document.getElementById("unfollowed");
             // Mostrar el modal
             modal.style.display = 'block';
         }
+    $('#profile-send-message').on('click',function(){
+        let photo = $('#profile').find('#narutoProfilePic').attr('src');
+        let username = $('#profile').find('#profile-name').text();
+        let userId = $('#profile').find('#profile-name').attr('data-id');
+        let senderId = $('#profile').find('#profile-name').attr('data-sender-id')
+        window.location.href = '/directMessages';
 
-        document.getElementById('change-photo').addEventListener('click', function (event) {
+        sessionStorage.setItem('selectedUser', JSON.stringify({ photo, username, userId, senderId }));
+    })
+
+    const changePhoto = document.getElementById('change-photo');
+    const changeName = document.getElementById('change-name');
+    const changeDescription = document.getElementById('change-description');
+
+    if(changePhoto && changeName && changeDescription) {
+        changePhoto.addEventListener('click', function (event) {
             event.preventDefault();
             modal.style.display = "block";
         });
 
-        document.getElementById('change-name').addEventListener('click', function (event) {
+        changeName.addEventListener('click', function (event) {
             event.preventDefault();
             document.getElementById("formulario").classList.add("hide");
             openModal('Cambiar nombre de perfil', 'text', 'Escribe tu nuevo nombre');
         });
 
-        document.getElementById('change-description').addEventListener('click', function (event) {
+        changeDescription.addEventListener('click', function (event) {
             event.preventDefault();
             document.getElementById("formulario").classList.add("hide");
             openModal('Cambiar descripción', 'text', 'Escribe tu nueva descripción');
@@ -142,4 +156,5 @@ const unfollowed = document.getElementById("unfollowed");
                 modal.style.display = 'none';
             }
         });
+    }
     });

@@ -13,20 +13,20 @@
             </div>
             <div class="comments-box">
                 {% if comments %}
-                {% for comment in comments %}
-                <div class="comment-item">
-                    <div>
-                        <img src="data:image/jpeg;base64,{{ commentPhoto[comment.id] }}" alt="user-image" loading="lazy">
-                        <p class="username">{{ comment.user.username }}</p>
-                        <p class="comment-text">{{ comment.text }}</p>
-                    </div>
-                    <img src="img/post-like.svg" alt="like-icon" loading="lazy">
-                </div>
-                {% endfor %}
+                    {% for comment in comments %}
+                        <div class="comment-item">
+                            <div>
+                                <img src="data:image/jpeg;base64,{{ commentPhoto[comment.id] }}" alt="user-image" loading="lazy">
+                                <p class="username">{{ comment.user.username }}</p>
+                                <p class="comment-text">{{ comment.text }}</p>
+                            </div>
+                            <img src="img/post-like.svg" alt="like-icon" loading="lazy">
+                        </div>
+                    {% endfor %}
                 {% else %}
-                <div class="comment-item">
-                    <p>SIN COMENTARIOS</p>
-                </div>
+                    <div class="comment-item">
+                        <p>SIN COMENTARIOS</p>
+                    </div>
                 {% endif %}
             </div>
         </div>

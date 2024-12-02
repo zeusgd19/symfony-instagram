@@ -175,7 +175,7 @@ window.onload = () => {
             let saturacion = 100;
             let contraste = 100;
 
-    // Función para crear un Blob a partir de la imagen procesada en el canvas
+            // Función para crear un Blob a partir de la imagen procesada en el canvas
             function obtenerImagenProcesada() {
                 const canvas = document.createElement('canvas');
                 const ctx = canvas.getContext('2d');
@@ -446,6 +446,43 @@ window.onload = () => {
         xhr.send();
     });
 
+    $(document).on('click', '.unsavedPost, .savedPost', function (ev) {
+        ev.preventDefault();
+        let postId = $(this).attr('id');
+        const isSaved = $(this).hasClass('savedPost'); // Comprobamos si es un like o un unlike
+
+        // Seleccionamos la URL dependiendo de si es un like o un unlike
+        const url = isSaved ? `/removeSave/${postId}` : `/addSave/${postId}`;
+
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', url);
+
+        xhr.addEventListener('readystatechange', (ev) => {
+            if (xhr.readyState !== 4) return;
+
+            if (xhr.status >= 200 && xhr.status < 300) {
+                let json = JSON.parse(xhr.responseText);
+
+                let savedByYou = json.savedBYYou;
+
+                console.log(savedByYou);
+
+                if (savedByYou) {
+                    $(`#post-${postId}`).find('.imgSave').attr('src', 'img/post-save-saved.svg');
+                    $('#commentModal').find('.imgSave').attr('src', 'img/post-save-saved.svg');
+
+                    $(this).removeClass('unsavedPost').addClass('savedPost'); // Cambiamos la clase
+                } else {
+                    $(`#post-${postId}`).find('.imgSave').attr('src', 'img/post-save.svg');
+                    $('#commentModal').find('.imgSave').attr('src', 'img/post-save.svg');
+                    $(this).removeClass('savedPost').addClass('unsavedPost'); // Cambiamos la clase
+                }
+            }
+        });
+
+        xhr.send();
+    });
+
 
 
     /*
@@ -462,42 +499,72 @@ window.onload = () => {
 
      */
 
-    const followButton = $('.follow-btn');
-    $(followButton).click((ev) => {
+    $(document).on('click','.follow-btn, .unfollow-btn',function(ev) {
         ev.preventDefault();
-        XHR = new XMLHttpRequest();
         const id = ev.target.parentElement.getAttribute('data-id');
-        XHR.open("POST", `/addFollowing/${id}`);
-        XHR.addEventListener("readystatechange", function () {
-            if (XHR.readyState !== 4) {
-                return;
+        const isFollowed = $(this).hasClass('followed');
+        const url = isFollowed ? `/removeFollowing/${id}` : `/addFollowing/${id}`;
+
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', url);
+        xhr.addEventListener('readystatechange', (ev) => {
+            if (xhr.readyState !== 4) return;
+
+            if (xhr.status >= 200 && xhr.status < 300) {
+
+                if (isFollowed) {
+                    $(this).text('Follow');
+                    $(this).removeClass('followed').addClass('unfollowed'); // Cambiamos la clase
+                } else {
+                    $(this).text('Following');
+                    $(this).removeClass('unfollowed').addClass('followed'); // Cambiamos la clase
+                }
             }
-            if (XHR.status === 200) {
-                ev.target.textContent = "Following";
-                const jsonFollowers = JSON.parse(XHR.responseText);
-                $('#followers').text(jsonFollowers.followers + " Followers");
-            }
-        })
-        XHR.send();
+        });
+        xhr.send();
     })
 
-    const unfollowButton = $('.unfollow-btn');
-    $(unfollowButton).click((ev) => {
-        ev.preventDefault();
-        XHR = new XMLHttpRequest();
-        const id = ev.target.parentElement.getAttribute('data-id');
-        XHR.open("POST", `/removeFollowing/${id}`);
-        XHR.addEventListener("readystatechange", function () {
-            if (XHR.readyState !== 4) {
-                return;
-            }
-            if (XHR.status === 200) {
-                ev.target.textContent = "Follow";
-                const jsonFollowers = JSON.parse(XHR.responseText);
-                $('#followers').text(jsonFollowers.followers + " Followers");
-            }
-        })
-        XHR.send();
+    let user = sessionStorage.getItem('selectedUser');
+    if (user) {
+        user = JSON.parse(user);
+
+        // Añadir el usuario al contenedor de mensajes
+        $('.message-user-item').append(`
+            <div class="user-item" data-id="${user.userId}" data-sender-id="${user.senderId}">
+                <img src="${user.photo}" alt="Photo" />
+                <div>
+                    <p id="usernameMessageItem">${user.username}</p>
+                    <p>message</p>
+                </div>
+            </div>
+        `);
+
+        // Opcional: Limpiar los datos del sessionStorage
+        sessionStorage.removeItem('selectedUser');
+    }
+
+    $('.user-item').on('click',function(){
+        $('.message-item-user-info').find('img').remove();
+        $('.message-item-user-info').find('p').remove();
+        $('.message').remove();
+        $('.message-item-user-info').append(
+            `
+            <img src="${$(this).find('img').attr('src')}"/>
+            <p>${$(this).find('#usernameMessageItem').text()}</p>
+            `
+        );
+    });
+
+    $('.send-messages').find('img').on('click',function(){
+       let value =  $('.send-messages').find('input').val();
+
+       $('.message-item').find('ul').append(
+           `
+           <li class="message other">
+               <p>${value}</p>
+            </li>
+           `
+       )
     })
 
     postGuardados = document.getElementById("publicaciones-guardadas");

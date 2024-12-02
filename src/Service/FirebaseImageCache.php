@@ -22,11 +22,11 @@ class FirebaseImageCache {
 
     public function getImage(string $imageUrl): string {
         $cacheKey = md5($imageUrl);
-
+        $noFoundImage = file_get_contents($this->projectDir . '/public/img/imagen-no-encontrada.png');
+        $cacheFail = base64_encode($noFoundImage);
         // Intentamos obtener el valor directamente desde la caché sin crear uno nuevo
         $cachedImage = $this->cache->getItem($cacheKey)->get();
-        $this->logger->info("Eliminando la cache $cachedImage. Intentando descargar de nuevo.");
-        if ($cachedImage && !str_starts_with($cachedImage, 'valid:')) {
+        if ($cachedImage && str_starts_with($cachedImage, $cacheFail)) {
             // Si la imagen cacheada es un error, eliminamos la entrada de la caché
             $this->cache->delete($cacheKey);
         }
@@ -40,17 +40,15 @@ class FirebaseImageCache {
                 $imageData = $response->getBody()->getContents();
 
                 // Guardamos la imagen descargada como "válida" en caché
-                $valueToCache = 'valid:' . base64_encode($imageData);
+                $valueToCache = base64_encode($imageData);
                 $item->set($valueToCache);
                 dump("Guardando en caché: $valueToCache"); // Debug
                 return base64_encode($imageData);
 
             } catch (\Exception $e) {
-                $this->logger->error("No se pudo descargar la imagen desde Firebase: {$e->getMessage()}");
-
                 // Si falla, guardamos la imagen de "no encontrada" como "error" en caché
                 $noFoundImage = file_get_contents($this->projectDir . '/public/img/imagen-no-encontrada.png');
-                $valueToCache = 'error:' . base64_encode($noFoundImage);
+                $valueToCache = base64_encode($noFoundImage);
                 $item->set($valueToCache);
                 dump("Guardando en caché: $valueToCache"); // Debug
                 return base64_encode($noFoundImage);
@@ -60,11 +58,22 @@ class FirebaseImageCache {
 
     public function isCachedImageValid(string $cacheKey): bool {
         $cachedImage = $this->cache->getItem($cacheKey)->get();
-        return $cachedImage && str_starts_with($cachedImage, 'valid:');
+        $noFoundImage = file_get_contents($this->projectDir . '/public/img/imagen-no-encontrada.png');
+        $cacheFail = base64_encode($noFoundImage);
+        return $cachedImage && !str_starts_with($cachedImage, $cacheFail);
     }
 
     public function deleteImageFromCache(string $imageUrl): void
     {
         $this->cache->delete($imageUrl);
+    }
+
+    public function existCachedImagen(string $posibleCachedImage){
+        $cacheKey = md5($posibleCachedImage);
+        if ($this->cache->getItem($cacheKey)) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }

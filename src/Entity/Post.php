@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\PostRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: PostRepository::class)]
@@ -29,10 +30,17 @@ class Post
     #[ORM\ManyToMany(targetEntity: UserPostgres::class, mappedBy: 'likedPosts')]
     private Collection $likedBy;
 
+    #[ORM\ManyToMany(targetEntity: UserPostgres::class, mappedBy: 'savedPosts')]
+    private Collection $savedBy;
+
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    private ?\DateTimeInterface $created_at = null;
+
     public function __construct()
     {
         $this->likedBy = new ArrayCollection();
-        $this->notifications = new ArrayCollection();
+        $this->savedBy = new ArrayCollection();
+        $this->created_at = new \DateTimeImmutable();
     }
 
     public function getId(): ?int
@@ -99,4 +107,41 @@ class Post
 
         return $this;
     }
+
+    /**
+     * @return Collection<int, UserPostgres>
+     */
+    public function getSavedBy(): Collection
+    {
+        return $this->savedBy;
+    }
+
+    public function addSavedBy(UserPostgres $savedBy): static
+    {
+        if (!$this->savedBy->contains($savedBy)) {
+            $this->savedBy->add($savedBy);
+        }
+
+        return $this;
+    }
+
+    public function removeSavedBy(UserPostgres $savedBy): static
+    {
+        $this->savedBy->removeElement($savedBy);
+
+        return $this;
+    }
+
+    public function getCreatedAt(): ?\DateTimeInterface
+    {
+        return $this->created_at;
+    }
+
+    public function setCreatedAt(\DateTimeInterface $created_at): static
+    {
+        $this->created_at = $created_at;
+
+        return $this;
+    }
 }
+

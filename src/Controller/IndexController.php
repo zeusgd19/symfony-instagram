@@ -6,77 +6,156 @@ use App\Entity\Comment;
 use App\Entity\Post;
 use App\Entity\UserPostgres;
 use App\Form\CommentFormType;
+use App\Service\FirebaseImageCache;
 use App\Service\FirebaseService;
 use App\Service\ImageService;
+use Carbon\Carbon;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Contracts\Cache\CacheInterface;
 
 class IndexController extends AbstractController
 {
-
     private FirebaseService $firebaseService;
 
     public function __construct(FirebaseService $firebaseService)
     {
         $this->firebaseService = $firebaseService;
     }
+
     #[Route('/', name: 'index')]
-    public function index(ManagerRegistry $doctrine, Request $request, ImageService $imageCache): Response
+    public function index(ManagerRegistry $doctrine, Request $request, ImageService $imageCache, FirebaseImageCache $firebaseImageCache, CacheInterface $cache): Response
     {
         $repository = $doctrine->getRepository(UserPostgres::class);
-        $allUsers = $repository->findAll();
+
+        $allUsers = $cache->get('users_list_cache_key', function() use ($repository) {
+            return array_map(function($user) {
+                return [
+                    'id' => $user->getId(),
+                    'username' => $user->getUsername(),
+                    'photo' => $user->getPhoto(),
+                    'description' => $user->getDescription()
+                ];
+            }, $repository->findAll());
+        });
+
         $users = [];
         $profileImages = [];
-        $repositoryPosts = $doctrine->getRepository(Post::class);
-        $posts = $repositoryPosts->findAll();
+        $isFollowing = [];
         foreach ($allUsers as $user) {
-            if($user != $this->getUser()) {
+            if ($user['id'] != $this->getUser()->getId()) {
                 $users[] = $user;
+                $followingArray = array_map(function($user) {
+                    return [
+                        'id' => $user->getId(),
+                        'username' => $user->getUsername(),
+                        'photo' => $user->getPhoto(),
+                    ];
+                }, $this->getUser()->getFollowing()->toArray());
+
+                if($followingArray) {
+                    foreach ($followingArray as $following) {
+                        $isFollowing[$user['id']] = in_array($user['id'], $following);
+                    }
+                } else {
+                    $isFollowing[$user['id']] = false;
+                }
             }
-            $profileImages[$user->getId()] = $imageCache->getUserProfileImage($user);
+
+            if (!$firebaseImageCache->existCachedImagen($user['photo'])) {
+                $firebaseImageCache->getImage($user['photo']);
+            }
+            $profileImages[$user['id']] = $imageCache->getUserProfileImage($user['photo']);
         }
+
+        $repositoryPosts = $doctrine->getRepository(Post::class);
+
+        $allPosts = $cache->get('posts_list_cache_key', function() use ($repositoryPosts) {
+            return array_map(function($post) {
+                return [
+                    'id' => $post->getId(),
+                    'photo' => $post->getPhoto(),
+                    'description' => $post->getDescription(),
+                    'createdAt' => $post->getCreatedAt(),
+                    'user' =>  [
+                        'id' => $post->getUser()->getId(),
+                        'username' => $post->getUser()->getUsername(),
+                        'photo' => $post->getUser()->getPhoto(),
+                    ],
+                    'likedBy' => array_map(function($user) {
+                        return [
+                            'id' => $user->getId(),
+                            'username' => $user->getUsername(),
+                            'photo' => $user->getPhoto(),
+                        ];
+                    }, $post->getLikedBy()->toArray()),
+                    'savedBy' => array_map(function($user) {
+                        return [
+                            'id' => $user->getId(),
+                            'username' => $user->getUsername(),
+                            'photo' => $user->getPhoto(),
+                        ];
+                    }, $post->getSavedBy()->toArray())
+                ];
+            }, $repositoryPosts->findAll());
+        });
 
         $commentForms = [];
         $images = [];
-        foreach ($posts as $post) {
-            $images[$post->getId()] = $imageCache->getPostImage($post);
-            // Creamos una entidad de comentario nueva para cada post
-            $comment = new Comment();
+        $posts = [];
+        $isLikedByUser = [];
+        $isSavedByUser = [];
+        $timeElapsed = [];
+        foreach ($allPosts as $post) {
+            $posts[] = $post;
+            $timeElapsed[$post['id']] = Carbon::parse($post['createdAt'])->diffForHumans();
+            $isLikedByUser[$post['id']] = in_array($this->getUser()->getId(), array_column($post['likedBy'], 'id'));
+            $isSavedByUser[$post['id']] = in_array($this->getUser()->getId(), array_column($post['savedBy'], 'id'));
 
-            // Añadimos una opción personalizada con el ID del post
+            if (!$firebaseImageCache->existCachedImagen($post['photo'])) {
+                $firebaseImageCache->getImage($post['photo']);
+            }
+            $images[$post['id']] = $imageCache->getPostImage($post['photo']);
+
+
+            $comment = new Comment();
             $form = $this->createForm(CommentFormType::class, $comment, [
-                'action' => $this->generateUrl('index', ['post_id' => $post->getId()]),
+                'action' => $this->generateUrl('index', ['post_id' => $post['id']]),
             ]);
             $form->handleRequest($request);
+            $commentForms[$post['id']] = $form;
 
-            // Guardamos el formulario en un array para renderizarlo luego
-            $commentForms[$post->getId()] = $form;
-
-            // Verificamos si este formulario específico fue enviado y es válido
-            if ($form->isSubmitted() && $form->isValid() && $request->query->get('post_id') == $post->getId()) {
+            if ($form->isSubmitted() && $form->isValid() && $request->query->get('post_id') == $post['id']) {
                 $comment = $form->getData();
-                $comment->setPost($post);
+                $postCommented = $repositoryPosts->find($post['id']);
+                $comment->setPost($postCommented);
                 $comment->setUser($this->getUser());
 
-                // Guardar el comentario en la base de datos
                 $manager = $doctrine->getManager();
                 $manager->persist($comment);
                 $manager->flush();
 
-                // Redirigir para evitar reenvíos
+                $cache->delete('users_list_cache_key');
+                $cache->delete('posts_list_cache_key');
+
                 return $this->redirectToRoute('index');
             }
         }
-        return $this->render('page/index.html.twig',[
-            'users'=> $users,
+
+        return $this->render('page/index.html.twig', [
+            'users' => $users,
             'profileImage' => $profileImages,
             'user' => $this->getUser(),
             'posts' => $posts,
             'images' => $images,
-            'form' =>  array_map(fn($form) => $form->createView(), $commentForms),
+            'form' => array_map(fn($form) => $form->createView(), $commentForms),
+            'isLikedByUser' => $isLikedByUser,
+            'isSavedByUser' => $isSavedByUser,
+            'isFollowing' => $isFollowing,
+            'timeElapsed' => $timeElapsed
         ]);
     }
 }

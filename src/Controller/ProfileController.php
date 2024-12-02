@@ -15,6 +15,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\String\Slugger\SluggerInterface;
+use Symfony\Contracts\Cache\CacheInterface;
 
 class ProfileController extends AbstractController
 {
@@ -26,14 +27,14 @@ class ProfileController extends AbstractController
         $this->firebaseService = $firebaseService;
     }
     #[Route('/profile/{username}', name: 'profile_page')]
-    public function profile(string $username, ManagerRegistry $doctrine, Request $request, SluggerInterface $slugger,ImageService $imageCache): Response
+    public function profile(string $username, ManagerRegistry $doctrine, Request $request, SluggerInterface $slugger,ImageService $imageCache, CacheInterface $cache): Response
     {
         $user = $doctrine->getRepository(UserPostgres::class)->findOneBy(['username'=>$username]);
 
         $allPosts = $doctrine->getRepository(Post::class)->findAll();
 
         $posts = [];
-
+        $savedPosts = $user->getSavedPosts();
         foreach ($allPosts as $post){
             if(!$post){
                 throw $this->createNotFoundException("No hay posts.");
@@ -78,15 +79,17 @@ class ProfileController extends AbstractController
             $manager = $doctrine->getManager();
             $manager->persist($user);
             $manager->flush();
+
+            $cache->delete('users_list_cache_key');
         }
 
         $isFollowing = $this->getUser()->getFollowing()->contains($user);
 
-        return $this->render('page/profile.html.twig',['user'=>$user,'posts'=>$posts,'isFollowing' => $isFollowing,'formulario'=>$formulario->createView()]);
+        return $this->render('page/profile.html.twig',['user'=>$user,'posts'=>$posts,'isFollowing' => $isFollowing,'formulario'=>$formulario->createView(),'savedPosts' => $savedPosts]);
     }
 
     #[Route('/addFollowing/{id}', name: 'add_following')]
-    public function addFollower(ManagerRegistry $doctrine, int $id): Response
+    public function addFollower(ManagerRegistry $doctrine, int $id,CacheInterface $cache): Response
     {
         $repository = $doctrine->getRepository(UserPostgres::class);
 
@@ -100,6 +103,8 @@ class ProfileController extends AbstractController
             $manager = $doctrine->getManager();
             $manager->persist($user);
             $manager->flush();
+
+            $cache->delete('users_list_cache_key');
         }
 
         return $this->json([
@@ -108,7 +113,7 @@ class ProfileController extends AbstractController
     }
 
     #[Route('/removeFollowing/{id}', name: 'remove_following')]
-    public function removeFollowing(ManagerRegistry $doctrine, int $id): Response
+    public function removeFollowing(ManagerRegistry $doctrine, int $id,CacheInterface $cache): Response
     {
         $repository = $doctrine->getRepository(UserPostgres::class);
 
@@ -122,6 +127,7 @@ class ProfileController extends AbstractController
             $manager = $doctrine->getManager();
             $manager->persist($user);
             $manager->flush();
+            $cache->delete('users_list_cache_key');
         }
 
         return $this->json([
@@ -129,23 +135,26 @@ class ProfileController extends AbstractController
         ]);
     }
     #[Route('/profile/change-username/{username}', name: 'change-name')]
-    public function changeUsername(ManagerRegistry $doctrine,string $username): Response
+    public function changeUsername(ManagerRegistry $doctrine,string $username, CacheInterface $cache): Response
     {
         $user = $this->getUser();
         $user->setUsername($username);
         $manager = $doctrine->getManager();
         $manager->persist($user);
         $manager->flush();
+
+        $cache->delete('users_list_cache_key');
         return $this->json("{}");
     }
     #[Route('/profile/change-description/{description}', name: 'change-description')]
-    public function changeDescription(ManagerRegistry $doctrine,string $description): Response
+    public function changeDescription(ManagerRegistry $doctrine,string $description,CacheInterface $cache): Response
     {
         $user = $this->getUser();
         $user->setDescription($description);
         $manager = $doctrine->getManager();
         $manager->persist($user);
         $manager->flush();
+        $cache->delete('users_list_cache_key');
         return $this->json("{}");
     }
 }
