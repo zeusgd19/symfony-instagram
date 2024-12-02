@@ -9,6 +9,12 @@ main {
     width: 100%;
     height: 100%;
 }
+.loading-container {
+    display: flex;
+    justify-content: center; /* Centrar horizontalmente */
+    align-items: center;    /* Centrar verticalmente */
+    height: 100%;           /* Asegúrate de que ocupe toda la altura del contenedor */
+}
 
 .message-users {
     display: flex;

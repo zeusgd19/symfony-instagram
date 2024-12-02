@@ -17,9 +17,11 @@ class DirectMessagesController extends AbstractController
         $messageRepository = $doctrine->getRepository(Message::class);
         // Obtener conversaciones agrupadas por usuario
         $conversations = $messageRepository->findConversationsForUser($currentUser->getId());
+        $supabaseKey = $this->getParameter('SUPABASE_KEY');
 
         return $this->render('page/direct-messages.html.twig', [
             'conversations' => $conversations,
+            'supabaseKey' => $supabaseKey
         ]);
     }
 }
