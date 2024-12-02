@@ -1,6 +1,19 @@
 $(document).ready(function() {
     const firstUserInList = $('.message-user-item').find('.user-item')[0]
-    const userId = firstUserInList.getAttribute('data-id')
+    if(firstUserInList) {
+        const userId = firstUserInList.getAttribute('data-id')
+        $.ajax({
+            type: "GET",
+            url: `/messages/${userId}`,
+            dataType: 'json',
+            beforeSend: function (){
+                $('.messagesUl').html('<div class="loading-container"><img src="img/loading-buffer.gif" width="30" height="30"></div>');
+            },
+            success: function (response) {
+                $('.messagesUl').html(response.messages)
+            }
+        });
+    }
     let user = sessionStorage.getItem('selectedUser');
     if (user) {
         user = JSON.parse(user);
@@ -18,17 +31,6 @@ $(document).ready(function() {
         // Opcional: Limpiar los datos del sessionStorage
         sessionStorage.removeItem('selectedUser');
     }
-    $.ajax({
-        type: "GET",
-        url: `/messages/${userId}`,
-        dataType: 'json',
-        beforeSend: function (){
-            $('.messagesUl').html('<div class="loading-container"><img src="img/loading-buffer.gif" width="30" height="30"></div>');
-        },
-        success: function (response) {
-            $('.messagesUl').html(response.messages)
-        }
-    });
 
     $('.user-item').on('click',function(){
 

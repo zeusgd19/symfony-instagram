@@ -50,9 +50,8 @@ class MessageRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('m')
             ->select('DISTINCT s.id, s.username, s.photo') // Selecciona campos necesarios
-            ->innerJoin('m.receiver', 's')
-            ->innerJoin('m.sender', 'r')
-            ->where('m.sender = :userId') // Condición
+            ->innerJoin('m.sender', 's')
+            ->where('m.receiver = :userId') // Condición
             ->setParameter('userId', $userId)
             ->getQuery()
             ->getResult();
