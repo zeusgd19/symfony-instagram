@@ -546,11 +546,13 @@ window.onload = () => {
     $('.user-item').on('click',function(){
 
         let userId = $(this).attr('data-id');
+        let senderId = $(this).attr('data-sender-id')
         $('.message-item-user-info').find('img').remove();
         $('.message-item-user-info').find('p').remove();
         $('.message').remove();
         $('.message-item-user-info').attr('data-id',userId);
-        $('.message-item-user-info').attr('data-sender-id',userId);
+        $('.message-item-user-info').attr('data-sender-id',senderId);
+        sessionStorage.setItem('data-sender-id',senderId);
         $('.message-item-user-info').append(
             `
             <img src="${$(this).find('img').attr('src')}"/>
@@ -576,35 +578,35 @@ window.onload = () => {
                 )
             }
         });
+    })
 
-        const supabaseUrl = 'https://fnofdrpcrthobxniqwkw.supabase.co';
-        const supabaseKey = '';
+    const supabaseUrl = 'https://fnofdrpcrthobxniqwkw.supabase.co';
+    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZub2ZkcnBjcnRob2J4bmlxd2t3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzI3MDMwMDQsImV4cCI6MjA0ODI3OTAwNH0.QI5Kryk5SWEmpEjQtOMzfkGZQv9HwkCEVwyqFuWBrgA';
 
-        const cliente = supabase.createClient(supabaseUrl, supabaseKey);
+    const cliente = supabase.createClient(supabaseUrl, supabaseKey);
 
-        // Configuración para Realtime
-        cliente
-            .channel('mensajes')
-            .on(
-                'postgres_changes',
-                { event: 'insert', schema: 'public', table: 'message' },
-                (payload) => {
-                    let {sender_id, receiver_id, content} = payload.new;
-                    let logedId = $(this).parent().parent().find('.message-item-user-info').attr('data-sender-id');
+    // Configuración para Realtime
+    cliente
+        .channel('mensajes')
+        .on(
+            'postgres_changes',
+            { event: 'insert', schema: 'public', table: 'message' },
+            (payload) => {
+                let {sender_id, receiver_id, content} = payload.new;
+                let logedId = sessionStorage.getItem('data-sender-id');
 
-                    if(receiver_id === logedId){
-                        $('.message-item').find('ul').append(
-                            `
+                if(receiver_id === logedId){
+                    $('.message-item').find('ul').append(
+                        `
                             <li class="message other">
                             <p>${content}</p>
                             </li>
                            `
-                        )
-                    }
+                    )
+                }
 
-                })
-            .subscribe();
-    })
+            })
+        .subscribe();
 
 
     postGuardados = document.getElementById("publicaciones-guardadas");
