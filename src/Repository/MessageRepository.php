@@ -49,9 +49,12 @@ class MessageRepository extends ServiceEntityRepository
     public function findConversationsForUser(int $userId): array
     {
         return $this->createQueryBuilder('m')
-            ->select('DISTINCT s.id, s.username, s.photo') // Selecciona campos necesarios
-            ->innerJoin('m.sender', 's')
-            ->where('m.receiver = :userId') // Condición
+            ->select('DISTINCT u.id, u.username, u.photo') // Selecciona usuarios únicos
+            ->innerJoin('m.sender', 's') // Une con el remitente
+            ->innerJoin('m.receiver', 'r') // Une con el receptor
+            ->innerJoin('App\Entity\UserPostgres', 'u', 'WITH', 'u = s OR u = r') // Considera remitentes y receptores
+            ->where('(s.id = :userId OR r.id = :userId)') // El usuario es remitente o receptor
+            ->andWhere('(u.id != :userId OR (s.id = r.id AND u.id = :userId))') // Incluir al usuario actual solo si tiene conversación consigo mismo
             ->setParameter('userId', $userId)
             ->getQuery()
             ->getResult();

@@ -98,7 +98,7 @@ $(document).ready(function() {
                 $('.message-item').find('ul').append(
                     `
                 <li class="message owner">
-                    <p>${value}</p>
+                    <p>${response.message}</p>
                 </li>
                 `
                 );
