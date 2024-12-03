@@ -3,6 +3,7 @@ window.onload = () => {
     const comments = $(".comment");
     const emojis = $('#modalEmoji').find('p');
     const messages = document.getElementById('messages');
+    const formPost = $('#formPost');
 
     // Selecciona todas las imágenes con la clase lazy-load
     const lazyImages = document.querySelectorAll("img.lazy-load");
@@ -222,25 +223,28 @@ window.onload = () => {
                 console.log(imagePost.files[0]);
             }
 
-// Llamar a esta función cuando se quiera reemplazar la imagen en el input
+        // Llamar a esta función cuando se quiera reemplazar la imagen en el input
         });
 
         // Mostrar el botón de compartir
         $('#compartir').removeClass('hide');
-
-        $('#formPost').on('submit', 'form', function (e) {
+        let isSubmitting = false;
+        $('#formPost').off('submit').on('submit', 'form', function (e) {
             e.preventDefault();
+            if (isSubmitting) return;
 
+            isSubmitting = true;
             $('#formPost button[type="submit"]').prop('disabled', true);
             const formData = new FormData(this); // Crea un FormData con el formulario
 
             $.ajax({
-                url: '/post/new', // La ruta configurada en el formulario
-                type: 'POST', // El método (debería ser POST)
+                url: '/post/new',
+                type: 'POST',
                 data: formData,
                 processData: false,
                 contentType: false,
                 success: function (response) {
+                    isSubmitting = false;
                     if (response.status === 'success') {
                         console.log(response.message)// Muestra un mensaje de éxito
                         $('#formPost').addClass('hide');// Oculta el formulario
@@ -269,6 +273,7 @@ window.onload = () => {
                     }
                 },
                 error: function () {
+                    isSubmitting = false;
                     alert('Hubo un error al enviar el formulario');
                 }
             });
@@ -297,9 +302,36 @@ window.onload = () => {
 
     })
 
-    $('.post-comment').find('form').on('submit', function(ev) {
+    $(document).on('click','.publish', function(ev) {
         ev.preventDefault();  // Prevenir el comportamiento por defecto (recarga de la página)
+        let postId = $(this).parent().attr('data-id');
+        let value = $(this).parent().find('input').val();
+        let input = $(this).parent().find('input');
+        console.log('Hola')
+        $.ajax({
+            type: "POST",
+            url: "/comment/new",
+            data: JSON.stringify({ postId: postId, comment: value }),
+            contentType: "application/json",
+            success: function (response) {
+                let hasComments = $('.comments-box').find('.comment-item-whithout-comment') ? true : false;
 
+                if(hasComments) $('.comments-box').find('.comment-item-whithout-comment').remove();
+                $('.comments-box').append(
+                    `<div class="comment-item">
+                            <div>
+                                <img src="${response.commentUserPhoto}" alt="user-image" loading="lazy">
+                                <p class="username">${response.commentUserUsername}</p>
+                                <p class="comment-text">${response.comment}</p>
+                            </div>
+                            <img src="img/post-like.svg" alt="like-icon" loading="lazy">
+                        </div>
+                    `
+                )
+                $(input).val("");
+            }
+        });
+        /*
         const form = $(this)[0]; // Obtener el formulario en su forma "nativa" (sin jQuery)
         // Aquí puedes obtener los datos del formulario como un objeto FormData
         const formData = new FormData(form);
@@ -325,6 +357,8 @@ window.onload = () => {
                 $(this).find('.comment-input').val('');
                 // Manejar el error de envío (por ejemplo, mostrar un mensaje de error)
             });
+
+         */
     });
 
     $('#postSection').on('click', '.emoji', (e) => {
@@ -379,22 +413,26 @@ window.onload = () => {
                 const commentModal = $('#postSection').find('#commentModal');
                 $(commentModal).removeClass('hide'); // Mostrar modal
                 document.body.style.overflow = "hidden"; // Desactivar scroll
-
-                // Cerrar el modal al hacer clic fuera de él
-                $(document).off('click.modal').on('click.modal', function (event) {
-                    if (
-                        !$(event.target).closest(commentModal).length && // Clic fuera del modal
-                        !$(event.target).is($(comments)) // No es el botón que lo abrió
-                    ) {
-                        $(commentModal).addClass('hide'); // Ocultar modal
-                        document.body.style.overflow = ""; // Restaurar scroll
-                        $(document).off('click.modal'); // Limpiar eventos
-                    }
-                });
             }
         });
 
         xhr.send();
+    });
+
+    $(document).on('click', function (event) {
+        const activeModals = ['#commentModal', '#modalEmoji', '#formPost']; // Selección de todos los modales
+
+        activeModals.forEach(modalSelector => {
+            const modal = $(modalSelector);
+            if (
+                modal.length > 0 && // Verifica que el modal exista en el DOM
+                !$(event.target).closest(modal).length && // Clic fuera del modal
+                !$(event.target).is(`[data-target="${modalSelector}"]`) // No es el botón que lo abre
+            ) {
+                modal.addClass('hide'); // Ocultar modal
+                document.body.style.overflow = ""; // Restaurar scroll
+            }
+        });
     });
 
     $(document).on('click', '.unlikedPost, .likedPost', function (ev) {
