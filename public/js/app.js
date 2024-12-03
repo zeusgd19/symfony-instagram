@@ -2,8 +2,6 @@ window.onload = () => {
     const emojiModal = document.getElementById("modalEmoji");
     const comments = $(".comment");
     const emojis = $('#modalEmoji').find('p');
-    const messages = document.getElementById('messages');
-    const formPost = $('#formPost');
 
     // Selecciona todas las imágenes con la clase lazy-load
     const lazyImages = document.querySelectorAll("img.lazy-load");
@@ -281,7 +279,7 @@ window.onload = () => {
     });
 
 
-    if (messages) messages.scrollTop = messages.scrollHeight;
+
     // Desvincula eventos previos para evitar duplicados
 
 

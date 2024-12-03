@@ -109,7 +109,7 @@ main {
     border-radius: 50%;
 }
 
-.messages {
+.messagesUl {
     padding: 10px;
     height: 450px;
     overflow: scroll;
