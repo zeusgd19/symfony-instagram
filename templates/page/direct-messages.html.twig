@@ -2,6 +2,10 @@
 {% block title %}Direct Messages{% endblock %}
 {% block head %}
     <link rel="stylesheet" href="{{ asset('css/directMessages.css') }}">
+    <script>
+        const supabaseKey = '{{ supabaseKey }}';
+    </script>
+    <script src="{{ asset('js/directMessages.js') }}"></script>
 {% endblock %}
 {% block body %}
     <main>
@@ -15,15 +19,21 @@
                 <p>GENERAL</p>
             </div>
             <div class="message-user-item">
-                {{ include('partials/_message-user-item.html.twig') }}
+                {{ include('partials/_message-user-item.html.twig',{'conversations':conversations}) }}
             </div>
         </div>
         <div class="message-item">
-            <div class="message-item-user-info">
-                <img src="{{ asset('img/storie-image.png') }}" alt="profile-pic">
-                <p>darius</p>
+            {% if conversations %}
+            <div class="message-item-user-info" data-id="{{ conversations[0].id }}">
+                <img src="{{ conversations[0].photo }}" alt="profile-pic">
+                <p>{{ conversations[0].username }}</p>
             </div>
-            {{ include('partials/_messages.html.twig') }}
+            {% else %}
+            <div class="message-item-user-info">
+            </div>
+            {% endif %}
+            <div class="messagesUl messages">
+            </div>
             <div class="send-messages">
                 <input type="text" placeholder="Message...">
                 <img src="{{ asset('img/send-button.svg') }}"/>

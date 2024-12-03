@@ -1,7 +1,10 @@
-<div>
-    <img src="img/storie-image.png" alt="profil-pic">
+{% if conversations %}
+{% for user in conversations %}
+<div class="user-item" data-id="{{ user.id }}" data-sender-id="{{ app.user.id }}">
+    <img src="{{ user.photo }}" alt="Photo profile">
     <div>
-        <p>darius</p>
-        <p>message</p>
+        <p id="usernameMessageItem">{{ user.username }}</p>
     </div>
 </div>
+{% endfor %}
+{% endif %}
