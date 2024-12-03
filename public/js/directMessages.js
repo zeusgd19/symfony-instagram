@@ -28,6 +28,25 @@ $(document).ready(function() {
             </div>
         `);
 
+        /*
+        fetch('/directMessages', {
+            method: 'POST',
+            body: JSON.stringify({ receiverId: user.userId }),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }).then(response => {
+            if (!response.ok) {
+                throw new Error('Error al enviar el mensaje');
+            }
+            return response.json();
+        }).then(data => {
+            console.log('Mensaje enviado correctamente:', data);
+        }).catch(error => {
+            console.error('Error:', error);
+        });
+
+         */
         // Opcional: Limpiar los datos del sessionStorage
         sessionStorage.removeItem('selectedUser');
     }
@@ -61,27 +80,32 @@ $(document).ready(function() {
             }
         });
     });
+    function stringToAscii(str) {
+        return Array.from(str).map(char => char.charCodeAt(0));
+    }
 
-    $('.send-messages').find('img').on('click',function(){
+    $('.send-messages').find('img').on('click', function () {
         let input = $(this).parent().find('input');
-        let value =  $(this).parent().find('input').val();
+        let value = $(this).parent().find('input').val();
         let receiverId = $(this).parent().parent().find('.message-item-user-info').attr('data-id');
 
         $.ajax({
-            type: "GET",
-            url: `/message/new/${receiverId}/${value}`,
+            type: "POST",
+            url: "/message/new",
+            data: JSON.stringify({ receiverId: receiverId, content: value }),
+            contentType: "application/json",
             success: function (response) {
                 $('.message-item').find('ul').append(
                     `
-                    <li class="message owner">
-                        <p>${value}</p>
-                    </li>
-                    `
-                )
-                $(input).val("")
+                <li class="message owner">
+                    <p>${value}</p>
+                </li>
+                `
+                );
+                $(input).val("");
             }
         });
-    })
+    });
 
     const supabaseUrl = 'https://fnofdrpcrthobxniqwkw.supabase.co';
 

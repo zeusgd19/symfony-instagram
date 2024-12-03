@@ -1,6 +1,9 @@
 <ul class="messages" id="messages">
     {% for message in messages %}
     <li class="message {{ message.sender.id == currentUser.id ? 'owner':'other'}}">
+        {% if message.sender.id != currentUser.id %}
+        <img src="{{ message.sender.photo }}">
+        {% endif %}
         <p>{{ message.content }}</p>
     </li>
     {% endfor %}
