@@ -21,6 +21,16 @@ class HistoriaRepository extends ServiceEntityRepository
         parent::__construct($registry, Historia::class);
     }
 
+    public function findActiveStoriesByUser($user){
+        return $this->createQueryBuilder('h')
+            ->andWhere('h.usuario = :user')
+            ->andWhere('h.fechaExpiracion > :now')
+            ->setParameter('user',$user)
+            ->setParameter('now',new \DateTime())
+            ->getQuery()
+            ->getResult();
+    }
+
 //    /**
 //     * @return Historia[] Returns an array of Historia objects
 //     */
