@@ -1,5 +1,9 @@
 $(document).ready(function() {
     const firstUserInList = $('.message-user-item').find('.user-item')[0]
+    const messages = document.getElementsByClassName('messagesUl')[0];
+    sessionStorage.setItem('data-sender-id',$(firstUserInList).attr('data-sender-id'));
+    sessionStorage.setItem('data-id',$(firstUserInList).attr('data-id'));
+    sessionStorage.setItem('photo-user',$(firstUserInList).find('img').attr('src'));
     if(firstUserInList) {
         const userId = firstUserInList.getAttribute('data-id')
         $.ajax({
@@ -11,13 +15,13 @@ $(document).ready(function() {
             },
             success: function (response) {
                 $('.messagesUl').html(response.messages)
+                messages.scrollTop = messages.scrollHeight;
             }
         });
     }
     let user = sessionStorage.getItem('selectedUser');
     if (user) {
         user = JSON.parse(user);
-
         // Añadir el usuario al contenedor de mensajes
         $('.message-user-item').append(`
             <div class="user-item" data-id="${user.userId}" data-sender-id="${user.senderId}">
@@ -53,14 +57,20 @@ $(document).ready(function() {
 
     $('.user-item').on('click',function(){
 
+        sessionStorage.removeItem('data-sender-id');
+        sessionStorage.removeItem('data-id');
+        sessionStorage.removeItem('photo-user');
         let userId = $(this).attr('data-id');
         let senderId = $(this).attr('data-sender-id')
+        let photo = $(this).find('img').attr('src');
         $('.message-item-user-info').find('img').remove();
         $('.message-item-user-info').find('p').remove();
         $('.message').remove();
         $('.message-item-user-info').attr('data-id',userId);
         $('.message-item-user-info').attr('data-sender-id',senderId);
         sessionStorage.setItem('data-sender-id',senderId);
+        sessionStorage.setItem('data-id',userId);
+        sessionStorage.setItem('photo-user',photo);
         $('.message-item-user-info').append(
             `
             <img src="${$(this).find('img').attr('src')}"/>
@@ -77,32 +87,31 @@ $(document).ready(function() {
             },
             success: function (response) {
                 $('.messagesUl').html(response.messages)
+                messages.scrollTop = messages.scrollHeight;
             }
         });
     });
-    function stringToAscii(str) {
-        return Array.from(str).map(char => char.charCodeAt(0));
-    }
 
     $('.send-messages').find('img').on('click', function () {
         let input = $(this).parent().find('input');
         let value = $(this).parent().find('input').val();
         let receiverId = $(this).parent().parent().find('.message-item-user-info').attr('data-id');
 
+        $('.message-item').find('ul').append(
+            `
+                <li class="message owner">
+                    <p>${value}</p>
+                </li>
+                `
+        );
+        $(input).val("");
+        messages.scrollTop = messages.scrollHeight;
         $.ajax({
             type: "POST",
             url: "/message/new",
             data: JSON.stringify({ receiverId: receiverId, content: value }),
             contentType: "application/json",
             success: function (response) {
-                $('.message-item').find('ul').append(
-                    `
-                <li class="message owner">
-                    <p>${response.message}</p>
-                </li>
-                `
-                );
-                $(input).val("");
             }
         });
     });
@@ -120,15 +129,20 @@ $(document).ready(function() {
             (payload) => {
                 let {sender_id, receiver_id, content} = payload.new;
                 let logedId = sessionStorage.getItem('data-sender-id');
-
+                let newReceiverId = sessionStorage.getItem('data-id');
+                let newPhoto = sessionStorage.getItem('photo-user');
                 if(receiver_id == logedId){
-                    $('.message-item').find('ul').append(
-                        `
+                    if(sender_id == newReceiverId) {
+                        $('.message-item').find('ul').append(
+                            `
                             <li class="message other">
+                            <img src="${newPhoto}">
                             <p>${content}</p>
                             </li>
                            `
-                    )
+                        )
+                        messages.scrollTop = messages.scrollHeight;
+                    }
                 }
 
             })

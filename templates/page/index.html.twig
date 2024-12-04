@@ -7,7 +7,7 @@
                 <article class="stories-box">
                     {{ include('partials/_storie-item.html.twig',{'profileImage':profileImage}) }}
                 </article>
-                {{ include('partials/_posts.html.twig', {'posts':posts,'form':form,'images':images,'profileImage':profileImage,'isLikedByUser':isLikedByUser,'isSavedByUser':isSavedByUser,'timeElapsed':timeElapsed}) }}
+                {{ include('partials/_posts.html.twig', {'posts':posts,'images':images,'profileImage':profileImage,'isLikedByUser':isLikedByUser,'isSavedByUser':isSavedByUser,'timeElapsed':timeElapsed}) }}
                 <div id="modalComment">
                 </div>
             </section>

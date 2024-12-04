@@ -119,30 +119,6 @@ class IndexController extends AbstractController
                 $firebaseImageCache->getImage($post['photo']);
             }
             $images[$post['id']] = $imageCache->getPostImage($post['photo']);
-
-
-            $comment = new Comment();
-            $form = $this->createForm(CommentFormType::class, $comment, [
-                'action' => $this->generateUrl('index', ['post_id' => $post['id']]),
-            ]);
-            $form->handleRequest($request);
-            $commentForms[$post['id']] = $form;
-
-            if ($form->isSubmitted() && $form->isValid() && $request->query->get('post_id') == $post['id']) {
-                $comment = $form->getData();
-                $postCommented = $repositoryPosts->find($post['id']);
-                $comment->setPost($postCommented);
-                $comment->setUser($this->getUser());
-
-                $manager = $doctrine->getManager();
-                $manager->persist($comment);
-                $manager->flush();
-
-                $cache->delete('users_list_cache_key');
-                $cache->delete('posts_list_cache_key');
-
-                return $this->redirectToRoute('index');
-            }
         }
 
         return $this->render('page/index.html.twig', [
@@ -151,7 +127,6 @@ class IndexController extends AbstractController
             'user' => $this->getUser(),
             'posts' => $posts,
             'images' => $images,
-            'form' => array_map(fn($form) => $form->createView(), $commentForms),
             'isLikedByUser' => $isLikedByUser,
             'isSavedByUser' => $isSavedByUser,
             'isFollowing' => $isFollowing,
