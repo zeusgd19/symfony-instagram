@@ -60,223 +60,155 @@ window.onload = () => {
     $('#enlace-crear').click((e) => {
         e.preventDefault();
     })
-    $('#create-post').click(function (e) {
-        e.preventDefault();
-        document.body.style.overflow = 'hidden';
-        // Mostrar la modal
-        // Hacer la solicitud AJAX para obtener el formulario
-        $.post("/post/new", (response) => {
-            // Ruta a tu controlador
-            // Insertar el formulario en la modal
-            $('#formPost').html(response).removeClass('hide');
-            console.log($('#formPost'))
-            const nextButton = document.getElementById('nextButton');
-            const bodyForm = document.getElementById('body-form');
-            const filterDiv = document.getElementById('filters');
-            const imageDiv = document.getElementById('imageDiv');
-            const saturacionInput = document.getElementById("saturacion");
-            const contrasteInput = document.getElementById("contraste");
-            const tituloCabecera = document.getElementById('tituloCabecera');
-            const descriptionInput = document.getElementById('post_form_description');
-            const imagePost = document.getElementById('post_form_photo');
-            if (imagePost) {
-                imagePost.addEventListener('change', (ev) => {
-                    const file = ev.target.files[0];
 
-                    // Crear un elemento de imagen y agregarlo al div
-                    bodyForm.classList.add('hide');
-                    const img = document.createElement('img');
-                    img.src = URL.createObjectURL(file);
-                    img.classList.add('imagenDiv');
-                    img.onload = () => {
-                        // Una vez cargada la imagen, establecer el tamaño del canvas
-                        img.width = 400; // Ajusta según lo necesario
-                        img.height = 400;
-                    };
-                    imageDiv.appendChild(img);
-                    console.log('Hola')
-                    // Habilitar el botón siguiente
-                    nextButton.classList.remove('hide');
-                });
-            }
+    function initModal(type) {
+        const isPost = type === 'post';
+        const apiEndpoint = isPost ? "/post/new" : "/story/new";
+        const formId = isPost ? '#formPost' : '#formStory';
+        const compartirButtonId = isPost ? 'post_form_compartir' : null;
+            document.body.style.overflow = 'hidden';
 
-            if (nextButton) {
-                nextButton.addEventListener('click', () => {
-                    const filtros = document.getElementById('filtros').children
-                    nextButton.classList.toggle('editar');
-                    bodyForm.classList.add('hide');
-                    filterDiv.classList.remove('hide');
-                    filterDiv.prepend(imageDiv);
-                    tituloCabecera.textContent = 'Editar'; // Cambiar el título del header
-                    document.getElementById('nextButton').addEventListener('click', () => {
-                        reemplazarArchivoConImagenProcesada().then(() => {
-                            console.log('Imagen reemplazada en el input file');
-                        });
-                    });
-                    if (!nextButton.classList.contains('editar')) {
-                        nextButton.classList.add('hide');
-                        document.getElementById('post_form_compartir').classList.remove('hide');
-                        document.getElementById('filtros').classList.add('hide');
-                        bodyForm.classList.remove('hide');
-                        descriptionInput.classList.remove('hide')
-                        document.getElementById('textoInput').textContent = "Descripcion";
-                        imagePost.classList.add('hide');
-                        filterDiv.appendChild(bodyForm);
-                    }
-                    if (filtros) {
-                        Array.from(filtros).forEach(filtro => {
-                            filtro.addEventListener('click', (ev) => {
-                                switch (filtro.getAttribute('data-filters')) {
-                                    case 'blancoNegro':
-                                        imageDiv.firstElementChild.style.filter = 'grayscale(100%)';
-                                        filtrosAplicados = imageDiv.firstElementChild.style.filter;
-                                        break;
-                                    case 'desenfoque':
-                                        imageDiv.firstElementChild.style.filter = 'blur(2px)';
-                                        filtrosAplicados = imageDiv.firstElementChild.style.filter;
-                                        break;
-                                    case 'sepia':
-                                        imageDiv.firstElementChild.style.filter = 'sepia(100%)';
-                                        filtrosAplicados = imageDiv.firstElementChild.style.filter;
-                                        break;
-                                    case 'invertir':
-                                        imageDiv.firstElementChild.style.filter = 'invert(100%)';
-                                        filtrosAplicados = imageDiv.firstElementChild.style.filter;
-                                        break;
-                                    case 'normal':
-                                        imageDiv.firstElementChild.style.filter = 'none';
-                                        filtrosAplicados = imageDiv.firstElementChild.style.filter;
-                                        break;
-                                }
-                            })
+            // Cargar formulario dinámicamente
+            $.post(apiEndpoint, (response) => {
+                $(formId).html(response).removeClass('hide');
 
-                            function actualizarFiltros() {
-                                // Aplica todos los filtros acumulados
-                                imageDiv.firstElementChild.style.filter = `saturate(${saturacion}%) contrast(${contraste}%)`;
-                                filtrosAplicados = imageDiv.firstElementChild.style.filter;
-                            }
+                const nextButton = document.getElementById('nextButton');
+                const bodyForm = document.getElementById('body-form');
+                const filterDiv = document.getElementById('filters');
+                const imageDiv = document.getElementById('imageDiv');
+                const imageInput = document.getElementById('post_form_photo'); // Mismo id para posts e historias
+                const descriptionInput = document.getElementById('post_form_description'); // Solo para posts
+                const compartirButton = compartirButtonId ? document.getElementById(compartirButtonId) : null;
+                let saturacion = 100, contraste = 100, filtrosAplicados = '';
 
-                            // Escucha el evento 'input' para saturación
-                            saturacionInput.addEventListener("input", (ev) => {
-                                saturacion = ev.target.value; // Actualiza la variable de saturación
-                                actualizarFiltros();          // Aplica los cambios
-                            });
-
-                            // Escucha el evento 'input' para contraste
-                            contrasteInput.addEventListener("input", (ev) => {
-                                contraste = ev.target.value;   // Actualiza la variable de contraste
-                                actualizarFiltros();           // Aplica los cambios
-                            });
-                        })
-                    }
-                });
-            }
-            let saturacion = 100;
-            let contraste = 100;
-
-            // Función para crear un Blob a partir de la imagen procesada en el canvas
-            function obtenerImagenProcesada() {
-                const canvas = document.createElement('canvas');
-                const ctx = canvas.getContext('2d');
-                const img = imageDiv.firstElementChild; // Imagen cargada
-
-                // Configuramos el tamaño del canvas con el tamaño de la imagen
-                canvas.width = img.width;
-                canvas.height = img.height;
-
-                // Dibujamos la imagen en el canvas
-                ctx.drawImage(img, 0, 0, img.width, img.height);
-
-                if (filtrosAplicados) {
-                    // Aplicamos los filtros acumulados
-                    ctx.filter = filtrosAplicados;
+                // Mostrar botón compartir al escribir (solo posts)
+                if (isPost && descriptionInput) {
+                    compartirButton.classList.toggle('hide', false);
                 }
 
-                // Redibujamos la imagen con los filtros aplicados
-                ctx.drawImage(img, 0, 0, img.width, img.height);
+                // Actualizar filtros
+                const actualizarFiltros = () => {
+                    imageDiv.firstElementChild.style.filter = `saturate(${saturacion}%) contrast(${contraste}%)`;
+                    filtrosAplicados = imageDiv.firstElementChild.style.filter;
+                };
 
-                // Convertimos el canvas a un Blob (imagen procesada)
-                return new Promise((resolve) => {
-                    canvas.toBlob((blob) => {
-                        resolve(blob);
+                // Procesar imagen con filtros aplicados
+                const obtenerImagenProcesada = () => {
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
+                    const img = imageDiv.firstElementChild;
+                    canvas.width = img.width;
+                    canvas.height = img.height;
+                    ctx.filter = filtrosAplicados;
+                    ctx.drawImage(img, 0, 0, img.width, img.height);
+                    return new Promise((resolve) => {
+                        canvas.toBlob((blob) => resolve(blob));
                     });
-                });
-            }
+                };
 
-            // Función para reemplazar el archivo en el input con la imagen procesada
-            async function reemplazarArchivoConImagenProcesada() {
-                const blob = await obtenerImagenProcesada();
+                const reemplazarArchivoConImagenProcesada = async () => {
+                    const blob = await obtenerImagenProcesada();
+                    const processedFile = new File([blob], 'imagenProcesada.jpg', { type: 'image/jpg' });
+                    const dataTransfer = new DataTransfer();
+                    dataTransfer.items.add(processedFile);
+                    imageInput.files = dataTransfer.files;
+                };
 
-                // Crear un nuevo archivo de tipo imagen
-                const processedFile = new File([blob], 'imagenProcesada.jpg', {type: 'image/jpg'});
+                // Manejar subida de imagen
+                if (imageInput) {
+                    imageInput.addEventListener('change', (ev) => {
+                        const file = ev.target.files[0];
+                        if (!file) return;
 
-                // Crear un nuevo FileList con el archivo procesado
-                const dataTransfer = new DataTransfer();
-                dataTransfer.items.add(processedFile);
+                        bodyForm.classList.add('hide');
+                        const img = document.createElement('img');
+                        img.src = URL.createObjectURL(file);
+                        img.classList.add('imagenDiv');
+                        img.onload = () => (img.width = img.height = 400);
 
-                // Reemplazar el archivo en el input
-                imagePost.files = dataTransfer.files;
-                console.log(filtrosAplicados)
-                // Log para verificar que el archivo ha sido reemplazado correctamente
-                console.log(imagePost.files[0]);
-            }
+                        imageDiv.appendChild(img);
+                        nextButton.classList.remove('hide');
+                    });
+                }
 
-        // Llamar a esta función cuando se quiera reemplazar la imagen en el input
-        });
+                // Manejar botón "Siguiente/Editar"
+                if (nextButton) {
+                    nextButton.addEventListener('click', () => {
+                        nextButton.classList.toggle('editar');
 
-        // Mostrar el botón de compartir
-        $('#compartir').removeClass('hide');
-        let isSubmitting = false;
-        $('#formPost').off('submit').on('submit', 'form', function (e) {
-            e.preventDefault();
-            if (isSubmitting) return;
+                        if (nextButton.classList.contains('editar')) {
+                            bodyForm.classList.add('hide');
+                            filterDiv.classList.remove('hide');
+                            filterDiv.prepend(imageDiv);
+                            document.getElementById('tituloCabecera').textContent = 'Editar';
+                        } else {
+                            nextButton.classList.add('hide');
+                            filterDiv.classList.add('hide');
+                            bodyForm.classList.remove('hide');
+                            if (isPost) descriptionInput.classList.remove('hide');
+                            imageInput.classList.add('hide');
+                        }
 
-            isSubmitting = true;
-            $('#formPost button[type="submit"]').prop('disabled', true);
-            const formData = new FormData(this); // Crea un FormData con el formulario
-
-            $.ajax({
-                url: '/post/new',
-                type: 'POST',
-                data: formData,
-                processData: false,
-                contentType: false,
-                success: function (response) {
-                    isSubmitting = false;
-                    if (response.status === 'success') {
-                        console.log(response.message)// Muestra un mensaje de éxito
-                        $('#formPost').addClass('hide');// Oculta el formulario
-                        document.body.style.overflow = 'scroll';
-                        window.location.reload()
-                        const newDeleteButton = $('#postSection').find('button.deleteImage');
-
-                        $(newDeleteButton).click((ev) => {
-                            ev.preventDefault();
-                            const id = $(ev.currentTarget).data('id'); // Accede al data-id correctamente
-
-                            // Muestra un botón o confirma la eliminación
-                            $(`a[data-id=${id}]`).toggleClass('hide').click((ev) => {
-                                ev.preventDefault();
-
-                                $.get(`/post/delete/${id}`, (response) => {
-                                    if (response.success) {
-                                        // Si la eliminación es exitosa, elimina el post del DOM
-                                        $(`#post-${id}`).slideUp(400, function () {
-                                            $(this).remove(); // Elimina el elemento una vez completada la animación
-                                        });
-                                    }
-                                });
+                        // Filtros
+                        Array.from(document.getElementById('filtros').children).forEach(filtro => {
+                            filtro.addEventListener('click', () => {
+                                const filterType = filtro.getAttribute('data-filters');
+                                const filterMap = {
+                                    blancoNegro: 'grayscale(100%)',
+                                    desenfoque: 'blur(2px)',
+                                    sepia: 'sepia(100%)',
+                                    invertir: 'invert(100%)',
+                                    normal: 'none'
+                                };
+                                imageDiv.firstElementChild.style.filter = filterMap[filterType] || 'none';
+                                filtrosAplicados = imageDiv.firstElementChild.style.filter;
                             });
                         });
-                    }
-                },
-                error: function () {
-                    isSubmitting = false;
-                    alert('Hubo un error al enviar el formulario');
+
+                        // Saturación y Contraste
+                        document.getElementById("saturacion").addEventListener("input", (ev) => {
+                            saturacion = ev.target.value;
+                            actualizarFiltros();
+                        });
+                        document.getElementById("contraste").addEventListener("input", (ev) => {
+                            contraste = ev.target.value;
+                            actualizarFiltros();
+                        });
+
+                        // Reemplazar archivo procesado
+                        nextButton.addEventListener('click', reemplazarArchivoConImagenProcesada);
+                    });
                 }
             });
-        });
-    });
+
+            // Enviar formulario
+            $(formId).off('submit').on('submit', 'form', function (e) {
+                e.preventDefault();
+                const formData = new FormData(this);
+
+                $.ajax({
+                    url: apiEndpoint,
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function (response) {
+                        if (response.status === 'success') {
+                            $(formId).addClass('hide');
+                            document.body.style.overflow = 'scroll';
+                            window.location.reload();
+                        }
+                    },
+                    error: () => alert('Hubo un error al enviar el formulario')
+                });
+            });
+    }
+
+    $('#create-post').click(function(e){
+        console.log('Hola')
+        e.preventDefault();
+        initModal('post');
+    })
 
 
 

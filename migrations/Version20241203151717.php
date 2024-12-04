@@ -20,19 +20,19 @@ final class Version20241203151717 extends AbstractMigration
     public function up(Schema $schema): void
     {
         // this up() migration is auto-generated, please modify it to your needs
-        $this->addSql('DROP SEQUENCE pgsodium.key_key_id_seq CASCADE');
-        $this->addSql('DROP SEQUENCE graphql.seq_schema_version CASCADE');
-        $this->addSql('CREATE SEQUENCE historia_id_seq INCREMENT BY 1 MINVALUE 1 START 1');
+        //$this->addSql('DROP SEQUENCE pgsodium.key_key_id_seq CASCADE');
+        //$this->addSql('DROP SEQUENCE graphql.seq_schema_version CASCADE');
+        //$this->addSql('CREATE SEQUENCE historia_id_seq INCREMENT BY 1 MINVALUE 1 START 1');
         $this->addSql('CREATE TABLE historia (id INT NOT NULL, usuario_id INT DEFAULT NULL, contenido VARCHAR(255) NOT NULL, fecha_publicacion TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, fecha_expiracion TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, PRIMARY KEY(id))');
         $this->addSql('CREATE INDEX IDX_435C8E7ADB38439E ON historia (usuario_id)');
         $this->addSql('ALTER TABLE historia ADD CONSTRAINT FK_435C8E7ADB38439E FOREIGN KEY (usuario_id) REFERENCES user_postgres (id) NOT DEFERRABLE INITIALLY IMMEDIATE');
-        $this->addSql('DROP TABLE realtime.messages_2024_12_01');
-        $this->addSql('DROP TABLE realtime.subscription');
-        $this->addSql('DROP TABLE realtime.messages_2024_11_30');
-        $this->addSql('DROP TABLE realtime.schema_migrations');
-        $this->addSql('DROP TABLE realtime.messages_2024_12_04');
-        $this->addSql('DROP TABLE realtime.messages_2024_12_03');
-        $this->addSql('DROP TABLE realtime.messages_2024_12_02');
+        //$this->addSql('DROP TABLE realtime.messages_2024_12_01');
+        //$this->addSql('DROP TABLE realtime.subscription');
+        //$this->addSql('DROP TABLE realtime.messages_2024_11_30');
+        //$this->addSql('DROP TABLE realtime.schema_migrations');
+        //$this->addSql('DROP TABLE realtime.messages_2024_12_04');
+        //$this->addSql('DROP TABLE realtime.messages_2024_12_03');
+        //$this->addSql('DROP TABLE realtime.messages_2024_12_02');
     }
 
     public function down(Schema $schema): void
