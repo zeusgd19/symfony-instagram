@@ -361,6 +361,17 @@ footer p {
 }
 
 /* Modal Styling */
+
+.loading-container {
+    display: flex;
+    justify-content: center; /* Centrar horizontalmente */
+    align-items: center;    /* Centrar verticalmente */
+    height: 100%;           /* Asegúrate de que ocupe toda la altura del contenedor */
+}
+
+#modalComment {
+    display: none;
+}
 .modal {
     display: flex;
     justify-content: center;
@@ -377,7 +388,6 @@ footer p {
     border: 1px solid #dbdbdb;
     box-shadow: 0 0 400px 400px rgba(0, 0, 0, 0.5);
 }
-
 
 .modal-image {
     flex: 1;

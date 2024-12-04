@@ -24,7 +24,7 @@ class HistoriaController extends AbstractController
         $this->firebaseService=$firebaseService;
     }
 
-    #[Route('/historia/nueva', name: 'nueva_historia')]
+    #[Route('/story/new', name: 'nueva_historia')]
     public function index(ManagerRegistry $doctrine, Request $request, SluggerInterface $slugger,FirebaseImageCache $firebaseImageCache, CacheInterface $cache): Response
     {
 
