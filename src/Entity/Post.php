@@ -144,3 +144,4 @@ class Post
         return $this;
     }
 }
+

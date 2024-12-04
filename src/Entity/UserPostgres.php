@@ -61,6 +61,7 @@ class UserPostgres implements UserInterface, PasswordAuthenticatedUserInterface
         $this->follower = new ArrayCollection();
         $this->following = new ArrayCollection();
         $this->likedPosts = new ArrayCollection();
+
         $this->savedPosts = new ArrayCollection();
     }
 
