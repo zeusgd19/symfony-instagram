@@ -2,7 +2,7 @@
 
 namespace App\Form;
 
-use App\Entity\Historia;
+use App\Entity\Story;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -29,7 +29,7 @@ class StoryFormType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => Historia::class,
+            'data_class' => Story::class,
         ]);
     }
 }

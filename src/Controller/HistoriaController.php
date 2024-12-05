@@ -2,7 +2,7 @@
 
 namespace App\Controller;
 
-use App\Entity\Historia;
+use App\Entity\Story;
 use App\Form\StoryFormType;
 use App\Service\FirebaseImageCache;
 use App\Service\FirebaseService;
@@ -28,7 +28,7 @@ class HistoriaController extends AbstractController
     public function index(ManagerRegistry $doctrine, Request $request, SluggerInterface $slugger,FirebaseImageCache $firebaseImageCache, CacheInterface $cache): Response
     {
 
-        $story = new Historia();
+        $story = new Story();
         $formulario = $this->createForm(StoryFormType::class,$story);
 
         $formulario->handleRequest($request);
@@ -51,10 +51,10 @@ class HistoriaController extends AbstractController
 
                 // updates the 'file$filename' property to store the PDF file name
                 // instead of its contents
-                $story->setContenido($firebaseUrl);
+                $story->setImageStory($firebaseUrl);
             }
             $story = $formulario->getData();
-            $story->setUser($this->getUser());
+            $story->setUserStory($this->getUser());
             $entityManager = $doctrine->getManager();
             $entityManager->persist($story);
             $entityManager->flush();
