@@ -49,6 +49,7 @@ body {
     display: flex;
     gap: 100px;
     justify-content: center;
+    align-items: center;
 }
 
 .story {
@@ -71,4 +72,25 @@ body {
 }
 .button > img{
     width: 75px;
+}
+
+.story-name-photo{
+    display: flex;
+    align-items: center;
+    position: absolute;
+    z-index: 1000;
+    margin: 10px;
+}
+
+.story-name-photo > img{
+    width: 50px;
+    height: 50px;
+    border-radius: 100%;
+}
+
+.story-name-photo > p{
+    margin-left: 10px;
+    border: white 1px;
+    color: white;
+    font-weight: bolder;
 }
