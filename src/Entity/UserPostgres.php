@@ -55,12 +55,6 @@ class UserPostgres implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\JoinTable(name: 'saved_posts')]
     private Collection $savedPosts;
 
-    #[ORM\OneToMany(mappedBy: 'usuario', targetEntity: Historia::class)]
-    private Collection $contenido;
-
-    #[ORM\OneToMany(mappedBy: 'usuario', targetEntity: Historia::class)]
-    private Collection $historias;
-
     public function __construct(){
         $this->photo = 'https://firebasestorage.googleapis.com/v0/b/pdf-resummer-d822e.appspot.com/o/profile-images%2Fsin-imagen.png?alt=media';
         $this->description = '';
@@ -69,8 +63,6 @@ class UserPostgres implements UserInterface, PasswordAuthenticatedUserInterface
         $this->likedPosts = new ArrayCollection();
 
         $this->savedPosts = new ArrayCollection();
-        $this->contenido = new ArrayCollection();
-        $this->historias = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -261,66 +253,6 @@ class UserPostgres implements UserInterface, PasswordAuthenticatedUserInterface
     public function removeSavedPost(Post $savedPost): static
     {
         $this->savedPosts->removeElement($savedPost);
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Historia>
-     */
-    public function getContenido(): Collection
-    {
-        return $this->contenido;
-    }
-
-    public function addContenido(Historia $contenido): static
-    {
-        if (!$this->contenido->contains($contenido)) {
-            $this->contenido->add($contenido);
-            $contenido->setUsuario($this);
-        }
-
-        return $this;
-    }
-
-    public function removeContenido(Historia $contenido): static
-    {
-        if ($this->contenido->removeElement($contenido)) {
-            // set the owning side to null (unless already changed)
-            if ($contenido->getUsuario() === $this) {
-                $contenido->setUsuario(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Historia>
-     */
-    public function getHistorias(): Collection
-    {
-        return $this->historias;
-    }
-
-    public function addHistoria(Historia $historia): static
-    {
-        if (!$this->historias->contains($historia)) {
-            $this->historias->add($historia);
-            $historia->setUsuario($this);
-        }
-
-        return $this;
-    }
-
-    public function removeHistoria(Historia $historia): static
-    {
-        if ($this->historias->removeElement($historia)) {
-            // set the owning side to null (unless already changed)
-            if ($historia->getUsuario() === $this) {
-                $historia->setUsuario(null);
-            }
-        }
 
         return $this;
     }
