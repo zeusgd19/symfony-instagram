@@ -4,18 +4,19 @@ namespace App\Controller;
 
 use App\Entity\Historia;
 use App\Form\StoryFormType;
+use App\Repository\HistoriaRepository;
 use App\Service\FirebaseImageCache;
 use App\Service\FirebaseService;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\String\Slugger\SluggerInterface;
 use Symfony\Contracts\Cache\CacheInterface;
 
-class HistoriaController extends AbstractController
+class StoryController extends AbstractController
 {
     private FirebaseService $firebaseService;
 
@@ -25,7 +26,7 @@ class HistoriaController extends AbstractController
     }
 
     #[Route('/story/new', name: 'nueva_historia')]
-    public function index(ManagerRegistry $doctrine, Request $request, SluggerInterface $slugger,FirebaseImageCache $firebaseImageCache, CacheInterface $cache): Response
+    public function newStory(ManagerRegistry $doctrine, Request $request, SluggerInterface $slugger,FirebaseImageCache $firebaseImageCache, CacheInterface $cache): Response
     {
 
         $story = new Historia();
@@ -67,6 +68,29 @@ class HistoriaController extends AbstractController
 
         return $this->render('partials/_storyForm.html.twig', [
             'form' => $formulario->createView()
+        ]);
+    }
+    #[Route('/story', name: 'story')]
+    public function index(HistoriaRepository $historiaRepository): Response
+    {
+        $user = $this->getUser();
+
+        $historias = $historiaRepository->findActiveStoriesByUser($user);
+
+        if (!$user) {
+            return $this->redirectToRoute('login');
+        }
+
+        $currentIndex = 1; // Simulamos que estamos viendo la segunda historia (índice 1)
+        $previousStory = $historias[$currentIndex - 1] ?? null;
+        $currentStory = $historias[$currentIndex] ?? null;
+        $nextStory = $historias[$currentIndex + 1] ?? null;
+
+        return $this->render('page/story.html.twig', [
+            'user' => $user,
+            'previousStory' => $previousStory,
+            'currentStory' => $currentStory,
+            'nextStory' => $nextStory,
         ]);
     }
 }

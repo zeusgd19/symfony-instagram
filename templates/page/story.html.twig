@@ -8,7 +8,7 @@
 </head>
 <body>
 <div class="story-menu">
-    <a href="#">Salir</a>
+    <a href="{{ path('index') }}">Salir</a>
 </div>
 <div class="story-main-content">
 
@@ -16,23 +16,23 @@
 
         <div class="story-left">
             <div class="story-name-photo">
-                <img src="img/naruto-meme.jpeg">
-                <p>Nombre</p>
+                <img src={{ user.photo }}>
+                <p>{{ user.username }}</p>
             </div>
             <div class="story blurred">
-                <img src="./img/playa-1.jpg" alt="playa">
+                <img src="{{ asset('img/playa-1.jpg') }}" alt="playa">
             </div>
         </div>
         <div class="button previous">
-            <img src="img/previous-button.svg">
+            <img src="{{ asset('img/previous-button.svg') }}">
         </div>
         <div class="story-center">
             <div class="story-name-photo">
-                <img src="img/naruto-meme.jpeg">
-                <p>Nombre</p>
+                <img src={{ user.photo }}>
+                <p>{{ user.username }}</p>
             </div>
             <div class="story">
-                <img src="./img/playa-2.jpg" alt="playa">
+                <img src="{{ asset('/img/playa-2.jpg') }}" alt="playa">
             </div>
         </div>
         <div class="button next">
@@ -40,11 +40,11 @@
         </div>
         <div class="story-right">
             <div class="story-name-photo">
-                <img src="img/naruto-meme.jpeg">
-                <p>Nombre</p>
+                <img src={{ user.photo }}>
+                <p>{{ user.username }}</p>
             </div>
             <div class="story blurred">
-                <img src="./img/playa-3.jpg" alt="playa">
+                <img src="{{ asset('/img/playa-3.jpg') }}" alt="playa">
             </div>
         </div>
     </div>
