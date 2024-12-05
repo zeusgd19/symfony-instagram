@@ -67,119 +67,134 @@ window.onload = () => {
         const formId = isPost ? '#formPost' : '#formStory';
         const compartirButtonId = isPost ? 'post_form_compartir' : null;
             document.body.style.overflow = 'hidden';
-
             // Cargar formulario dinámicamente
-            $.post(apiEndpoint, (response) => {
-                $(formId).html(response).removeClass('hide');
 
-                const nextButton = document.getElementById('nextButton');
-                const bodyForm = document.getElementById('body-form');
-                const filterDiv = document.getElementById('filters');
-                const imageDiv = document.getElementById('imageDiv');
-                const imageInput = document.getElementById('post_form_photo'); // Mismo id para posts e historias
-                const descriptionInput = document.getElementById('post_form_description'); // Solo para posts
-                const compartirButton = compartirButtonId ? document.getElementById(compartirButtonId) : null;
-                let saturacion = 100, contraste = 100, filtrosAplicados = '';
-
-                // Mostrar botón compartir al escribir (solo posts)
-                if (isPost && descriptionInput) {
-                    compartirButton.classList.toggle('hide', false);
-                }
-
-                // Actualizar filtros
-                const actualizarFiltros = () => {
-                    imageDiv.firstElementChild.style.filter = `saturate(${saturacion}%) contrast(${contraste}%)`;
-                    filtrosAplicados = imageDiv.firstElementChild.style.filter;
-                };
-
-                // Procesar imagen con filtros aplicados
-                const obtenerImagenProcesada = () => {
-                    const canvas = document.createElement('canvas');
-                    const ctx = canvas.getContext('2d');
-                    const img = imageDiv.firstElementChild;
-                    canvas.width = img.width;
-                    canvas.height = img.height;
-                    ctx.filter = filtrosAplicados;
-                    ctx.drawImage(img, 0, 0, img.width, img.height);
-                    return new Promise((resolve) => {
-                        canvas.toBlob((blob) => resolve(blob));
-                    });
-                };
-
-                const reemplazarArchivoConImagenProcesada = async () => {
-                    const blob = await obtenerImagenProcesada();
-                    const processedFile = new File([blob], 'imagenProcesada.jpg', { type: 'image/jpg' });
-                    const dataTransfer = new DataTransfer();
-                    dataTransfer.items.add(processedFile);
-                    imageInput.files = dataTransfer.files;
-                };
-
-                // Manejar subida de imagen
-                if (imageInput) {
-                    imageInput.addEventListener('change', (ev) => {
-                        const file = ev.target.files[0];
-                        if (!file) return;
-
-                        bodyForm.classList.add('hide');
-                        const img = document.createElement('img');
-                        img.src = URL.createObjectURL(file);
-                        img.classList.add('imagenDiv');
-                        img.onload = () => (img.width = img.height = 400);
-
-                        imageDiv.appendChild(img);
-                        nextButton.classList.remove('hide');
-                    });
-                }
-
-                // Manejar botón "Siguiente/Editar"
-                if (nextButton) {
-                    nextButton.addEventListener('click', () => {
-                        nextButton.classList.toggle('editar');
-
-                        if (nextButton.classList.contains('editar')) {
-                            bodyForm.classList.add('hide');
-                            filterDiv.classList.remove('hide');
-                            filterDiv.prepend(imageDiv);
-                            document.getElementById('tituloCabecera').textContent = 'Editar';
-                        } else {
-                            nextButton.classList.add('hide');
-                            filterDiv.classList.add('hide');
-                            bodyForm.classList.remove('hide');
-                            if (isPost) descriptionInput.classList.remove('hide');
-                            imageInput.classList.add('hide');
+            $.ajax({
+                type: 'POST',
+                url: apiEndpoint,
+                dataType: 'html',
+                    beforeSend: function() {
+                        // Verificamos si el cargador ya está presente en el formulario
+                        if ($(formId).find('div.loading-container').length === 0) {
+                            // Agregamos el cargador solo si no existe
+                            $(formId).html('<div class="loading-container"><img src="img/loading-buffer.gif" width="30" height="30"></div>');
                         }
 
-                        // Filtros
-                        Array.from(document.getElementById('filtros').children).forEach(filtro => {
-                            filtro.addEventListener('click', () => {
-                                const filterType = filtro.getAttribute('data-filters');
-                                const filterMap = {
-                                    blancoNegro: 'grayscale(100%)',
-                                    desenfoque: 'blur(2px)',
-                                    sepia: 'sepia(100%)',
-                                    invertir: 'invert(100%)',
-                                    normal: 'none'
-                                };
-                                imageDiv.firstElementChild.style.filter = filterMap[filterType] || 'none';
-                                filtrosAplicados = imageDiv.firstElementChild.style.filter;
-                            });
-                        });
+                        // Aseguramos que el formulario siga visible sin usar slideUp() o slideDown()
+                        $(formId).slideDown();
+                    },
+                    success: function(data) {
+                        // Reemplazamos solo el contenido del formulario con la nueva información
+                        $(formId).html(data);
+                    }
+            })
+        const nextButton = document.getElementById('nextButton');
+        const bodyForm = document.getElementById('body-form');
+        const filterDiv = document.getElementById('filters');
+        const imageDiv = document.getElementById('imageDiv');
+        const imageInput = document.getElementById('post_form_photo'); // Mismo id para posts e historias
+        const descriptionInput = document.getElementById('post_form_description'); // Solo para posts
+        const compartirButton = compartirButtonId ? document.getElementById(compartirButtonId) : null;
+        let saturacion = 100, contraste = 100, filtrosAplicados = '';
 
-                        // Saturación y Contraste
-                        document.getElementById("saturacion").addEventListener("input", (ev) => {
-                            saturacion = ev.target.value;
-                            actualizarFiltros();
-                        });
-                        document.getElementById("contraste").addEventListener("input", (ev) => {
-                            contraste = ev.target.value;
-                            actualizarFiltros();
-                        });
+        // Mostrar botón compartir al escribir (solo posts)
+        if (isPost && descriptionInput) {
+            compartirButton.classList.toggle('hide', false);
+        }
 
-                        // Reemplazar archivo procesado
-                        nextButton.addEventListener('click', reemplazarArchivoConImagenProcesada);
-                    });
-                }
+        // Actualizar filtros
+        const actualizarFiltros = () => {
+            imageDiv.firstElementChild.style.filter = `saturate(${saturacion}%) contrast(${contraste}%)`;
+            filtrosAplicados = imageDiv.firstElementChild.style.filter;
+        };
+
+        // Procesar imagen con filtros aplicados
+        const obtenerImagenProcesada = () => {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            const img = imageDiv.firstElementChild;
+            canvas.width = img.width;
+            canvas.height = img.height;
+            ctx.filter = filtrosAplicados;
+            ctx.drawImage(img, 0, 0, img.width, img.height);
+            return new Promise((resolve) => {
+                canvas.toBlob((blob) => resolve(blob));
             });
+        };
+
+        const reemplazarArchivoConImagenProcesada = async () => {
+            const blob = await obtenerImagenProcesada();
+            const processedFile = new File([blob], 'imagenProcesada.jpg', { type: 'image/jpg' });
+            const dataTransfer = new DataTransfer();
+            dataTransfer.items.add(processedFile);
+            imageInput.files = dataTransfer.files;
+        };
+
+        // Manejar subida de imagen
+        if (imageInput) {
+            imageInput.addEventListener('change', (ev) => {
+                const file = ev.target.files[0];
+                if (!file) return;
+
+                bodyForm.classList.add('hide');
+                const img = document.createElement('img');
+                img.src = URL.createObjectURL(file);
+                img.classList.add('imagenDiv');
+                img.onload = () => (img.width = img.height = 400);
+
+                imageDiv.appendChild(img);
+                nextButton.classList.remove('hide');
+            });
+        }
+
+        // Manejar botón "Siguiente/Editar"
+        if (nextButton) {
+            nextButton.addEventListener('click', () => {
+                nextButton.classList.toggle('editar');
+
+                if (nextButton.classList.contains('editar')) {
+                    bodyForm.classList.add('hide');
+                    filterDiv.classList.remove('hide');
+                    filterDiv.prepend(imageDiv);
+                    document.getElementById('tituloCabecera').textContent = 'Editar';
+                } else {
+                    nextButton.classList.add('hide');
+                    filterDiv.classList.add('hide');
+                    bodyForm.classList.remove('hide');
+                    if (isPost) descriptionInput.classList.remove('hide');
+                    imageInput.classList.add('hide');
+                }
+
+                // Filtros
+                Array.from(document.getElementById('filtros').children).forEach(filtro => {
+                    filtro.addEventListener('click', () => {
+                        const filterType = filtro.getAttribute('data-filters');
+                        const filterMap = {
+                            blancoNegro: 'grayscale(100%)',
+                            desenfoque: 'blur(2px)',
+                            sepia: 'sepia(100%)',
+                            invertir: 'invert(100%)',
+                            normal: 'none'
+                        };
+                        imageDiv.firstElementChild.style.filter = filterMap[filterType] || 'none';
+                        filtrosAplicados = imageDiv.firstElementChild.style.filter;
+                    });
+                });
+
+                // Saturación y Contraste
+                document.getElementById("saturacion").addEventListener("input", (ev) => {
+                    saturacion = ev.target.value;
+                    actualizarFiltros();
+                });
+                document.getElementById("contraste").addEventListener("input", (ev) => {
+                    contraste = ev.target.value;
+                    actualizarFiltros();
+                });
+
+                // Reemplazar archivo procesado
+                nextButton.addEventListener('click', reemplazarArchivoConImagenProcesada);
+            });
+        }
 
             // Enviar formulario
             $(formId).off('submit').on('submit', 'form', function (e) {
@@ -208,6 +223,12 @@ window.onload = () => {
         console.log('Hola')
         e.preventDefault();
         initModal('post');
+    })
+
+    $('#create-story').click(function(e){
+        console.log('Hola')
+        e.preventDefault();
+        initModal('story');
     })
 
 
@@ -325,41 +346,36 @@ window.onload = () => {
         });
     });
 
-    // Asociar el evento click solo una vez
     $(comments).off().on('click', function (ev) {
-        ev.preventDefault(); // Prevenir el comportamiento predeterminado del botón/enlace
+        ev.preventDefault();
         console.log('Hola');
-        const postId = $(this).attr('id'); // ID del post asociado al botón
-        const xhr = new XMLHttpRequest();
-        xhr.open('POST', `/comments/${postId}`);
-        xhr.addEventListener('readystatechange', (ev) => {
-            if (xhr.readyState !== 4) return;
+        const postId = $(this).attr('id');
+        $.ajax({
+            type: 'POST',
+            url: `/comments/${postId}`,
+            dataType: 'html',
+            beforeSend: function() {
+                $('#modalComment').html('<div class="loading-container"><img src="img/loading-buffer.gif" width="30" height="30"></div>');
 
-            if (xhr.status >= 200 && xhr.status < 300) {
-                // Reemplazar el contenido del modal dinámico
-                document.getElementById('modalComment').innerHTML = xhr.responseText;
-
-                // Seleccionar el modal recién cargado
-                const commentModal = $('#postSection').find('#commentModal');
-                $(commentModal).removeClass('hide'); // Mostrar modal
-                document.body.style.overflow = "hidden"; // Desactivar scroll
+                $('#modalComment').slideDown();
+            },
+            success: function(data) {
+                $('#modalComment').html(data);
             }
-        });
-
-        xhr.send();
+        })
     });
 
     $(document).on('click', function (event) {
-        const activeModals = ['#commentModal', '#modalEmoji', '#formPost']; // Selección de todos los modales
+        const activeModals = ['#commentModal', '#modalEmoji', '#formPost', '#formStory']; // Selección de todos los modales
+        const openButtonSelectors = ['.emoji', '.formulario-post', '.comment', '#create-story', '#create-post']; // Botones que abren las modales
 
         activeModals.forEach(modalSelector => {
             const modal = $(modalSelector);
-            if (
-                modal.length > 0 && // Verifica que el modal exista en el DOM
-                !$(event.target).closest(modal).length && // Clic fuera del modal
-                !$(event.target).is(`[data-target="${modalSelector}"]`) // No es el botón que lo abre
-            ) {
-                modal.addClass('hide'); // Ocultar modal
+
+            // Verifica si el clic fue fuera del modal y no en los botones que abren los modales
+            if (!modal.is(event.target) && modal.has(event.target).length === 0 && !$(event.target).closest(openButtonSelectors.join(', ')).length) {
+                console.log('Clic fuera del modal');
+                modal.hide('slow'); // Ocultar modal
                 document.body.style.overflow = ""; // Restaurar scroll
             }
         });

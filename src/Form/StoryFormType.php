@@ -2,16 +2,14 @@
 
 namespace App\Form;
 
-use App\Entity\Post;
+use App\Entity\Historia;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use function Sodium\add;
 
-class PostFormType extends AbstractType
+class StoryFormType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
@@ -22,20 +20,16 @@ class PostFormType extends AbstractType
                 'required' => false,
                 'attr' => ['id' => 'postInput'], // Asignando el id al input de tipo file
             ])
-            ->add('description', TextareaType::class, [
-                'label' => 'Descripción',
-                'required' => false,
-                'attr' => ['id' => 'description'], // Asignando el id al textarea
-            ])
-        ->add('compartir', SubmitType::class,[
-            'label' => 'Compartir'
-        ]);
+            ->add('compartir', SubmitType::class,[
+                'label' => 'Compartir'
+            ]);
+        ;
     }
 
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => Post::class,
+            'data_class' => Historia::class,
         ]);
     }
 }

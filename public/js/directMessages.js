@@ -55,7 +55,7 @@ $(document).ready(function() {
         sessionStorage.removeItem('selectedUser');
     }
 
-    $('.user-item').on('click',function(){
+    $(document).on('click','.user-item',function(){
 
         sessionStorage.removeItem('data-sender-id');
         sessionStorage.removeItem('data-id');
@@ -126,11 +126,38 @@ $(document).ready(function() {
         .on(
             'postgres_changes',
             { event: 'insert', schema: 'public', table: 'message' },
-            (payload) => {
+            async (payload) => {
                 let {sender_id, receiver_id, content} = payload.new;
+                let lastSenderId = -1;
                 let logedId = sessionStorage.getItem('data-sender-id');
                 let newReceiverId = sessionStorage.getItem('data-id');
                 let newPhoto = sessionStorage.getItem('photo-user');
+                if(lastSenderId != sender_id && logedId != sender_id){
+                    const { data: user, error } = await cliente
+                        .from('user_postgres')
+                        .select('id, username, photo')
+                        .eq('id', sender_id)
+                        .single();
+
+                    if (error) {
+                        console.error('Error al obtener datos del usuario:', error);
+                        return;
+                    }
+
+                    // Añadir el mensaje al frontend
+                    $('.message-user-item').append(`
+                        <div class="user-item" data-id="${user.id}" data-sender-id="${receiver_id}">
+                        <img src="${user.photo}" alt="Photo" />
+                        <div>
+                            <p id="usernameMessageItem">${user.username}</p>
+                        </div>
+                    </div>
+                `);
+                    sessionStorage.setItem('data-sender-id',receiver_id);
+                    sessionStorage.setItem('data-id',user.id);
+                    sessionStorage.setItem('photo-user',user.photo);
+                    lastSenderId = sender_id;
+                }
                 if(receiver_id == logedId){
                     if(sender_id == newReceiverId) {
                         $('.message-item').find('ul').append(

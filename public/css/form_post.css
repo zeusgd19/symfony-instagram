@@ -7,6 +7,7 @@
     top: 15%;
     left: 30%;
     z-index: 10000;
+    display: none;
 }
 .cabecera-form {
     background-color: #0a0a0a;
@@ -93,4 +94,11 @@
     width: 100%;
     margin-top: 20px;
     resize: none;
+}
+
+.loading-container {
+    display: flex;
+    justify-content: center; /* Centrar horizontalmente */
+    align-items: center;    /* Centrar verticalmente */
+    height: 100%;       /* Asegúrate de que ocupe toda la altura del contenedor */
 }
