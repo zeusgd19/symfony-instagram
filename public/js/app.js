@@ -156,7 +156,7 @@ window.onload = () => {
                                         filterDiv.classList.add('hide');
                                         bodyForm.classList.remove('hide');
                                         $(bodyForm).find('p').remove();
-                                        $(imageInput).parent().remove();
+                                        $(imageInput).parent().hide();
                                         $(bodyForm).append(imageDiv);
                                         compartirButton.classList.remove('hide');
                                     } else {
@@ -203,7 +203,7 @@ window.onload = () => {
                         $(formId).off('submit').on('submit', 'form', function (e) {
                             e.preventDefault();
                             const formData = new FormData(this);
-
+                            console.log(formData)
                             $.ajax({
                                 url: apiEndpoint,
                                 type: 'POST',
@@ -219,7 +219,9 @@ window.onload = () => {
                                 },
                                 error: () => alert('Hubo un error al enviar el formulario')
                             });
+
                         });
+
                     }
             })
     }

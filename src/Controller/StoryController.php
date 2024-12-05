@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Story;
 use App\Form\StoryFormType;
 use App\Repository\HistoriaRepository;
+use App\Repository\StoryRepository;
 use App\Service\FirebaseImageCache;
 use App\Service\FirebaseService;
 use Doctrine\Persistence\ManagerRegistry;
@@ -71,7 +72,7 @@ class StoryController extends AbstractController
         ]);
     }
     #[Route('/story', name: 'story')]
-    public function index(HistoriaRepository $historiaRepository): Response
+    public function index(StoryRepository $historiaRepository): Response
     {
         $user = $this->getUser();
 
