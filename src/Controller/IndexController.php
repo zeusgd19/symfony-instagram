@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Comment;
 use App\Entity\Post;
+use App\Entity\Story;
 use App\Entity\UserPostgres;
 use App\Form\CommentFormType;
 use App\Service\FirebaseImageCache;
@@ -41,6 +42,9 @@ class IndexController extends AbstractController
                 ];
             }, $repository->findAll());
         });
+
+        $storyRepository = $doctrine->getRepository(Story::class);
+        $stories = $storyRepository->findAll();
 
         $users = [];
         $profileImages = [];
@@ -130,7 +134,8 @@ class IndexController extends AbstractController
             'isLikedByUser' => $isLikedByUser,
             'isSavedByUser' => $isSavedByUser,
             'isFollowing' => $isFollowing,
-            'timeElapsed' => $timeElapsed
+            'timeElapsed' => $timeElapsed,
+            'stories' => $stories
         ]);
     }
 }
