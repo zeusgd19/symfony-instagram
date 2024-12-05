@@ -6,9 +6,8 @@
         <p id="textoInput">Selecciona la foto</p>
             {{ form_start(form) }}
             <div>
-                {{ form_widget(form.photo, {'attr': {'id': 'postInput'}}) }} <!-- Campo para subir fotos -->
+                {{ form_widget(form.photo, {'attr': {'id': 'postInput'}}) }}
             </div>
-            <!-- El botón de compartir se encuentra fuera del form_row -->
             {{ form_widget(form.compartir, {'attr': {'class': 'hide'}})}}
             {{ form_end(form) }}
     </div>
