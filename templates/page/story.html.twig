@@ -4,24 +4,51 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Story</title>
-    <link rel="stylesheet" href="{{ asset("css/story.css") }}">
+    <link rel="stylesheet" href="{{asset('css/story.css')}}">
 </head>
 <body>
 <div class="story-menu">
-    <a href="{{ path("index") }}">Salir</a>
+    <a href="#">Salir</a>
 </div>
 <div class="story-main-content">
+
     <div class="story-container">
-        <div class="story blurred">
-            <img src="./img/playa-1.jpg" alt="playa">
+
+        <div class="story-left">
+            <div class="story-name-photo">
+                <img src="img/naruto-meme.jpeg">
+                <p>Nombre</p>
+            </div>
+            <div class="story blurred">
+                <img src="./img/playa-1.jpg" alt="playa">
+            </div>
         </div>
-        <div class="story">
-            <img src="./img/playa-2.jpg" alt="playa">
+        <div class="button previous">
+            <img src="img/previous-button.svg">
         </div>
-        <div class="story blurred">
-            <img src="./img/playa-3.jpg" alt="playa">
+        <div class="story-center">
+            <div class="story-name-photo">
+                <img src="img/naruto-meme.jpeg">
+                <p>Nombre</p>
+            </div>
+            <div class="story">
+                <img src="./img/playa-2.jpg" alt="playa">
+            </div>
+        </div>
+        <div class="button next">
+            <img src="img/next-button.svg">
+        </div>
+        <div class="story-right">
+            <div class="story-name-photo">
+                <img src="img/naruto-meme.jpeg">
+                <p>Nombre</p>
+            </div>
+            <div class="story blurred">
+                <img src="./img/playa-3.jpg" alt="playa">
+            </div>
         </div>
     </div>
+
 </div>
 </body>
 </html>
