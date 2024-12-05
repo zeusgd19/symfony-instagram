@@ -20,13 +20,12 @@ class StoryRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Story::class);
     }
-    public function findActiveStoriesByUser($user)
-    {
+    public function findActiveStoriesByUser($user){
         return $this->createQueryBuilder('h')
             ->andWhere('h.userStory = :user')
             ->andWhere('h.expireDate > :now')
-            ->setParameter('user', $user)
-            ->setParameter('now', new \DateTime())
+            ->setParameter('user',$user)
+            ->setParameter('now',new \DateTime())
             ->getQuery()
             ->getResult();
     }
