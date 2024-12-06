@@ -5,7 +5,7 @@
         <div class="mainContent">
             <section id="postSection">
                 <article class="stories-box">
-                    {{ include('partials/_storie-item.html.twig',{'profileImage':profileImage}) }}
+                    {{ include('partials/_storie-item.html.twig',{'profileImage':profileImage,'stories':stories}) }}
                 </article>
                 {{ include('partials/_posts.html.twig', {'posts':posts,'images':images,'profileImage':profileImage,'isLikedByUser':isLikedByUser,'isSavedByUser':isSavedByUser,'timeElapsed':timeElapsed}) }}
                 <div id="modalComment">
