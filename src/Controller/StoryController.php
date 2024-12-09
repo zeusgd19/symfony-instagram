@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Story;
+use App\Entity\UserPostgres;
 use App\Form\StoryFormType;
 
 use App\Repository\StoryRepository;
@@ -41,7 +42,7 @@ class StoryController extends AbstractController
                 $originalFilename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
                 // this is needed to safely include the file name as part of the URL
                 $safeFilename = $slugger->slug($originalFilename);
-                $newFilename = $safeFilename.'-'.uniqid().'.'.$file->guessExtension();
+                $newFilename = $safeFilename . '-' . uniqid() . '.' . $file->guessExtension();
                 $firebasePath = 'stories/' . $newFilename;
                 // Move the file to the directory where images are stored
                 try {
@@ -75,6 +76,30 @@ class StoryController extends AbstractController
     public function index(StoryRepository $historiaRepository): Response
     {
         $user = $this->getUser();
+
+        $historias = $historiaRepository->findActiveStoriesByUser($user);
+
+        if (!$user) {
+            return $this->redirectToRoute('login');
+        }
+
+        $currentIndex = 0; // Simulamos que estamos viendo la segunda historia (índice 1)
+        $previousStory = $historias[$currentIndex - 1] ?? null;
+        $currentStory = $historias[$currentIndex]->getImageStory() ?? null;
+        $nextStory = $historias[$currentIndex + 1] ?? null;
+
+        return $this->render('page/story.html.twig', [
+            'user' => $user,
+            'previousStory' => $previousStory,
+            'currentStory' => $currentStory,
+            'nextStory' => $nextStory,
+        ]);
+    }
+    #[Route('/story/{userId}', name: 'storyUser')]
+    public function storyUser(StoryRepository $historiaRepository, ManagerRegistry $doctrine, int $userId): Response
+    {
+        $repository = $doctrine->getRepository(UserPostgres::class);
+        $user = $repository->find($userId);
 
         $historias = $historiaRepository->findActiveStoriesByUser($user);
 

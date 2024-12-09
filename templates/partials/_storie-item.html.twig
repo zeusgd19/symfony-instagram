@@ -8,14 +8,18 @@
     </p>
 </div>
 {% if stories %}
+{% set displayedUsers = [] %}
 {% for story in stories %}
-    <div class="other-storie storie-item">
+    {% if story.userStory.username not in displayedUsers %}
+    {% set displayedUsers = displayedUsers | merge([story.userStory.username]) %}
+    <div class="other-storie storie-item" data-id="{{ story.userStory.id }}">
         <div>
-            <a href="/story"><img src="{{ story.userStory.photo }}" alt="maniscus"></a>
+            <a href="/story/{{ story.userStory.id }}"><img src="{{ story.userStory.photo }}" alt="maniscus"></a>
         </div>
         <p>
             {{ story.userStory.username }}
         </p>
     </div>
+    {% endif %}
 {% endfor %}
 {% endif %}

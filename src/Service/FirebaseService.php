@@ -29,6 +29,9 @@ class FirebaseService {
         try {
             // Elimina el archivo en el bucket especificado
             $object = $bucket->object($firebasePath);
+            if (!$object->exists()) {
+                throw new \Exception("El archivo no existe en Firebase: $firebasePath");
+            }
             $object->delete();
 
             return true; // Archivo eliminado exitosamente
