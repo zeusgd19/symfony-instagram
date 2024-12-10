@@ -2,7 +2,6 @@ window.onload = () => {
     const emojiModal = document.getElementById("modalEmoji");
     const comments = $(".comment");
     const emojis = $('#modalEmoji').find('p');
-
     // Selecciona todas las imágenes con la clase lazy-load
     const lazyImages = document.querySelectorAll("img.lazy-load");
 
@@ -61,7 +60,7 @@ window.onload = () => {
         e.preventDefault();
     })
 
-    async function initModal(type) {
+     function initModal(type) {
         const isPost = type === 'post';
         const apiEndpoint = isPost ? "/post/new" : "/story/new";
         const formId = isPost ? '#formPost' : '#formStory';
@@ -69,7 +68,7 @@ window.onload = () => {
         const compartirButtonId = isPost ? 'post_form_compartir' : 'story_form_compartir';
             document.body.style.overflow = 'hidden';
             // Cargar formulario dinámicamente
-            await $.ajax({
+             $.ajax({
                 type: 'POST',
                 url: apiEndpoint,
                 dataType: 'html',
@@ -78,130 +77,131 @@ window.onload = () => {
                             $(formId).html('<div class="loading-container"><img src="img/loading-buffer.gif" width="30" height="30"></div>');
                         }
                         $(formId).slideDown();
+
                     },
                     success: function(data) {
                         $(formId).html(data);
+                        const nextButton = document.getElementById('nextButton');
+                        const bodyForm = document.getElementById('body-form');
+                        const filterDiv = document.getElementById('filters');
+                        const imageDiv = document.getElementById('imageDiv');
+                        const imageInput = document.getElementById(photoForm);
+                        const descriptionInput = document.getElementById('post_form_description'); // Solo para posts
+                        const compartirButton = compartirButtonId ? document.getElementById(compartirButtonId) : null;
+                        let saturacion = 100, contraste = 100, filtrosAplicados = '';
+                        if (descriptionInput || filterDiv) {
+                            compartirButton.classList.toggle('hide', false);
+                        }
+
+                        // Actualizar filtros
+                        const actualizarFiltros = () => {
+                            imageDiv.firstElementChild.style.filter = `saturate(${saturacion}%) contrast(${contraste}%)`;
+                            filtrosAplicados = imageDiv.firstElementChild.style.filter;
+                        };
+
+                        // Procesar imagen con filtros aplicados
+                        const obtenerImagenProcesada = () => {
+                            const canvas = document.createElement('canvas');
+                            const ctx = canvas.getContext('2d');
+                            const img = imageDiv.firstElementChild;
+                            if(!img.getAttribute('data-type')) {
+                                canvas.width = img.width;
+                                canvas.height = img.height;
+                                ctx.filter = filtrosAplicados;
+                                ctx.drawImage(img, 0, 0, img.width, img.height);
+                                return new Promise((resolve) => {
+                                    canvas.toBlob((blob) => resolve(blob));
+                                });
+                            }
+                        };
+
+                        const reemplazarArchivoConImagenProcesada = async () => {
+                            const blob = await obtenerImagenProcesada();
+                            const processedFile = new File([blob], 'imagenProcesada.jpg', { type: 'image/jpg' });
+                            const dataTransfer = new DataTransfer();
+                            dataTransfer.items.add(processedFile);
+                            imageInput.files = dataTransfer.files;
+                        };
+
+                        // Manejar subida de imagen
+                        if (imageInput) {
+                            imageInput.addEventListener('change', (ev) => {
+                                const file = ev.target.files[0];
+                                if (!file) return;
+
+                                bodyForm.classList.add('hide');
+                                const img = document.createElement('img');
+                                if(file.type == 'image/gif') {
+                                    img.setAttribute('data-type','gif');
+                                }
+                                img.src = URL.createObjectURL(file);
+                                img.classList.add('imagenDiv');
+                                img.onload = () => (img.width = img.height = 400);
+
+                                imageDiv.appendChild(img);
+                                nextButton.classList.remove('hide');
+                            });
+                        }
+
+                        // Manejar botón "Siguiente/Editar"
+                        if (nextButton) {
+                            nextButton.addEventListener('click', () => {
+                                nextButton.classList.toggle('editar');
+                                if (nextButton.classList.contains('editar')) {
+                                    bodyForm.classList.add('hide');
+                                    filterDiv.classList.remove('hide');
+                                    filterDiv.prepend(imageDiv);
+                                    document.getElementById('tituloCabecera').textContent = 'Editar';
+                                } else {
+                                    if(!isPost) {
+                                        nextButton.classList.add('hide');
+                                        filterDiv.classList.add('hide');
+                                        bodyForm.classList.remove('hide');
+                                        $(bodyForm).find('p').remove();
+                                        $(imageInput).parent().hide();
+                                        $(bodyForm).append(imageDiv);
+                                        compartirButton.classList.remove('hide');
+                                    } else {
+                                        nextButton.classList.add('hide');
+                                        filterDiv.classList.add('hide');
+                                        bodyForm.classList.remove('hide');
+                                        descriptionInput.classList.remove('hide');
+                                        imageInput.classList.add('hide');
+                                    }
+                                    if(imageDiv.firstElementChild.getAttribute('data-type') != 'gif') {
+                                        reemplazarArchivoConImagenProcesada();
+                                    }
+                                }
+
+                                // Filtros
+                                Array.from(document.getElementById('filtros').children).forEach(filtro => {
+                                    filtro.addEventListener('click', () => {
+                                        const filterType = filtro.getAttribute('data-filters');
+                                        const filterMap = {
+                                            blancoNegro: 'grayscale(100%)',
+                                            desenfoque: 'blur(2px)',
+                                            sepia: 'sepia(100%)',
+                                            invertir: 'invert(100%)',
+                                            normal: 'none'
+                                        };
+                                        imageDiv.firstElementChild.style.filter = filterMap[filterType] || 'none';
+                                        filtrosAplicados = imageDiv.firstElementChild.style.filter;
+                                    });
+                                });
+
+                                // Saturación y Contraste
+                                document.getElementById("saturacion").addEventListener("input", (ev) => {
+                                    saturacion = ev.target.value;
+                                    actualizarFiltros();
+                                });
+                                document.getElementById("contraste").addEventListener("input", (ev) => {
+                                    contraste = ev.target.value;
+                                    actualizarFiltros();
+                                });
+                            });
+                        }
                     }
             })
-        const nextButton = document.getElementById('nextButton');
-        const bodyForm = document.getElementById('body-form');
-        const filterDiv = document.getElementById('filters');
-        const imageDiv = document.getElementById('imageDiv');
-        const imageInput = document.getElementById(photoForm);
-        const descriptionInput = document.getElementById('post_form_description'); // Solo para posts
-        const compartirButton = compartirButtonId ? document.getElementById(compartirButtonId) : null;
-        let saturacion = 100, contraste = 100, filtrosAplicados = '';
-        console.log(imageInput)
-        if (descriptionInput || filterDiv) {
-            compartirButton.classList.toggle('hide', false);
-        }
-
-        // Actualizar filtros
-        const actualizarFiltros = () => {
-            imageDiv.firstElementChild.style.filter = `saturate(${saturacion}%) contrast(${contraste}%)`;
-            filtrosAplicados = imageDiv.firstElementChild.style.filter;
-        };
-
-        // Procesar imagen con filtros aplicados
-        const obtenerImagenProcesada = () => {
-            const canvas = document.createElement('canvas');
-            const ctx = canvas.getContext('2d');
-            const img = imageDiv.firstElementChild;
-            if(!img.getAttribute('data-type')) {
-                canvas.width = img.width;
-                canvas.height = img.height;
-                ctx.filter = filtrosAplicados;
-                ctx.drawImage(img, 0, 0, img.width, img.height);
-                return new Promise((resolve) => {
-                    canvas.toBlob((blob) => resolve(blob));
-                });
-            }
-        };
-
-        const reemplazarArchivoConImagenProcesada = async () => {
-            const blob = await obtenerImagenProcesada();
-            const processedFile = new File([blob], 'imagenProcesada.jpg', { type: 'image/jpg' });
-            const dataTransfer = new DataTransfer();
-            dataTransfer.items.add(processedFile);
-            imageInput.files = dataTransfer.files;
-        };
-
-        // Manejar subida de imagen
-        if (imageInput) {
-            imageInput.addEventListener('change', (ev) => {
-                const file = ev.target.files[0];
-                if (!file) return;
-
-                bodyForm.classList.add('hide');
-                const img = document.createElement('img');
-                if(file.type == 'image/gif') {
-                    img.setAttribute('data-type','gif');
-                }
-                img.src = URL.createObjectURL(file);
-                img.classList.add('imagenDiv');
-                img.onload = () => (img.width = img.height = 400);
-
-                imageDiv.appendChild(img);
-                nextButton.classList.remove('hide');
-            });
-        }
-
-        // Manejar botón "Siguiente/Editar"
-        if (nextButton) {
-            nextButton.addEventListener('click', () => {
-                nextButton.classList.toggle('editar');
-
-                if (nextButton.classList.contains('editar')) {
-                    bodyForm.classList.add('hide');
-                    filterDiv.classList.remove('hide');
-                    filterDiv.prepend(imageDiv);
-                    document.getElementById('tituloCabecera').textContent = 'Editar';
-                } else {
-                    if(!isPost) {
-                        nextButton.classList.add('hide');
-                        filterDiv.classList.add('hide');
-                        bodyForm.classList.remove('hide');
-                        $(bodyForm).find('p').remove();
-                        $(imageInput).parent().hide();
-                        $(bodyForm).append(imageDiv);
-                        compartirButton.classList.remove('hide');
-                    } else {
-                        nextButton.classList.add('hide');
-                        filterDiv.classList.add('hide');
-                        bodyForm.classList.remove('hide');
-                        descriptionInput.classList.remove('hide');
-                        imageInput.classList.add('hide');
-                    }
-                    reemplazarArchivoConImagenProcesada();
-                }
-
-                // Filtros
-                Array.from(document.getElementById('filtros').children).forEach(filtro => {
-                    filtro.addEventListener('click', () => {
-                        const filterType = filtro.getAttribute('data-filters');
-                        const filterMap = {
-                            blancoNegro: 'grayscale(100%)',
-                            desenfoque: 'blur(2px)',
-                            sepia: 'sepia(100%)',
-                            invertir: 'invert(100%)',
-                            normal: 'none'
-                        };
-                        imageDiv.firstElementChild.style.filter = filterMap[filterType] || 'none';
-                        filtrosAplicados = imageDiv.firstElementChild.style.filter;
-                    });
-                });
-
-                // Saturación y Contraste
-                document.getElementById("saturacion").addEventListener("input", (ev) => {
-                    saturacion = ev.target.value;
-                    actualizarFiltros();
-                });
-                document.getElementById("contraste").addEventListener("input", (ev) => {
-                    contraste = ev.target.value;
-                    actualizarFiltros();
-                });
-            });
-        }
         // Enviar formulario
         $(formId).off('submit').on('submit', 'form', function (e) {
             e.preventDefault();
@@ -227,13 +227,11 @@ window.onload = () => {
     }
 
     $('#create-post').click(function(e){
-        console.log('Hola')
         e.preventDefault();
         initModal('post');
     })
 
     $('#create-story').click(function(e){
-        console.log('Hola')
         e.preventDefault();
         initModal('story');
     })
@@ -318,6 +316,12 @@ window.onload = () => {
 
          */
     });
+
+    $(document).on('click','.story', function(e){
+        e.preventDefault();
+        const userId = $(this).attr('data-id');
+        window.location.href = `/story/${userId}`;
+    })
 
     $('#postSection').on('click', '.emoji', (e) => {
         e.preventDefault();

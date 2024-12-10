@@ -120,5 +120,39 @@ class StoryController extends AbstractController
         ]);
     }
 
+    #[Route('/stories', name: 'storiesUser')]
+    public function getStories(ManagerRegistry $doctrine, Request $request){
+        $data = json_decode($request->getContent(), true);
+
+        if (!isset($data['userId'])) {
+            return $this->json(['error' => 'Datos incompletos'], 400);
+        }
+        $repository = $doctrine->getRepository(UserPostgres::class);
+        $user = $repository->find($data['userId']);
+
+        $storyRepository = $doctrine->getRepository(Story::class);
+        $stories = $storyRepository->findBy(['userStory' => $user]);
+
+        $storiesArray = array_map(function($story) {
+            return [
+                'id' => $story->getId(),
+                'image' => $story->getImageStory(),
+            ];
+        }, $stories);
+
+        if($stories) {
+            return $this->json([
+                'status' => 200,
+                'textStatus' => 'success',
+                'stories' => $storiesArray
+            ]);
+        } else {
+            return $this->json([
+                'status' => 404,
+                'textStatus' => 'No stories found'
+            ]);
+        }
+    }
+
 
 }
