@@ -4,13 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Story</title>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <script src="{{ asset('js/story.js') }}"></script>
     <link rel="stylesheet" href="{{asset('css/story.css')}}">
 </head>
 <body>
 <div class="story-menu">
     <a href="{{ path('index') }}">Salir</a>
 </div>
-<div class="story-main-content">
+<div class="story-main-content" data-id="{{ user.id }}">
 
     <div class="story-container">
 

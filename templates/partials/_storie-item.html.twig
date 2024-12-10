@@ -14,7 +14,7 @@
     {% set displayedUsers = displayedUsers | merge([story.userStory.username]) %}
     <div class="other-storie storie-item" data-id="{{ story.userStory.id }}">
         <div>
-            <a href="/story/{{ story.userStory.id }}"><img src="{{ story.userStory.photo }}" alt="maniscus"></a>
+            <a href="/story/{{ story.userStory.id }}" class="story" data-id="{{ story.userStory.id }}"><img src="{{ story.userStory.photo }}" alt="maniscus"></a>
         </div>
         <p>
             {{ story.userStory.username }}
