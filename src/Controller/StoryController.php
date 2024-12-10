@@ -110,9 +110,10 @@ class StoryController extends AbstractController
         $currentIndex = 0; // Simulamos que estamos viendo la segunda historia (índice 1)
         $previousStory = $historias[$currentIndex - 1] ?? null;
         $currentStory = $historias[$currentIndex]->getImageStory() ?? null;
-        $nextStory = $historias[$currentIndex + 1] ?? null;
+        $nextStory = $historias[$currentIndex + 1]->getImageStory() ?? null;
 
         return $this->render('page/story.html.twig', [
+            'stories' => $historias,
             'user' => $user,
             'previousStory' => $previousStory,
             'currentStory' => $currentStory,

@@ -26,6 +26,18 @@ $(document).ready(function(){
                 }
                 currentStory = stories[currentIndex].image;
                 $('.story-center').find('.story').find('img').attr('src',currentStory);
+
+                if(currentIndex == stories.length - 1){
+                    $(this).hide();
+                    $('.story-right').hide();
+                } else {
+                    nextStory = stories[currentIndex + 1].image;
+                }
+                lastStory = stories[currentIndex - 1].image;
+                $('.previous').show();
+                $('.story-left').show();
+                $('.story-right').find('.story').find('img').attr('src',nextStory);
+                $('.story-left').find('.story').find('img').attr('src',lastStory);
             }
             if($(this).hasClass('previous')){
                 currentIndex--;
@@ -34,6 +46,17 @@ $(document).ready(function(){
                 }
                 currentStory = stories[currentIndex].image;
                 $('.story-center').find('.story').find('img').attr('src',currentStory);
+                if(currentIndex == 0){
+                    $(this).hide();
+                    $('.story-left').hide();
+                } else {
+                    lastStory = stories[currentIndex - 1].image;
+                }
+                $('.next').show();
+                nextStory = stories[currentIndex + 1].image;
+                $('.story-right').show();
+                $('.story-right').find('.story').find('img').attr('src',nextStory);
+                $('.story-left').find('.story').find('img').attr('src',lastStory);
             }
         }
     })

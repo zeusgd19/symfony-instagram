@@ -35,18 +35,21 @@
                 <img src="{{ currentStory }}" alt="playa">
             </div>
         </div>
+        {% if stories | length > 1 %}
         <div class="button next">
             <img src="{{ asset('img/next-button.svg') }}">
         </div>
+
         <div class="story-right">
             <div class="story-name-photo">
                 <img src={{ user.photo }}>
                 <p>{{ user.username }}</p>
             </div>
             <div class="story blurred">
-                <img src="{{ asset('/img/playa-3.jpg') }}" alt="playa">
+                <img src="{{ nextStory }}" alt="playa">
             </div>
         </div>
+        {% endif %}
     </div>
 </div>
 </body>

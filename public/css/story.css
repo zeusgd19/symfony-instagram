@@ -78,6 +78,10 @@ body {
     width: 75px;
 }
 
+.previous {
+    display: none;
+}
+
 .story-name-photo {
     display: flex;
     align-items: center;
@@ -175,4 +179,8 @@ body {
 .story-right .story > img {
     width: 250px;
     height: 450px;
+}
+
+.story-left {
+    display: none;
 }
