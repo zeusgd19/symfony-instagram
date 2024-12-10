@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Comment;
 use App\Entity\Post;
+use App\Entity\Story;
 use App\Entity\UserPostgres;
 use App\Form\CommentFormType;
 use App\Service\FirebaseImageCache;
@@ -30,7 +31,7 @@ class IndexController extends AbstractController
     public function index(ManagerRegistry $doctrine, Request $request, ImageService $imageCache, FirebaseImageCache $firebaseImageCache, CacheInterface $cache): Response
     {
         $repository = $doctrine->getRepository(UserPostgres::class);
-
+        $manager = $doctrine->getManager();
         $allUsers = $cache->get('users_list_cache_key', function() use ($repository) {
             return array_map(function($user) {
                 return [
@@ -42,6 +43,21 @@ class IndexController extends AbstractController
             }, $repository->findAll());
         });
 
+        $storyRepository = $doctrine->getRepository(Story::class);
+        $stories = $storyRepository->findAll();
+
+        foreach ($stories as $story){
+            if($story->getExpireDate() < new \DateTime()){
+                $decodedUrl = urldecode($story->getImageStory());
+                $path = parse_url($decodedUrl, PHP_URL_PATH);
+                $imageName = pathinfo($path, PATHINFO_BASENAME);
+                $this->firebaseService->deleteFile("stories/" . $imageName);
+                $manager->remove($story);
+                $manager->flush();
+            }
+        }
+
+        $newStories = $storyRepository->findAll();
         $users = [];
         $profileImages = [];
         $isFollowing = [];
@@ -103,7 +119,6 @@ class IndexController extends AbstractController
             }, $repositoryPosts->findAll());
         });
 
-        $commentForms = [];
         $images = [];
         $posts = [];
         $isLikedByUser = [];
@@ -130,7 +145,8 @@ class IndexController extends AbstractController
             'isLikedByUser' => $isLikedByUser,
             'isSavedByUser' => $isSavedByUser,
             'isFollowing' => $isFollowing,
-            'timeElapsed' => $timeElapsed
+            'timeElapsed' => $timeElapsed,
+            'stories' => $newStories
         ]);
     }
 }

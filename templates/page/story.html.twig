@@ -11,9 +11,7 @@
     <a href="{{ path('index') }}">Salir</a>
 </div>
 <div class="story-main-content">
-
     <div class="story-container">
-
         <div class="story-left">
             <div class="story-name-photo">
                 <img src={{ user.photo }}>
@@ -32,7 +30,7 @@
                 <p>{{ user.username }}</p>
             </div>
             <div class="story">
-                <img src="{{ asset('/img/playa-2.jpg') }}" alt="playa">
+                <img src="{{ currentStory }}" alt="playa">
             </div>
         </div>
         <div class="button next">
@@ -48,7 +46,6 @@
             </div>
         </div>
     </div>
-
 </div>
 </body>
 </html>

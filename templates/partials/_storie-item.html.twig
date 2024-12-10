@@ -7,52 +7,19 @@
         Your Story
     </p>
 </div>
-<div class="other-storie storie-item">
-    <div>
-        <a href=""><img src="img/storie-image.png" alt="maniscus"></a>
+{% if stories %}
+{% set displayedUsers = [] %}
+{% for story in stories %}
+    {% if story.userStory.username not in displayedUsers %}
+    {% set displayedUsers = displayedUsers | merge([story.userStory.username]) %}
+    <div class="other-storie storie-item" data-id="{{ story.userStory.id }}">
+        <div>
+            <a href="/story/{{ story.userStory.id }}"><img src="{{ story.userStory.photo }}" alt="maniscus"></a>
+        </div>
+        <p>
+            {{ story.userStory.username }}
+        </p>
     </div>
-    <p>
-        maniscus
-    </p>
-</div>
-<div class="other-storie storie-item">
-    <div>
-        <a href=""><img src="img/storie-image.png" alt="leoni_tu"></a>
-    </div>
-    <p>
-        leoni_tu
-    </p>
-</div>
-<div class="other-storie storie-item">
-    <div>
-        <a href=""><img src="img/storie-image.png" alt="katarina"></a>
-    </div>
-    <p>
-        katarina
-    </p>
-</div>
-<div class="other-storie storie-item">
-    <div>
-        <a href=""><img src="img/storie-image.png" alt="brandon"></a>
-    </div>
-    <p>
-        brandon
-    </p>
-</div>
-<div class="other-storie storie-item">
-    <div>
-        <a href=""><img src="img/storie-image.png" alt="mik"></a>
-    </div>
-    <p>
-        mik
-    </p>
-</div>
-<div class="other-storie storie-item">
-    <div>
-        <a href=""><img src="img/storie-image.png" alt="midudev"></a>
-    </div>
-    <p>
-        midudev
-    </p>
-</div>
-</div>
+    {% endif %}
+{% endfor %}
+{% endif %}

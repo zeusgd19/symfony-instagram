@@ -25,7 +25,16 @@ class StoryRepository extends ServiceEntityRepository
             ->andWhere('h.userStory = :user')
             ->andWhere('h.expireDate > :now')
             ->setParameter('user',$user)
-            ->setParameter('now',new \DateTime())
+            ->setParameter('now', new \DateTime())
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function findAllDiferentStories()
+    {
+        return $this->createQueryBuilder('s')
+            ->select('DISTINCT s')
+            ->join('s.userStory', 'u')
             ->getQuery()
             ->getResult();
     }

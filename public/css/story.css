@@ -1,3 +1,4 @@
+/* Estilos base */
 * {
     margin: 0;
     padding: 0;
@@ -8,6 +9,7 @@ html, body {
     margin: 0;
     padding: 0;
 }
+
 body {
     display: flex;
     background-color: #3b3b3b;
@@ -16,7 +18,7 @@ body {
     height: 100vh;
 }
 
-.story-menu{
+.story-menu {
     display: flex;
     width: 100%;
     height: 50px;
@@ -25,7 +27,7 @@ body {
     justify-content: flex-end;
 }
 
-.story-menu > a{
+.story-menu > a {
     display: flex;
     color: white;
     justify-content: flex-end;
@@ -40,14 +42,9 @@ body {
     align-items: center;
 }
 
-.story > img{
-    width: 350px;
-    height: 600px;
-}
-
 .story-container {
     display: flex;
-    gap: 50px;
+    gap: 25px;
     justify-content: center;
     align-items: center;
 }
@@ -63,18 +60,25 @@ body {
     box-shadow: rgba(10, 10, 10, 0.3) 0px 0px 50px 10px;
 }
 
+.story > img {
+    width: 350px;
+    height: 500px;
+}
+
 .story.blurred img {
     filter: blur(3px);
     opacity: 0.7;
 }
-.button{
+
+.button {
     border: 1px black;
 }
-.button > img{
+
+.button > img {
     width: 75px;
 }
 
-.story-name-photo{
+.story-name-photo {
     display: flex;
     align-items: center;
     position: absolute;
@@ -82,15 +86,93 @@ body {
     margin: 10px;
 }
 
-.story-name-photo > img{
+.story-name-photo > img {
     width: 50px;
     height: 50px;
     border-radius: 100%;
 }
 
-.story-name-photo > p{
+.story-name-photo > p {
     margin-left: 10px;
     border: white 1px;
     color: white;
     font-weight: bolder;
+}
+
+/* Responsive design */
+
+/* Pantallas pequeñas (móviles) */
+@media (max-width: 600px) {
+    .story-container {
+        flex-direction: column;
+        gap: 0;
+    }
+
+    .story-left, .story-right {
+        display: none; /* Ocultar imágenes de los lados */
+    }
+
+    .story-center {
+        display: flex;
+    }
+
+    .story > img {
+        width: 350px;
+        height: 500px;
+    }
+
+    .button {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+    }
+
+    .button.previous {
+        left: 10px;
+    }
+
+    .button.next {
+        right: 10px;
+    }
+
+    .button > img {
+        width: 50px;
+    }
+}
+/* Pantallas medianas (60% del ancho máximo, aproximadamente 1024px) */
+@media (min-width: 601px) and (max-width: 1024px) {
+    .story-container {
+        gap: 0;
+    }
+
+    .story-left, .story-right {
+        display: none; /* Ocultar imágenes de los lados */
+    }
+
+    .story-center {
+        display: flex;
+    }
+
+    .story > img {
+        width: 350px; /* Imagen central ligeramente más pequeña */
+        height: 500px;
+    }
+
+    .button {
+        display: flex; /* Asegurar que los botones sean visibles */
+    }
+
+    .button.previous {
+        left: 10px;
+    }
+
+    .button.next {
+        right: 10px;
+    }
+}
+/* Ajuste general: imágenes de los lados más pequeñas en cualquier pantalla */
+.story-left .story > img,
+.story-right .story > img {
+    width: 250px;
+    height: 450px;
 }
