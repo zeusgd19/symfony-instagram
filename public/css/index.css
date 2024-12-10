@@ -575,5 +575,44 @@ footer p {
     right: 0;
 }
 
+/* Pantallas pequeñas (móviles) */
+@media (max-width: 700px) {
+    .suggestions{
+        display: none;
+    }
+    footer{
+        display: none;
+    }
 
+    #instagram-logo{
+        display: flex;
+        margin-top: 50px;
+    }
 
+    #nav-bar{
+        display: flex;
+        flex-direction: column;
+    }
+
+    #search > img{
+        margin-top: 20px;
+    }
+
+    .icon-logos{
+
+    }
+
+    header {
+        height: 75px;
+        background-color: #FFFFFF;
+        border: 1px solid #DBDBDB;
+        position: fixed;
+        right: 0;
+        left: 0;
+        top: 0;
+        z-index: 1000;
+    }
+}
+
+#logout{
+}
