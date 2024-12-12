@@ -102,6 +102,7 @@ class StoryController extends AbstractController
         $user = $repository->find($userId);
 
         $historias = $historiaRepository->findActiveStoriesByUser($user);
+        $stories = $historiaRepository->findAll();
 
         if (!$user) {
             return $this->redirectToRoute('login');
@@ -110,10 +111,15 @@ class StoryController extends AbstractController
         $currentIndex = 0; // Simulamos que estamos viendo la segunda historia (índice 1)
         $previousStory = $historias[$currentIndex - 1] ?? null;
         $currentStory = $historias[$currentIndex]->getImageStory() ?? null;
-        $nextStory = $historias[$currentIndex + 1]->getImageStory() ?? null;
+        if(count($historias) > 1) {
+            $nextStory = $historias[$currentIndex + 1]->getImageStory() ?? null;
+        } else {
+            $nextStory = "";
+        }
 
         return $this->render('page/story.html.twig', [
             'stories' => $historias,
+            'allStories' => $stories,
             'user' => $user,
             'previousStory' => $previousStory,
             'currentStory' => $currentStory,
@@ -123,6 +129,7 @@ class StoryController extends AbstractController
 
     #[Route('/stories', name: 'storiesUser')]
     public function getStories(ManagerRegistry $doctrine, Request $request){
+        /*
         $data = json_decode($request->getContent(), true);
 
         if (!isset($data['userId'])) {
@@ -130,14 +137,18 @@ class StoryController extends AbstractController
         }
         $repository = $doctrine->getRepository(UserPostgres::class);
         $user = $repository->find($data['userId']);
+        */
 
         $storyRepository = $doctrine->getRepository(Story::class);
-        $stories = $storyRepository->findBy(['userStory' => $user]);
+        $stories = $storyRepository->findAll();
 
         $storiesArray = array_map(function($story) {
             return [
                 'id' => $story->getId(),
                 'image' => $story->getImageStory(),
+                'userId' => $story->getUserStory()->getId(),
+                'userPhoto' => $story->getUserStory()->getPhoto(),
+                'userUsername' => $story->getUserStory()->getUsername(),
             ];
         }, $stories);
 

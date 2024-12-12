@@ -73,9 +73,6 @@ window.onload = () => {
                 url: apiEndpoint,
                 dataType: 'html',
                     beforeSend: function() {
-                        if ($(formId).find('div.loading-container').length === 0) {
-                            $(formId).html('<div class="loading-container"><img src="img/loading-buffer.gif" width="30" height="30"></div>');
-                        }
                         $(formId).slideDown();
 
                     },
@@ -228,6 +225,7 @@ window.onload = () => {
 
     $('#create-post').click(function(e){
         e.preventDefault();
+        console.log('Hola')
         initModal('post');
     })
 
@@ -287,34 +285,6 @@ window.onload = () => {
                 $(input).val("");
             }
         });
-        /*
-        const form = $(this)[0]; // Obtener el formulario en su forma "nativa" (sin jQuery)
-        // Aquí puedes obtener los datos del formulario como un objeto FormData
-        const formData = new FormData(form);
-
-        // Usamos fetch para enviar el formulario de manera asíncrona (sin recargar la página)
-        fetch(form.action, {
-            method: form.method,
-            body: formData
-        })
-            .then(response => {
-                if (response.ok) {
-                    $(this).find('.comment-input').val('');
-                    return;// Si es un API que devuelve JSON
-                }
-                throw new Error('Error en el envío CHE');
-            })
-            .then(data => {
-                console.log('Respuesta del servidor:', data);
-                $(this).find('.comment-input').val('');
-            })
-            .catch(error => {
-                console.log(error)
-                $(this).find('.comment-input').val('');
-                // Manejar el error de envío (por ejemplo, mostrar un mensaje de error)
-            });
-
-         */
     });
 
     $(document).on('click','.story', function(e){
@@ -477,22 +447,6 @@ window.onload = () => {
 
         xhr.send();
     });
-
-
-
-    /*
-    document.addEventListener("click", (e) => {
-        console.log(e.target)
-        if (!emojiModal.contains(e.target) && !e.target.classList.contains("emoji") && !$(commentModal).has(e.target) && !e.target.classList.contains('formulario-post') && !document.getElementById('formPost').contains(e.target) && e.target.id !== 'create-post') {
-            emojiModal.classList.add("hide");
-            $(commentModal).addClass('hide');
-            console.log('Hola')
-            document.body.style.overflow = "auto";
-            document.getElementById('formPost').classList.add('hide');
-        }
-    });
-
-     */
 
     $(document).on('click','.follow-btn, .unfollow-btn',function(ev) {
         ev.preventDefault();

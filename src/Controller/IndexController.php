@@ -28,7 +28,7 @@ class IndexController extends AbstractController
     }
 
     #[Route('/', name: 'index')]
-    public function index(ManagerRegistry $doctrine, Request $request, ImageService $imageCache, FirebaseImageCache $firebaseImageCache, CacheInterface $cache): Response
+    public function index(ManagerRegistry $doctrine, ImageService $imageCache, FirebaseImageCache $firebaseImageCache, CacheInterface $cache): Response
     {
         $repository = $doctrine->getRepository(UserPostgres::class);
         $manager = $doctrine->getManager();
@@ -58,29 +58,24 @@ class IndexController extends AbstractController
         }
 
         $newStories = $storyRepository->findAll();
-        $users = [];
-        $profileImages = [];
-        $isFollowing = [];
-        foreach ($allUsers as $user) {
-            if ($user['id'] != $this->getUser()->getId()) {
-                $users[] = $user;
-                $followingArray = array_map(function($user) {
-                    return [
-                        'id' => $user->getId(),
-                        'username' => $user->getUsername(),
-                        'photo' => $user->getPhoto(),
-                    ];
-                }, $this->getUser()->getFollowing()->toArray());
+        $followingIds = array_map(fn($user) => $user->getId(), $this->getUser()->getFollowing()->toArray());
 
-                if($followingArray) {
-                    foreach ($followingArray as $following) {
-                        $isFollowing[$user['id']] = in_array($user['id'], $following);
-                    }
-                } else {
-                    $isFollowing[$user['id']] = false;
-                }
+        $users = [];
+        $isFollowing = [];
+        $profileImages = [];
+
+        foreach ($allUsers as $user) {
+            if ($user['id'] == $this->getUser()->getId()) {
+                $profileImages[$user['id']] = $imageCache->getUserProfileImage($user['photo']);
+                continue; // Saltar al usuario actual
             }
 
+            // Agregar usuario a la lista
+            $users[] = $user;
+
+            // Comprobar si el usuario está siendo seguido
+            $isFollowing[$user['id']] = in_array($user['id'], $followingIds);
+            // Verificar caché de imagen y obtener perfil
             if (!$firebaseImageCache->existCachedImagen($user['photo'])) {
                 $firebaseImageCache->getImage($user['photo']);
             }
@@ -149,4 +144,6 @@ class IndexController extends AbstractController
             'stories' => $newStories
         ]);
     }
+
+
 }

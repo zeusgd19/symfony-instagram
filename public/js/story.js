@@ -1,63 +1,54 @@
 $(document).ready(function(){
     let stories;
     const userId = $('.story-main-content').attr('data-id');
-    $.ajax({
-        type: 'POST',
-        url: '/stories',
-        data: JSON.stringify({ userId: userId }),
-        contentType: 'application/json',
-        success: function(data){
-            stories = data.stories;
-            console.log(stories)
-        }
-    })
-    console.log(stories);
-
     let currentIndex = 0;
-    $(document).on('click','.next, .previous',function(e){
-        console.log('Hola')
-        e.preventDefault();
-        let currentStory = stories[currentIndex].image;
-        if(stories.length > 1){
-            if($(this).hasClass('next')){
-                currentIndex++;
-                if(currentIndex > stories.length - 1) {
-                    currentIndex = stories.length - 1;
-                }
-                currentStory = stories[currentIndex].image;
-                $('.story-center').find('.story').find('img').attr('src',currentStory);
-
-                if(currentIndex == stories.length - 1){
-                    $(this).hide();
-                    $('.story-right').hide();
-                } else {
-                    nextStory = stories[currentIndex + 1].image;
-                }
-                lastStory = stories[currentIndex - 1].image;
-                $('.previous').show();
-                $('.story-left').show();
-                $('.story-right').find('.story').find('img').attr('src',nextStory);
-                $('.story-left').find('.story').find('img').attr('src',lastStory);
-            }
-            if($(this).hasClass('previous')){
-                currentIndex--;
-                if(currentIndex < 0){
-                    currentIndex = 0;
-                }
-                currentStory = stories[currentIndex].image;
-                $('.story-center').find('.story').find('img').attr('src',currentStory);
-                if(currentIndex == 0){
-                    $(this).hide();
-                    $('.story-left').hide();
-                } else {
-                    lastStory = stories[currentIndex - 1].image;
-                }
-                $('.next').show();
-                nextStory = stories[currentIndex + 1].image;
-                $('.story-right').show();
-                $('.story-right').find('.story').find('img').attr('src',nextStory);
-                $('.story-left').find('.story').find('img').attr('src',lastStory);
-            }
+    $.ajax({
+        type: 'GET',
+        url: '/stories',
+        contentType: 'application/json',
+        success: function(data) {
+            stories = data.stories;
+            const hasMultipleStories = stories.length > 1;
+            $('.next, .story-right').toggle(hasMultipleStories);
         }
-    })
+    });
+
+    $(document).on('click', '.next, .previous', function (e) {
+        e.preventDefault();
+
+        if (stories.length <= 1) return;
+
+        const isNext = $(this).hasClass('next');
+        const increment = isNext ? 1 : -1;
+
+        currentIndex += increment;
+        currentIndex = Math.max(0, Math.min(currentIndex, stories.length - 1));
+
+        const { image: currentStory, userPhoto: currentPhoto, userUsername: currentUsername } = stories[currentIndex];
+        updateStory('.story-center', currentStory, currentPhoto, currentUsername);
+
+        $('.next').toggle(currentIndex < stories.length - 1);
+        $('.story-right').toggle(currentIndex < stories.length - 1);
+
+        $('.previous').toggle(currentIndex > 0);
+        $('.story-left').toggle(currentIndex > 0);
+
+        if (currentIndex > 0) {
+            const { image: lastStory, userPhoto: lastPhoto, userUsername: lastUsername } = stories[currentIndex - 1];
+            updateStory('.story-left', lastStory, lastPhoto, lastUsername);
+        }
+
+        if (currentIndex < stories.length - 1) {
+            const { image: nextStory, userPhoto: nextPhoto, userUsername: nextUsername } = stories[currentIndex + 1];
+            updateStory('.story-right', nextStory, nextPhoto, nextUsername);
+        }
+    });
+
+    function updateStory(selector, story, photo, username) {
+        const container = $(selector);
+        container.find('.story').find('img').attr('src', story);
+        container.find('.story-name-photo').find('img').attr('src', photo);
+        container.find('.story-name-photo').find('p').text(username);
+    }
+
 })

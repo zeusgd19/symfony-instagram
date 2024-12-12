@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded',function() {
+document.addEventListener('DOMContentLoaded',function (){
 const unfollowed = document.getElementById("unfollowed");
     if (unfollowed) {
         unfollowed.addEventListener("click", function () {
@@ -157,4 +157,4 @@ const unfollowed = document.getElementById("unfollowed");
             }
         });
     }
-    });
+});
