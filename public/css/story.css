@@ -81,7 +81,9 @@ body {
 .previous {
     display: none;
 }
-
+.next {
+    display: none;
+}
 .story-name-photo {
     display: flex;
     align-items: center;
@@ -182,5 +184,8 @@ body {
 }
 
 .story-left {
+    display: none;
+}
+.story-right {
     display: none;
 }

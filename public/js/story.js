@@ -1,15 +1,14 @@
 $(document).ready(function(){
     let stories;
     const userId = $('.story-main-content').attr('data-id');
-    let currentIndex = 0;
+    let currentIndex = $('.story-main-content').attr('data-index');
+    console.log(currentIndex);
     $.ajax({
         type: 'GET',
         url: '/stories',
         contentType: 'application/json',
         success: function(data) {
             stories = data.stories;
-            const hasMultipleStories = stories.length > 1;
-            $('.next, .story-right').toggle(hasMultipleStories);
         }
     });
 
@@ -21,12 +20,13 @@ $(document).ready(function(){
         const isNext = $(this).hasClass('next');
         const increment = isNext ? 1 : -1;
 
-        currentIndex += increment;
-        currentIndex = Math.max(0, Math.min(currentIndex, stories.length - 1));
+        currentIndex = parseInt(currentIndex) + increment;
+        console.log(currentIndex)
 
         const { image: currentStory, userPhoto: currentPhoto, userUsername: currentUsername } = stories[currentIndex];
         updateStory('.story-center', currentStory, currentPhoto, currentUsername);
 
+        console.log(currentIndex);
         $('.next').toggle(currentIndex < stories.length - 1);
         $('.story-right').toggle(currentIndex < stories.length - 1);
 

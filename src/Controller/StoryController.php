@@ -104,6 +104,14 @@ class StoryController extends AbstractController
         $historias = $historiaRepository->findActiveStoriesByUser($user);
         $stories = $historiaRepository->findAll();
 
+
+        $index = 0;
+        foreach ($stories as $story){
+            if($historias[0]->getImageStory() == $story->getImageStory()){
+                $storyUserIndex = $index;
+            }
+            $index++;
+        }
         if (!$user) {
             return $this->redirectToRoute('login');
         }
@@ -120,6 +128,7 @@ class StoryController extends AbstractController
         return $this->render('page/story.html.twig', [
             'stories' => $historias,
             'allStories' => $stories,
+            'storyUserIndex' => $storyUserIndex,
             'user' => $user,
             'previousStory' => $previousStory,
             'currentStory' => $currentStory,
