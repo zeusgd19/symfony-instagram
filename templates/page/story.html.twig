@@ -73,11 +73,11 @@
 
         <div class="story-right" style="display: block">
             <div class="story-name-photo">
-                <img src={{ allStories[1].userStory.photo }}>
-                <p>{{ allStories[1].userStory.username }}</p>
+                <img src={{ allStories[storyUserIndex + 1].userStory.photo }}>
+                <p>{{ allStories[storyUserIndex + 1].userStory.username }}</p>
             </div>
             <div class="story blurred">
-                <img src="{{ allStories[1].imageStory }}" alt="playa">
+                <img src="{{ allStories[storyUserIndex + 1].imageStory }}" alt="playa">
             </div>
         </div>
         {% else %}
@@ -87,11 +87,11 @@
 
         <div class="story-right" style="display: none">
             <div class="story-name-photo">
-                <img src={{ allStories[1].userStory.photo }}>
-                <p>{{ allStories[1].userStory.username }}</p>
+                <img src={{ allStories[storyUserIndex].userStory.photo }}>
+                <p>{{ allStories[storyUserIndex].userStory.username }}</p>
             </div>
             <div class="story blurred">
-                <img src="{{ allStories[1].imageStory }}" alt="playa">
+                <img src="{{ allStories[storyUserIndex].imageStory }}" alt="playa">
             </div>
         </div>
         {% endif %}
