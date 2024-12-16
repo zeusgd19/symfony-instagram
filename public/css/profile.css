@@ -55,12 +55,7 @@ header > div > div input::placeholder {
     transform: translate(5px);
 }
 
-.search-icon {
-    position: absolute;
-    top: 25px;
-    z-index: 1000;
-    margin-left: 10px;
-}
+
 
 .icon-logos {
     display: flex;
@@ -158,9 +153,17 @@ header > div > div input::placeholder {
 }
 
 
-.foto{
+.foto {
     width: 250px;
     height: 250px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+}
+
+.foto:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.8);
 }
 
 .active{
@@ -251,4 +254,71 @@ header > div > div input::placeholder {
     color: black;
     text-decoration: none;
     cursor: pointer;
+}
+
+@media (max-width: 700px){
+    main {
+        display: flex;
+        width: 550px;
+        margin: 25px auto;
+    }
+    .publicaciones{
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 30px;
+        padding-top: 15px;
+    }
+    header {
+        height: 90px;
+        background-color: #FFFFFF;
+        border: 1px solid #DBDBDB;
+        position: relative;
+        right: 0;
+        left: 0;
+        top: 0;
+    }
+
+    .profile-data{
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        justify-content: left;
+    }
+
+    #profile {
+        display: flex;
+        position: relative;
+        align-items: center;
+        margin-bottom: 35px;
+    }
+
+    #narutoProfilePic {
+        border-radius: 100%;
+        width: 150px;
+        height: 150px;
+        position: relative;
+    }
+
+    #profile-name {
+        font-size: 20px;
+        position: absolute;
+        top: -35px;
+        left: 75px;
+        transform: translateX(-50%);
+        z-index: 2;
+    }
+
+    .profile-options {
+        display: flex;
+        flex-direction: row;
+        gap: 10px;
+        margin-left: 40px;
+        align-items: center;
+    }
+
+    #content{
+        display: flex;
+        flex-direction: column;
+        margin-top: 30px;
+    }
 }

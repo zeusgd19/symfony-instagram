@@ -44,6 +44,7 @@ header > div > div input {
 header > div > div input::placeholder {
     transform: translate(5px);
 }
+
 .search-icon {
     position: absolute;
     top: 25px;
@@ -586,7 +587,6 @@ footer p {
 
     #instagram-logo{
         display: flex;
-        margin-top: 50px;
     }
 
     #nav-bar{
@@ -599,20 +599,27 @@ footer p {
     }
 
     .icon-logos{
-
+        position: fixed;
+        bottom: 0;
+        background-color: #FFFFFF;
+        border: 1px solid #DBDBDB;
+        width: 100%;
+        height: 50px;
+        justify-content: center;
+        align-items: center;
     }
 
     header {
         height: 75px;
         background-color: #FFFFFF;
         border: 1px solid #DBDBDB;
-        position: fixed;
-        right: 0;
-        left: 0;
-        top: 0;
-        z-index: 1000;
+        position: relative;
     }
-}
-
-#logout{
+    .mainContent {
+        display: flex;
+        max-width: 1024px;
+        margin: 20px auto;
+        max-height: 100vh;
+        justify-content: center;
+    }
 }
