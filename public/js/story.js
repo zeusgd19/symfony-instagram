@@ -1,54 +1,114 @@
-$(document).ready(function(){
+$(document).ready(function () {
     let stories;
-    const userId = $('.story-main-content').attr('data-id');
-    let currentIndex = $('.story-main-content').attr('data-index');
-    console.log(currentIndex);
+    let currentIndex = parseInt($('.story-main-content').attr('data-index'));
+    let userId = $('.story-main-content').attr('data-id');
+
     $.ajax({
         type: 'GET',
         url: '/stories',
         contentType: 'application/json',
-        success: function(data) {
+        success: function (data) {
             stories = data.stories;
+
+            const currentStory = stories[currentIndex];
+            userId = currentStory.userId;
+            updateStory('.story-center', currentStory.image, currentStory.userPhoto, currentStory.userUsername);
+            updateNeighbors();
         }
     });
 
     $(document).on('click', '.next, .previous', function (e) {
         e.preventDefault();
 
-        if (stories.length <= 1) return;
+        if (!stories || stories.length <= 1) return;
 
         const isNext = $(this).hasClass('next');
         const increment = isNext ? 1 : -1;
+        let newIndex = currentIndex + increment;
 
-        currentIndex = parseInt(currentIndex) + increment;
-        console.log(currentIndex)
+        if (newIndex >= 0 && newIndex < stories.length) {
+            if (stories[newIndex].userId == userId) {
+                currentIndex = newIndex;
+            } else {
+                userId = stories[newIndex].userId;
+                let value = ''
+                stories.forEach((element)=>{
+                    if(element.userId == userId){
+                        value +="<hr>"
+                    }
+                })
+                $('.storiesLine').html(`
+                    ${value}
+                `)
+                window.history.pushState({}, '', '/story/' + userId);
+                currentIndex = stories.findIndex((element) => element.userId == userId);
+            }
 
-        const { image: currentStory, userPhoto: currentPhoto, userUsername: currentUsername } = stories[currentIndex];
-        updateStory('.story-center', currentStory, currentPhoto, currentUsername);
-
-        console.log(currentIndex);
-        $('.next').toggle(currentIndex < stories.length - 1);
-        $('.story-right').toggle(currentIndex < stories.length - 1);
-
-        $('.previous').toggle(currentIndex > 0);
-        $('.story-left').toggle(currentIndex > 0);
-
-        if (currentIndex > 0) {
-            const { image: lastStory, userPhoto: lastPhoto, userUsername: lastUsername } = stories[currentIndex - 1];
-            updateStory('.story-left', lastStory, lastPhoto, lastUsername);
+            const currentStory = stories[currentIndex];
+            updateStory('.story-center', currentStory.image, currentStory.userPhoto, currentStory.userUsername);
         }
 
-        if (currentIndex < stories.length - 1) {
-            const { image: nextStory, userPhoto: nextPhoto, userUsername: nextUsername } = stories[currentIndex + 1];
-            updateStory('.story-right', nextStory, nextPhoto, nextUsername);
-        }
+        updateNeighbors();
     });
 
-    function updateStory(selector, story, photo, username) {
-        const container = $(selector);
-        container.find('.story').find('img').attr('src', story);
-        container.find('.story-name-photo').find('img').attr('src', photo);
-        container.find('.story-name-photo').find('p').text(username);
+    function updateNeighbors() {
+        let prevIndex = findNeighborPreviousIndex(currentIndex, -1);
+        if (prevIndex !== null) {
+            const prevStory = stories[prevIndex];
+            updateStory('.story-left', prevStory.image, prevStory.userPhoto, prevStory.userUsername);
+            $('.story-left, .previous').show();
+        } else {
+            if(currentIndex == 0) {
+                $('.story-left, .previous').hide();
+            } else {
+                $('.story-left').hide();
+                $('.previous').show();
+            }
+        }
+
+        let nextIndex = findNeighborNextIndex(currentIndex, 1);
+        if (nextIndex !== null) {
+            const nextStory = stories[nextIndex];
+            updateStory('.story-right', nextStory.image, nextStory.userPhoto, nextStory.userUsername);
+            $('.story-right, .next').show();
+        } else {
+            if(currentIndex == stories.length - 1) {
+                $('.story-right, .next').hide();
+            } else {
+                $('.story-right').hide();
+                $('.next').show();
+            }
+        }
     }
 
-})
+    function findNeighborNextIndex(startIndex, direction) {
+        let i = startIndex + direction;
+        while (i >= 0 && i < stories.length) {
+            if (stories[i].userId != userId) {
+                let nextUser = stories[i].userId;
+                return stories.findIndex((element) => element.userId == nextUser);
+            }
+            i += direction;
+        }
+        return null;
+    }
+
+    function findNeighborPreviousIndex(startIndex, direction){
+        let i = startIndex + direction;
+        while (i >= 0 && i < stories.length) {
+            if (stories[i].userId != userId) {
+                let previousUser = stories[i].userId;
+                return stories.findIndex((element) => element.userId == previousUser);
+            }
+            i += direction;
+        }
+        return null;
+    }
+
+    function updateStory(selector, storyImage, photo, username) {
+        const container = $(selector);
+        container.find('.story img').attr('src', storyImage);
+        container.find('.story-name-photo img').attr('src', photo);
+        container.find('.story-name-photo p').text(username);
+    }
+});

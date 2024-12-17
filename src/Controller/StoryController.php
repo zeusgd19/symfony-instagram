@@ -96,45 +96,73 @@ class StoryController extends AbstractController
         ]);
     }
     #[Route('/story/{userId}', name: 'storyUser')]
-    public function storyUser(StoryRepository $historiaRepository, ManagerRegistry $doctrine, int $userId): Response
+    public function storyUser( ManagerRegistry $doctrine, int $userId): Response
     {
         $repository = $doctrine->getRepository(UserPostgres::class);
         $user = $repository->find($userId);
 
-        $historias = $historiaRepository->findActiveStoriesByUser($user);
-        $stories = $historiaRepository->findAll();
-
-
-        $index = 0;
-        foreach ($stories as $story){
-            if($historias[0]->getImageStory() == $story->getImageStory()){
-                $storyUserIndex = $index;
-            }
-            $index++;
-        }
         if (!$user) {
             return $this->redirectToRoute('login');
         }
 
-        $currentIndex = 0; // Simulamos que estamos viendo la segunda historia (índice 1)
-        $previousStory = $historias[$currentIndex - 1] ?? null;
-        $currentStory = $historias[$currentIndex]->getImageStory() ?? null;
-        if(count($historias) > 1) {
-            $nextStory = $historias[$currentIndex + 1]->getImageStory() ?? null;
-        } else {
-            $nextStory = "";
+        $historiaRepository = $doctrine->getRepository(Story::class);
+        $historias = $historiaRepository->findActiveStoriesByUser($user);
+        $allStories = $historiaRepository->findAll();
+
+        $groupedStories = [];
+        foreach ($allStories as $story) {
+            $useridNew = $story->getUserStory()->getId();
+            if (!isset($groupedStories[$useridNew])) {
+                $groupedStories[$useridNew] = [];
+            }
+            $groupedStories[$useridNew][] = $story;
+        }
+
+        $orderedStories = [];
+        $seenUserIds = [];
+        foreach ($allStories as $story) {
+            $useridNew = $story->getUserStory()->getId();
+            if (!in_array($useridNew, $seenUserIds)) {
+                $seenUserIds[] = $useridNew;
+                $orderedStories = array_merge($orderedStories, $groupedStories[$useridNew]);
+            }
+        }
+
+        $storyUserIndex = -1;
+        $index = 0;
+        $previousStory = null;
+        $nextStory = null;
+        $previousUser = null;
+        foreach ($orderedStories as $story) {
+            if ($historias[0]->getImageStory() === $story->getImageStory()) {
+                $storyUserIndex = $index;
+            }
+
+            if ($storyUserIndex === -1) {
+                $previousUser = $story->getUserStory();
+            }
+
+            if ($storyUserIndex !== -1 && $index > $storyUserIndex && $story->getUserStory()->getId() !== $userId && !$nextStory) {
+                $nextStory = $story;
+            }
+
+            $index++;
+        }
+
+        if($previousUser) {
+            $previousStory = $historiaRepository->findActiveStoriesByUser($previousUser)[0];
         }
 
         return $this->render('page/story.html.twig', [
             'stories' => $historias,
-            'allStories' => $stories,
+            'allStories' => $orderedStories,
             'storyUserIndex' => $storyUserIndex,
             'user' => $user,
             'previousStory' => $previousStory,
-            'currentStory' => $currentStory,
             'nextStory' => $nextStory,
         ]);
     }
+
 
     #[Route('/stories', name: 'storiesUser')]
     public function getStories(ManagerRegistry $doctrine, Request $request){
@@ -151,6 +179,25 @@ class StoryController extends AbstractController
         $storyRepository = $doctrine->getRepository(Story::class);
         $stories = $storyRepository->findAll();
 
+        $groupedStories = [];
+        foreach ($stories as $story) {
+            $userId = $story->getUserStory()->getId();
+            if (!isset($groupedStories[$userId])) {
+                $groupedStories[$userId] = [];
+            }
+            $groupedStories[$userId][] = $story;
+        }
+
+        $orderedStories = [];
+        $seenUserIds = [];
+        foreach ($stories as $story) {
+            $userId = $story->getUserStory()->getId();
+            if (!in_array($userId, $seenUserIds)) {
+                $seenUserIds[] = $userId;
+                $orderedStories = array_merge($orderedStories, $groupedStories[$userId]);
+            }
+        }
+
         $storiesArray = array_map(function($story) {
             return [
                 'id' => $story->getId(),
@@ -159,9 +206,9 @@ class StoryController extends AbstractController
                 'userPhoto' => $story->getUserStory()->getPhoto(),
                 'userUsername' => $story->getUserStory()->getUsername(),
             ];
-        }, $stories);
+        }, $orderedStories);
 
-        if($stories) {
+        if($orderedStories) {
             return $this->json([
                 'status' => 200,
                 'textStatus' => 'success',

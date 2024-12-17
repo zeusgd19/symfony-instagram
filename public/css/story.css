@@ -79,10 +79,24 @@ body {
 }
 
 .previous {
-    display: none;
+    /*display: none;*/
 }
 .next {
-    display: none;
+    /*display: none;*/
+}
+.storiesLine {
+    display: flex;
+    gap: 10px;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+hr {
+    position: relative;
+    top: 5px;
+    z-index: 80000;
+    width: 75%;
+    margin: 0 auto;
+    color: white;
 }
 .story-name-photo {
     display: flex;
@@ -120,6 +134,7 @@ body {
 
     .story-center {
         display: flex;
+        position: absolute;
     }
 
     .story > img {
@@ -184,8 +199,8 @@ body {
 }
 
 .story-left {
-    display: none;
+    /*display: none;*/
 }
 .story-right {
-    display: none;
+    /*display: none;*/
 }
