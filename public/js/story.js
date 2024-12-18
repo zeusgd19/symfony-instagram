@@ -74,9 +74,20 @@ $(document).ready(function () {
         updateNeighbors();
     });
 
+    window.addEventListener('resize',function(){
+        if(isMobile()){
+            $(".story-left").hide();
+            $(".story-right").hide();
+        } else {
+            updateNeighbors();
+        }
+    })
+
     function updateNeighbors() {
         let prevIndex = findNeighborPreviousIndex(currentIndex, -1);
         if (isMobile()) {
+            $(".story-left").hide();
+            $(".story-right").hide();
             $('.previous').toggle(currentIndex > 0);
             $('.next').toggle(currentIndex < stories.length - 1);
         } else {
