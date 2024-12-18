@@ -43,8 +43,9 @@ const unfollowed = document.getElementById("unfollowed");
 
         // Mostrar/ocultar dropdown al hacer clic en la imagen
         const dropdown = document.querySelector('.dropdown-content');
-        const moreOptions = document.getElementById("more-options");
-        if (moreOptions){
+
+        const moreOptions = document.getElementById('more-options');
+        if(moreOptions) {
             moreOptions.addEventListener('click', function (event) {
                 event.stopPropagation();
                 dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';

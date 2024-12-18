@@ -68,9 +68,9 @@ $(document).ready(function() {
         $('.message').remove();
         $('.message-item-user-info').attr('data-id',userId);
         $('.message-item-user-info').attr('data-sender-id',senderId);
-        sessionStorage.setItem('data-sender-id',senderId);
-        sessionStorage.setItem('data-id',userId);
-        sessionStorage.setItem('photo-user',photo);
+        sessionStorage.setItem('data-new-sender-id',senderId);
+        sessionStorage.setItem('data-new-id',userId);
+        sessionStorage.setItem('new-photo-user',photo);
         $('.message-item-user-info').append(
             `
             <img src="${$(this).find('img').attr('src')}"/>
@@ -120,6 +120,7 @@ $(document).ready(function() {
 
     const cliente = supabase.createClient(supabaseUrl, supabaseKey);
 
+    let lastSenderId = -1;
     // Configuración para Realtime
     cliente
         .channel('mensajes')
@@ -128,11 +129,11 @@ $(document).ready(function() {
             { event: 'insert', schema: 'public', table: 'message' },
             async (payload) => {
                 let {sender_id, receiver_id, content} = payload.new;
-                let lastSenderId = -1;
-                let logedId = sessionStorage.getItem('data-sender-id');
-                let newReceiverId = sessionStorage.getItem('data-id');
-                let newPhoto = sessionStorage.getItem('photo-user');
-                if(lastSenderId != sender_id && logedId != sender_id){
+                let logedId = sessionStorage.getItem('data-new-sender-id');
+                let newReceiverId = sessionStorage.getItem('data-new-id');
+                let seeingReceiverId =  $('.message-item-user-info').attr('data-id')
+                let newPhoto = sessionStorage.getItem('new-photo-user');
+                if( newReceiverId != sender_id && logedId != sender_id){
                     const { data: user, error } = await cliente
                         .from('user_postgres')
                         .select('id, username, photo')
@@ -144,7 +145,6 @@ $(document).ready(function() {
                         return;
                     }
 
-                    // Añadir el mensaje al frontend
                     $('.message-user-item').append(`
                         <div class="user-item" data-id="${user.id}" data-sender-id="${receiver_id}">
                         <img src="${user.photo}" alt="Photo" />
@@ -153,13 +153,13 @@ $(document).ready(function() {
                         </div>
                     </div>
                 `);
-                    sessionStorage.setItem('data-sender-id',receiver_id);
-                    sessionStorage.setItem('data-id',user.id);
-                    sessionStorage.setItem('photo-user',user.photo);
+                    sessionStorage.setItem('data-new-sender-id',receiver_id);
+                    sessionStorage.setItem('data-new-id',user.id);
+                    sessionStorage.setItem('new-photo-user',user.photo);
                     lastSenderId = sender_id;
                 }
                 if(receiver_id == logedId){
-                    if(sender_id == newReceiverId) {
+                    if(sender_id == seeingReceiverId) {
                         $('.message-item').find('ul').append(
                             `
                             <li class="message other">

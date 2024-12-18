@@ -135,6 +135,7 @@ hr {
     .story-center {
         display: flex;
         position: absolute;
+        flex-direction: column;
     }
 
     .story > img {
@@ -158,12 +159,6 @@ hr {
 
     .button > img {
         width: 50px;
-    }
-
-    .story-center {
-        display: flex;
-        flex-direction: column;
-        position: absolute;
     }
 }
 /* Ajuste general: imágenes de los lados más pequeñas en cualquier pantalla */
