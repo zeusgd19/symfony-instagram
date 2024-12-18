@@ -3,6 +3,7 @@ $(document).ready(function(){
     const userId = $('.story-main-content').attr('data-id');
     let currentIndex = $('.story-main-content').attr('data-index');
     console.log(currentIndex);
+
     $.ajax({
         type: 'GET',
         url: '/stories',

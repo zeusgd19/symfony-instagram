@@ -23,8 +23,9 @@
                             {% endif %}
                         {% endif %}
                         <div class="modify-profile">
-                            <img id="more-options" src="{{ asset("img/more-options.svg") }}">
+
                             {% if user.id == app.user.id %}
+                                <img id="more-options" src="{{ asset("img/more-options.svg") }}">
                                 <div class="dropdown-content">
                                     <a href="#cambiarFoto" id="change-photo">Cambiar foto del perfil</a>
                                     <a href="#cambiarNombre" id="change-name">Cambiar nombre del perfil</a>
@@ -45,8 +46,9 @@
                                 </div>
                             </div>
                         {% endif %}
-
-                        <img id="three-dots" src="{{ asset("img/three-dots.svg") }}" loading="lazy">
+                        {% if user.id == app.user.id %}
+                            <img id="three-dots" src="{{ asset("img/three-dots.svg") }}" loading="lazy">
+                        {% endif %}
                     </div>
                     <div class="followers">
                         <p>{{ posts|length }} Posts</p>

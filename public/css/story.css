@@ -145,37 +145,6 @@ body {
         width: 50px;
     }
 }
-/* Pantallas medianas (60% del ancho máximo, aproximadamente 1024px) */
-@media (min-width: 601px) and (max-width: 1024px) {
-    .story-container {
-        gap: 0;
-    }
-
-    .story-left, .story-right {
-        display: none; /* Ocultar imágenes de los lados */
-    }
-
-    .story-center {
-        display: flex;
-    }
-
-    .story > img {
-        width: 350px; /* Imagen central ligeramente más pequeña */
-        height: 500px;
-    }
-
-    .button {
-        display: flex; /* Asegurar que los botones sean visibles */
-    }
-
-    .button.previous {
-        left: 10px;
-    }
-
-    .button.next {
-        right: 10px;
-    }
-}
 /* Ajuste general: imágenes de los lados más pequeñas en cualquier pantalla */
 .story-left .story > img,
 .story-right .story > img {

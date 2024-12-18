@@ -18,6 +18,7 @@ main {
     display: flex;
     width: 60%;
     margin: 100px auto;
+    justify-content: center;
 }
 
 #profile{
