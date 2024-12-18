@@ -159,6 +159,14 @@ hr {
     .button > img {
         width: 50px;
     }
+    hr {
+        position: relative;
+        top: 5px;
+        z-index: 80000;
+        width: 75%;
+        margin: 0 auto;
+        color: white;
+    }
 }
 /* Ajuste general: imágenes de los lados más pequeñas en cualquier pantalla */
 .story-left .story > img,
