@@ -14,86 +14,79 @@
 </div>
 <div class="story-main-content" data-id="{{ user.id }}" data-index="{{ storyUserIndex }}">
     <div class="story-container">
-        {% if storyUserIndex != 0 %}
-        {% if user.id != allStories[storyUserIndex - 1].userStory.id %}
-        <div class="story-left" style="display: block">
-            <div class="story-name-photo">
-                <img src={{ allStories[storyUserIndex - 1].userStory.photo }}>
-                <p>{{ allStories[storyUserIndex - 1].userStory.username }}</p>
-            </div>
-            <div class="story blurred">
-                <img src="{{ allStories[storyUserIndex - 1].imageStory }}" alt="playa">
-            </div>
-        </div>
-        <div class="button previous" style="display: block">
-            <img src="{{ asset('img/previous-button.svg') }}">
-        </div>
-        {% else %}
-        <div class="story-left">
-            <div class="story-name-photo">
-                <img src={{ user.photo }}>
-                <p>{{ user.username }}</p>
-            </div>
-            <div class="story blurred">
-                <img src="{{ lastStory }}" alt="playa">
-            </div>
-        </div>
-        <div class="button previous">
-            <img src="{{ asset('img/previous-button.svg') }}">
-        </div>
-        {% endif %}
-        {% endif %}
-        <div class="story-center">
-            <div class="story-name-photo">
-                <img src={{ user.photo }}>
-                <p>{{ user.username }}</p>
-            </div>
-            <div class="story">
-                <img src="{{ currentStory }}" alt="playa">
-            </div>
-        </div>
-        {% if stories | length > 1  %}
-            <div class="button next" style="display: block">
-                <img src="{{ asset('img/next-button.svg') }}">
-            </div>
-
-            <div class="story-right" style="display: block">
+        {# Historia anterior de otro usuario #}
+        {% if previousStory %}
+            <div class="story-left">
                 <div class="story-name-photo">
-                    <img src={{ user.photo }}>
+                    <img src="{{ previousStory.userStory.photo }}">
+                    <p>{{ previousStory.userStory.username }}</p>
+                </div>
+                <div class="story blurred">
+                    <img src="{{ previousStory.imageStory }}" alt="story">
+                </div>
+            </div>
+            <div class="button previous">
+                <img src="{{ asset('img/previous-button.svg') }}">
+            </div>
+        {% else %}
+            <div class="story-left" style="display: none">
+                <div class="story-name-photo">
+                    <img src="{{ user.photo }}">
                     <p>{{ user.username }}</p>
                 </div>
                 <div class="story blurred">
-                    <img src="{{ nextStory }}" alt="playa">
+                    <img src="{{ allStories[storyUserIndex].imageStory }}" alt="story">
                 </div>
             </div>
-        {% elseif storyUserIndex != allStories | length - 1 %}
-        <div class="button next" style="display: block">
-            <img src="{{ asset('img/next-button.svg') }}">
+            <div class="button previous" style="display: none">
+                <img src="{{ asset('img/previous-button.svg') }}">
+            </div>
+        {% endif %}
+
+
+        <div class="story-center">
+
+            <div class="storiesLine">
+                {% for story in stories %}
+                <hr>
+                {% endfor %}
+            </div>
+
+            <div class="story-name-photo">
+                <img src="{{ user.photo }}">
+                <p>{{ user.username }}</p>
+            </div>
+            <div class="story">
+                <img src="{{ allStories[storyUserIndex].imageStory }}" alt="story">
+            </div>
         </div>
 
-        <div class="story-right" style="display: block">
-            <div class="story-name-photo">
-                <img src={{ allStories[storyUserIndex + 1].userStory.photo }}>
-                <p>{{ allStories[storyUserIndex + 1].userStory.username }}</p>
+        {% if nextStory %}
+            <div class="button next">
+                <img src="{{ asset('img/next-button.svg') }}">
             </div>
-            <div class="story blurred">
-                <img src="{{ allStories[storyUserIndex + 1].imageStory }}" alt="playa">
+            <div class="story-right">
+                <div class="story-name-photo">
+                    <img src="{{ nextStory.userStory.photo }}">
+                    <p>{{ nextStory.userStory.username }}</p>
+                </div>
+                <div class="story blurred">
+                    <img src="{{ nextStory.imageStory }}" alt="story">
+                </div>
             </div>
-        </div>
         {% else %}
-        <div class="button next" style="display: none">
-            <img src="{{ asset('img/next-button.svg') }}">
-        </div>
-
-        <div class="story-right" style="display: none">
-            <div class="story-name-photo">
-                <img src={{ allStories[storyUserIndex].userStory.photo }}>
-                <p>{{ allStories[storyUserIndex].userStory.username }}</p>
+            <div class="button next" style="display: none">
+                <img src="{{ asset('img/next-button.svg') }}">
             </div>
-            <div class="story blurred">
-                <img src="{{ allStories[storyUserIndex].imageStory }}" alt="playa">
+            <div class="story-right" style="display: none">
+                <div class="story-name-photo">
+                    <img src="{{ user.photo }}">
+                    <p>{{ user.username }}</p>
+                </div>
+                <div class="story blurred">
+                    <img src="{{ allStories[storyUserIndex].imageStory }}" alt="story">
+                </div>
             </div>
-        </div>
         {% endif %}
     </div>
 </div>
