@@ -19,6 +19,15 @@ $(document).ready(function () {
         }
     });
 
+    function* generateStoryLines(stories, userId) {
+        for (const story of stories) {
+            if (story.userId == userId) {
+                yield '<hr>';
+            }
+        }
+    }
+
+
     $(document).on('click', '.next, .previous', function (e) {
         e.preventDefault();
 
@@ -34,12 +43,10 @@ $(document).ready(function () {
             } else {
                 userId = stories[newIndex].userId;
                 let value = '';
-                stories.forEach((element) => {
-                    if (element.userId == userId) {
-                        value += "<hr>";
-                    }
-                });
-                $('.storiesLine').html(`${value}`);
+                for (const line of generateStoryLines(stories, userId)) {
+                    value += line;
+                }
+                $('.storiesLine').html(value);
                 window.history.pushState({}, '', '/story/' + userId);
                 currentIndex = stories.findIndex((element) => element.userId == userId);
             }
@@ -99,28 +106,34 @@ $(document).ready(function () {
     }
 
     function findNeighborNextIndex(startIndex, direction) {
-        let i = startIndex + direction;
-        while (i >= 0 && i < stories.length) {
-            if (stories[i].userId != userId) {
-                let nextUser = stories[i].userId;
-                return stories.findIndex((element) => element.userId == nextUser);
-            }
-            i += direction;
+        const generator = findNeighbors(startIndex, direction, stories, userId);
+        const nextStory = generator.next().value;
+        if (nextStory) {
+            return stories.findIndex((element) => element.userId == nextStory.userId);
         }
         return null;
     }
 
     function findNeighborPreviousIndex(startIndex, direction) {
-        let i = startIndex + direction;
-        while (i >= 0 && i < stories.length) {
-            if (stories[i].userId != userId) {
-                let previousUser = stories[i].userId;
-                return stories.findIndex((element) => element.userId == previousUser);
-            }
-            i += direction;
+        const generator = findNeighbors(startIndex, direction, stories, userId);
+        const prevStory = generator.next().value;
+        if (prevStory) {
+            return stories.findIndex((element) => element.userId == prevStory.userId);
         }
         return null;
     }
+
+
+    function* findNeighbors(startIndex, direction, stories, userId) {
+        let i = startIndex + direction;
+        while (i >= 0 && i < stories.length) {
+            if (stories[i].userId != userId) {
+                yield stories[i]; // Pausa y devuelve la historia actual.
+            }
+            i += direction;
+        }
+    }
+
 
     function updateStory(selector, storyImage, photo, username) {
         const container = $(selector);

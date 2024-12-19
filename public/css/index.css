@@ -62,6 +62,18 @@ header > div > img {
     gap: 25px;
     margin-top: 10px;
 }
+.notify {
+    position: relative;
+    background-color: red;
+    color: white;
+    border-radius: 100%;
+    text-align: center;
+    font-size: 1em;
+    width: 15px;
+    height: 15px;
+    top: -35px;
+    left: 15px;
+}
 
 .icon-logos .active {
     border-bottom: 2px solid #DBDBDB;
@@ -145,12 +157,15 @@ header > div > img {
 .other-storie div a {
     width: 60px;
     height: 60px;
+    position: relative;
+    left: 60px;
+    z-index: 1000;
 }
 .other-storie div a img {
     width: 60px;
     height: 59px;
     position: relative;
-    left: 60px;
+    left: 0px;
 }
 
 .circle-story{

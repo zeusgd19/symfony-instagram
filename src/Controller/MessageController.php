@@ -40,6 +40,7 @@ class MessageController extends AbstractController
 
         $notification = new Notification();
         $notification->setType('message');
+        $notification->setGeneratedNotifyBy($this->getUser());
         $notification->setNotifiedUser($receiver);
 
         $manager->persist($message);

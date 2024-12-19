@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Comment;
+use App\Entity\Notification;
 use App\Entity\Post;
 use App\Form\PostFormType;
 use App\Service\FirebaseImageCache;
@@ -120,6 +121,12 @@ class PostController extends AbstractController
         if($post){
             $user->addLikedPost($post);
             $manager->persist($user);
+
+            $notification =  new Notification();
+            $notification->setType('like');
+            $notification->setGeneratedNotifyBy($this->getUser());
+            $notification->setNotifiedUser($post->getUser());
+            $manager->persist($notification);
             $manager->flush();
         }
         $totalLikes = count($post->getLikedBy());

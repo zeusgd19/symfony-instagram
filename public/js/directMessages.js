@@ -1,9 +1,17 @@
 $(document).ready(function() {
     const firstUserInList = $('.message-user-item').find('.user-item')[0]
+    const allUsers = $('.message-user-item').find('.user-item')
     const messages = document.getElementsByClassName('messagesUl')[0];
     sessionStorage.setItem('data-sender-id',$(firstUserInList).attr('data-sender-id'));
     sessionStorage.setItem('data-id',$(firstUserInList).attr('data-id'));
     sessionStorage.setItem('photo-user',$(firstUserInList).find('img').attr('src'));
+
+    const allUsersId = [];
+
+    allUsers.each(function(){
+        allUsersId.push($(this).attr("data-id"))
+    })
+
     if(firstUserInList) {
         const userId = firstUserInList.getAttribute('data-id')
         $.ajax({
@@ -129,11 +137,17 @@ $(document).ready(function() {
             { event: 'insert', schema: 'public', table: 'message' },
             async (payload) => {
                 let {sender_id, receiver_id, content} = payload.new;
-                let logedId = sessionStorage.getItem('data-new-sender-id');
-                let newReceiverId = sessionStorage.getItem('data-new-id');
+                let logedId = sessionStorage.getItem('data-sender-id');
                 let seeingReceiverId =  $('.message-item-user-info').attr('data-id')
                 let newPhoto = sessionStorage.getItem('new-photo-user');
-                if( newReceiverId != sender_id && logedId != sender_id){
+                let inList = false;
+                for(let id of allUsersId){
+                    if(sender_id == id){
+                        inList = true;
+                        break;
+                    }
+                }
+                if( !inList && logedId != sender_id){
                     const { data: user, error } = await cliente
                         .from('user_postgres')
                         .select('id, username, photo')
@@ -153,7 +167,6 @@ $(document).ready(function() {
                         </div>
                     </div>
                 `);
-                    sessionStorage.setItem('data-new-sender-id',receiver_id);
                     sessionStorage.setItem('data-new-id',user.id);
                     sessionStorage.setItem('new-photo-user',user.photo);
                     lastSenderId = sender_id;

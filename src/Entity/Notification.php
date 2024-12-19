@@ -20,6 +20,10 @@ class Notification
     #[ORM\JoinColumn(nullable: false)]
     private ?UserPostgres $notifiedUser = null;
 
+    #[ORM\ManyToOne]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?UserPostgres $generatedNotifyBy = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -45,6 +49,18 @@ class Notification
     public function setNotifiedUser(?UserPostgres $notifiedUser): static
     {
         $this->notifiedUser = $notifiedUser;
+
+        return $this;
+    }
+
+    public function getGeneratedNotifyBy(): ?UserPostgres
+    {
+        return $this->generatedNotifyBy;
+    }
+
+    public function setGeneratedNotifyBy(?UserPostgres $generatedNotifyBy): static
+    {
+        $this->generatedNotifyBy = $generatedNotifyBy;
 
         return $this;
     }

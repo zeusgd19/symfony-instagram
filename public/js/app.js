@@ -299,30 +299,29 @@ window.onload = () => {
         const rect = emojiButton.getBoundingClientRect();
         const scrollTop = window.scrollY || document.documentElement.scrollTop;
 
-        // Posiciona el modal cerca del botón de emoji
         emojiModal.style.top = `${rect.top + scrollTop - emojiModal.offsetHeight - 100}px`;
         emojiModal.style.left = `${rect.left}px`;
 
-        // Alterna la visibilidad del modal
+
         emojiModal.classList.toggle("hide");
 
         e.stopPropagation();
 
-        // Encuentra el input relacionado al emoji clickeado
+
         const parent = $(emojiButton).parent();
         const input = parent.find('.comment-input');
 
-        // Reasigna eventos a los emojis en el modal
+
         emojis.off('click');
         emojis.on('click', (e) => {
             e.preventDefault();
-            input.val(input.val() + $(e.target).text()); // Añade el emoji al input
+            input.val(input.val() + $(e.target).text());
         });
         $(document).on('click', function (event) {
             if (!$(event.target).closest(emojiModal).length && !$(event.target).is($(emojis))) {
                 $(emojiModal).addClass('hide');
-                document.body.style.overflow = ""; // Restaurar scroll
-                $(document).off('click'); // Remover este evento
+                document.body.style.overflow = "";
+                $(document).off('click');
             }
         });
     });
@@ -353,7 +352,7 @@ window.onload = () => {
         activeModals.forEach(modalSelector => {
             const modal = $(modalSelector);
 
-            // Verifica si el clic fue fuera del modal y no en los botones que abren los modales
+
             if (!modal.is(event.target) && modal.has(event.target).length === 0 && !$(event.target).closest(openButtonSelectors.join(', ')).length) {
                 console.log('Clic fuera del modal');
                 modal.hide('slow'); // Ocultar modal
@@ -365,9 +364,9 @@ window.onload = () => {
     $(document).on('click', '.unlikedPost, .likedPost', function (ev) {
         ev.preventDefault();
         let postId = $(this).attr('id');
-        const isLiked = $(this).hasClass('likedPost'); // Comprobamos si es un like o un unlike
+        const isLiked = $(this).hasClass('likedPost');
 
-        // Seleccionamos la URL dependiendo de si es un like o un unlike
+
         const url = isLiked ? `/removeLike/${postId}` : `/addLike/${postId}`;
 
         const xhr = new XMLHttpRequest();
@@ -379,12 +378,12 @@ window.onload = () => {
             if (xhr.status >= 200 && xhr.status < 300) {
                 let json = JSON.parse(xhr.responseText);
 
-                // Actualizamos el número total de likes y el mensaje
+
                 $(`#post-${postId}`).find('.likesByOthers').text(json.totalLikes + " people");
                 let likedByYou = json.likedBYYou;
                 let othersLikes = json.totalLikes - (likedByYou ? 1 : 0);
 
-                // Actualizamos el texto del like y el mensaje en la UI
+
                 let likeMessage = "";
                 if (likedByYou) {
                     $(`#post-${postId}`).find('.imgLike').attr('src', 'img/post-like-liked.svg');
@@ -394,15 +393,15 @@ window.onload = () => {
                     } else {
                         likeMessage = "Liked by <span>you</span>";
                     }
-                    $(this).removeClass('unlikedPost').addClass('likedPost'); // Cambiamos la clase
+                    $(this).removeClass('unlikedPost').addClass('likedPost');
                 } else {
                     $(`#post-${postId}`).find('.imgLike').attr('src', 'img/post-like.svg');
                     $('#commentModal').find('.imgLike').attr('src', 'img/post-like.svg');
                     likeMessage = `Liked by <span>${json.totalLikes} people</span>`;
-                    $(this).removeClass('likedPost').addClass('unlikedPost'); // Cambiamos la clase
+                    $(this).removeClass('likedPost').addClass('unlikedPost');
                 }
 
-                // Actualizamos el mensaje en la UI
+
                 $(`#post-${postId}`).find('.likeMessage').html(likeMessage);
                 $(`#commentModal`).find('.likeMessage').html(likeMessage);
             }
@@ -414,9 +413,9 @@ window.onload = () => {
     $(document).on('click', '.unsavedPost, .savedPost', function (ev) {
         ev.preventDefault();
         let postId = $(this).attr('id');
-        const isSaved = $(this).hasClass('savedPost'); // Comprobamos si es un like o un unlike
+        const isSaved = $(this).hasClass('savedPost');
 
-        // Seleccionamos la URL dependiendo de si es un like o un unlike
+
         const url = isSaved ? `/removeSave/${postId}` : `/addSave/${postId}`;
 
         const xhr = new XMLHttpRequest();
@@ -436,11 +435,11 @@ window.onload = () => {
                     $(`#post-${postId}`).find('.imgSave').attr('src', 'img/post-save-saved.svg');
                     $('#commentModal').find('.imgSave').attr('src', 'img/post-save-saved.svg');
 
-                    $(this).removeClass('unsavedPost').addClass('savedPost'); // Cambiamos la clase
+                    $(this).removeClass('unsavedPost').addClass('savedPost');
                 } else {
                     $(`#post-${postId}`).find('.imgSave').attr('src', 'img/post-save.svg');
                     $('#commentModal').find('.imgSave').attr('src', 'img/post-save.svg');
-                    $(this).removeClass('savedPost').addClass('unsavedPost'); // Cambiamos la clase
+                    $(this).removeClass('savedPost').addClass('unsavedPost');
                 }
             }
         });
@@ -463,10 +462,10 @@ window.onload = () => {
 
                 if (isFollowed) {
                     $(this).text('Follow');
-                    $(this).removeClass('followed').addClass('unfollowed'); // Cambiamos la clase
+                    $(this).removeClass('followed').addClass('unfollowed');
                 } else {
                     $(this).text('Following');
-                    $(this).removeClass('unfollowed').addClass('followed'); // Cambiamos la clase
+                    $(this).removeClass('unfollowed').addClass('followed');
                 }
             }
         });

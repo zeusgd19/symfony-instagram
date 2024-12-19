@@ -8,12 +8,38 @@
             </form>
         </div>
         <ul class="icon-logos">
+            {% set notifiedUsers = [] %}
+            {% set contadorMessages = 0 %}
+            {% set contadorNotify = 0 %}
+            {% set sameUser = 0 %}
+            {% if notification %}
+                {% for notify in notification %}
+                    {% if notify.type == 'message' and notify.notifiedUser == app.user and notify.generatedNotifyBy not in notifiedUsers %}
+                        {% set notifiedUsers = notifiedUsers|merge([notify.generatedNotifyBy]) %}
+                        {% set contadorMessages = contadorMessages + 1 %}
+                    {% elseif notify.type != 'message' and notify.notifiedUser == app.user and notify.generatedNotifyBy != app.user %}
+                        {% set contadorNotify = contadorNotify + 1 %}
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
             <li><a href="{{ path('index') }}" class={{(app.request.attributes.get('_route') == 'index')  ? 'active': ''}}><img src="{{ asset('img/home.svg') }}" alt="home" loading="lazy"></a></li>
-            <li><a href="{{ path('direct_messages') }}" class={{(app.request.attributes.get('_route') == 'direct_messages')  ? 'active': ''}}><img src="{{ asset('img/direct-messages.svg') }}" loading="lazy" alt="direct-messages"></a></li>
+            <li><a href="{{ path('direct_messages') }}" class={{(app.request.attributes.get('_route') == 'direct_messages')  ? 'active': ''}}><img src="{{ asset('img/direct-messages.svg') }}" loading="lazy" alt="direct-messages"></a>
+                {% if contadorMessages > 0 %}
+                <p class="notify">
+                    {{ contadorMessages }}
+                </p>
+            {% endif %}
+            </li>
             <li><a href="" id="enlace-crear"><img src="{{ asset('img/create-post.svg') }}" alt="create-post" loading="lazy" id="create-post"></a></li>
-            <li><a href=""><img src="{{ asset('img/like-notification.svg') }}" alt="like-notification" loading="lazy"></a></li>
+            <li><a href=""><img src="{{ asset('img/like-notification.svg') }}" alt="like-notification" loading="lazy"></a>
+            {% if contadorNotify > 0 %}
+                <p class="notify">
+                    {{ contadorNotify }}
+                </p>
+            {% endif %}
+            </li>
             <li><a href="/profile/{{app.user.username}}"><img src="{{ app.user.photo }}" alt="profil-pic" class="profil-pic" loading="lazy"></a></li>
-            <li>            <a href="{{ path('app_logout') }}"><img src="{{ asset('img/log-out.svg') }}" loading="lazy" /></a></li>
+            <li><a href="{{ path('app_logout') }}"><img src="{{ asset('img/log-out.svg') }}" loading="lazy" /></a></li>
         </ul>
     </div>
 </header>

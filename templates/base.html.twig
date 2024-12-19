@@ -13,7 +13,7 @@
     {% endblock %}
 </head>
 <body>
-{{ include('partials/_navigation.html.twig') }}
+{{ render(controller('App\\Controller\\IndexController::renderNavigation')) }}
 {% block body %}
 {% endblock %}
 {{ include('partials/_emoji-modal.html.twig') }}

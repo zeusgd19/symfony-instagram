@@ -131,8 +131,6 @@ class IndexController extends AbstractController
             $images[$post['id']] = $imageCache->getPostImage($post['photo']);
         }
 
-        $notificationRepository = $doctrine->getRepository(Notification::class);
-
         return $this->render('page/index.html.twig', [
             'users' => $users,
             'profileImage' => $profileImages,
@@ -144,10 +142,17 @@ class IndexController extends AbstractController
             'isFollowing' => $isFollowing,
             'timeElapsed' => $timeElapsed,
             'stories' => $newStories,
-            'notification' => $notification
         ]);
     }
 
+    public function renderNavigation(ManagerRegistry $doctrine){
+        $repository = $doctrine->getRepository(Notification::class);
+        $notification = $repository->findAll();
+
+        return $this->render('partials/_navigation.html.twig', [
+            'notification' => $notification
+        ]);
+    }
 
 
 }
