@@ -28,47 +28,25 @@ $(document).ready(function () {
         const increment = isNext ? 1 : -1;
         let newIndex = currentIndex + increment;
 
-        if (isMobile()) {
-            if (newIndex >= 0 && newIndex < stories.length) {
-                if (stories[newIndex].userId == userId) {
-                    currentIndex = newIndex;
-                } else {
-                    userId = stories[newIndex].userId;
-                    let value = '';
-                    stories.forEach((element) => {
-                        if (element.userId == userId) {
-                            value += "<hr>";
-                        }
-                    });
-                    $('.storiesLine').html(`${value}`);
-                    window.history.pushState({}, '', '/story/' + userId);
-                    currentIndex = stories.findIndex((element) => element.userId == userId);
-                }
-                console.log(currentIndex);
-                const currentStory = stories[currentIndex];
-                updateStory('.story-center', currentStory.image, currentStory.userPhoto, currentStory.userUsername);
+        if (newIndex >= 0 && newIndex < stories.length) {
+            if (stories[newIndex].userId == userId) {
+                currentIndex = newIndex;
+            } else {
+                userId = stories[newIndex].userId;
+                let value = '';
+                stories.forEach((element) => {
+                    if (element.userId == userId) {
+                        value += "<hr>";
+                    }
+                });
+                $('.storiesLine').html(`${value}`);
+                window.history.pushState({}, '', '/story/' + userId);
+                currentIndex = stories.findIndex((element) => element.userId == userId);
             }
-        } else {
-            if (newIndex >= 0 && newIndex < stories.length) {
-                if (stories[newIndex].userId == userId) {
-                    currentIndex = newIndex;
-                } else {
-                    userId = stories[newIndex].userId;
-                    let value = '';
-                    stories.forEach((element) => {
-                        if (element.userId == userId) {
-                            value += "<hr>";
-                        }
-                    });
-                    $('.storiesLine').html(`${value}`);
-                    window.history.pushState({}, '', '/story/' + userId);
-                    currentIndex = stories.findIndex((element) => element.userId == userId);
-                }
 
-                console.log(currentIndex);
-                const currentStory = stories[currentIndex];
-                updateStory('.story-center', currentStory.image, currentStory.userPhoto, currentStory.userUsername);
-            }
+            console.log(currentIndex);
+            const currentStory = stories[currentIndex];
+            updateStory('.story-center', currentStory.image, currentStory.userPhoto, currentStory.userUsername);
         }
 
         updateNeighbors();

@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Comment;
+use App\Entity\Notification;
 use App\Entity\Post;
 use App\Entity\Story;
 use App\Entity\UserPostgres;
@@ -70,12 +71,11 @@ class IndexController extends AbstractController
                 continue; // Saltar al usuario actual
             }
 
-            // Agregar usuario a la lista
+
             $users[] = $user;
 
-            // Comprobar si el usuario está siendo seguido
             $isFollowing[$user['id']] = in_array($user['id'], $followingIds);
-            // Verificar caché de imagen y obtener perfil
+
             if (!$firebaseImageCache->existCachedImagen($user['photo'])) {
                 $firebaseImageCache->getImage($user['photo']);
             }
@@ -131,6 +131,8 @@ class IndexController extends AbstractController
             $images[$post['id']] = $imageCache->getPostImage($post['photo']);
         }
 
+        $notificationRepository = $doctrine->getRepository(Notification::class);
+
         return $this->render('page/index.html.twig', [
             'users' => $users,
             'profileImage' => $profileImages,
@@ -141,9 +143,11 @@ class IndexController extends AbstractController
             'isSavedByUser' => $isSavedByUser,
             'isFollowing' => $isFollowing,
             'timeElapsed' => $timeElapsed,
-            'stories' => $newStories
+            'stories' => $newStories,
+            'notification' => $notification
         ]);
     }
+
 
 
 }

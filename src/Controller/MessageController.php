@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Message;
+use App\Entity\Notification;
 use App\Entity\UserPostgres;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -37,7 +38,12 @@ class MessageController extends AbstractController
         $message->setReceiver($receiver);
         $message->setContent($data['content']);
 
+        $notification = new Notification();
+        $notification->setType('message');
+        $notification->setNotifiedUser($receiver);
+
         $manager->persist($message);
+        $manager->persist($notification);
         $manager->flush();
 
         return $this->json([
