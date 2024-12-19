@@ -121,23 +121,26 @@ header > div > img {
     width: 61px;
     height: 61px;
     border-radius: 100%;
-    background-color: white;
 }
 
 .storie-item p {
     font-family: Roboto, serif;
     font-size: 12px;
     font-weight: normal;
+    position: relative;
 }
 
-.other-storie div {
+.other-storie > div{
     display: flex;
+    flex-direction: column;
     border-radius: 100%;
-    border: 2px solid #EA48F4;
     align-items: center;
     width: 66px;
     height: 63px;
+    position: absolute;
+    margin-top: 10px;
 }
+
 
 .other-storie div a {
     width: 60px;
@@ -146,8 +149,16 @@ header > div > img {
 .other-storie div a img {
     width: 60px;
     height: 59px;
+    position: relative;
+    left: 60px;
 }
 
+.circle-story{
+    width: 130px !important;
+    position: relative;
+    left: -35px;
+    height: 100px !important;
+}
 
 .post-box {
     background-color: #FFFFFF;
