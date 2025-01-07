@@ -1,4 +1,7 @@
 $(document).ready(function() {
+    const supabaseUrl = 'https://fnofdrpcrthobxniqwkw.supabase.co';
+    const cliente = supabase.createClient(supabaseUrl, supabaseKey);
+
     const firstUserInList = $('.message-user-item').find('.user-item')[0]
     const allUsers = $('.message-user-item').find('.user-item')
     const messages = document.getElementsByClassName('messagesUl')[0];
@@ -64,7 +67,7 @@ $(document).ready(function() {
         sessionStorage.removeItem('selectedUser');
     }
 
-    $(document).on('click','.user-item',function(){
+    $(document).on('click','.user-item',async function(){
 
         sessionStorage.removeItem('data-sender-id');
         sessionStorage.removeItem('data-id');
@@ -72,12 +75,20 @@ $(document).ready(function() {
         let userId = $(this).attr('data-id');
         let senderId = $(this).attr('data-sender-id')
         let photo = $(this).find('img').attr('src');
+
+        $(this).find('.notify').remove()
+        $('.notifyBar').remove();
+
+        const { error } = await cliente
+            .from('notification')
+            .delete()
+            .eq('generated_notify_by_id', $(this).attr('data-id'))
+
         $('.message-item-user-info').find('img').remove();
         $('.message-item-user-info').find('p').remove();
         $('.message').remove();
         $('.message-item-user-info').attr('data-id',userId);
         $('.message-item-user-info').attr('data-sender-id',senderId);
-        $(this).find('.notify').remove()
         sessionStorage.setItem('data-new-sender-id',senderId);
         sessionStorage.setItem('data-new-id',userId);
         sessionStorage.setItem('new-photo-user',photo);
@@ -126,9 +137,6 @@ $(document).ready(function() {
         });
     });
 
-    const supabaseUrl = 'https://fnofdrpcrthobxniqwkw.supabase.co';
-
-    const cliente = supabase.createClient(supabaseUrl, supabaseKey);
 
     let lastSenderId = -1;
     // Configuración para Realtime
@@ -139,8 +147,8 @@ $(document).ready(function() {
             { event: 'insert', schema: 'public', table: 'message' },
             async (payload) => {
                 let {sender_id, receiver_id, content} = payload.new;
-                let logedId = sessionStorage.getItem('data-sender-id');
                 let seeingReceiverId =  $('.message-item-user-info').attr('data-id')
+                let logedId = sessionStorage.getItem('data-new-sender-id');
                 let newPhoto = sessionStorage.getItem('new-photo-user');
                 let inList = false;
                 for(let id of allUsersId){
@@ -149,7 +157,7 @@ $(document).ready(function() {
                         break;
                     }
                 }
-                if( !inList && logedId != sender_id){
+                if( !inList && logedId != sender_id && logedId == receiver_id){
                     const { data: user, error } = await cliente
                         .from('user_postgres')
                         .select('id, username, photo')

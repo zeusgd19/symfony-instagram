@@ -473,6 +473,7 @@ window.onload = () => {
     })
 
 
+    /*
     postGuardados = document.getElementById("publicaciones-guardadas");
     publicaciones_title = document.getElementById('publicaciones-title');
     guardados = document.getElementById('guardados');
@@ -489,5 +490,6 @@ window.onload = () => {
         publicaciones_title.classList.remove("active");
         guardados.classList.add("active");
     })
+     */
 }
 
