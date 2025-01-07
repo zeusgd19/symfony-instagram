@@ -16,6 +16,19 @@ main {
     height: 100%;           /* Asegúrate de que ocupe toda la altura del contenedor */
 }
 
+.notify {
+    position: relative;
+    background-color: red;
+    color: white !important;
+    border-radius: 100%;
+    text-align: center;
+    font-size: 1em;
+    width: 15px;
+    height: 15px;
+    top: -27px;
+    left: 130px;
+}
+
 .message-users {
     display: flex;
     flex-direction: column;

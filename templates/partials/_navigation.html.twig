@@ -25,7 +25,7 @@
             <li><a href="{{ path('index') }}" class={{(app.request.attributes.get('_route') == 'index')  ? 'active': ''}}><img src="{{ asset('img/home.svg') }}" alt="home" loading="lazy"></a></li>
             <li><a href="{{ path('direct_messages') }}" class={{(app.request.attributes.get('_route') == 'direct_messages')  ? 'active': ''}}><img src="{{ asset('img/direct-messages.svg') }}" loading="lazy" alt="direct-messages"></a>
                 {% if contadorMessages > 0 %}
-                <p class="notify">
+                <p class="notifyBar">
                     {{ contadorMessages }}
                 </p>
             {% endif %}
@@ -33,7 +33,7 @@
             <li><a href="" id="enlace-crear"><img src="{{ asset('img/create-post.svg') }}" alt="create-post" loading="lazy" id="create-post"></a></li>
             <li><a href=""><img src="{{ asset('img/like-notification.svg') }}" alt="like-notification" loading="lazy"></a>
             {% if contadorNotify > 0 %}
-                <p class="notify">
+                <p class="notifyBar">
                     {{ contadorNotify }}
                 </p>
             {% endif %}

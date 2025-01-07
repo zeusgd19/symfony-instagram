@@ -24,6 +24,7 @@ $(document).ready(function() {
             success: function (response) {
                 $('.messagesUl').html(response.messages)
                 messages.scrollTop = messages.scrollHeight;
+                $('.user-item')[0].click()
             }
         });
     }
@@ -76,6 +77,7 @@ $(document).ready(function() {
         $('.message').remove();
         $('.message-item-user-info').attr('data-id',userId);
         $('.message-item-user-info').attr('data-sender-id',senderId);
+        $(this).find('.notify').remove()
         sessionStorage.setItem('data-new-sender-id',senderId);
         sessionStorage.setItem('data-new-id',userId);
         sessionStorage.setItem('new-photo-user',photo);

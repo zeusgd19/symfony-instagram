@@ -44,7 +44,23 @@ class MessageController extends AbstractController
         $notification->setNotifiedUser($receiver);
 
         $manager->persist($message);
-        $manager->persist($notification);
+
+        $notificationRepository = $doctrine->getRepository(Notification::class);
+
+        $notifications = $notificationRepository->findAll();
+
+        $sameNotification = false;
+        foreach ($notifications as $notificationOne) {
+            if($notificationOne->getGeneratedNotifyBy() === $notification->getGeneratedNotifyBy() && $notificationOne->getNotifiedUser() === $notification->getNotifiedUser()) {
+                $sameNotification = true;
+                break;
+            }
+        }
+        if(!$sameNotification) {
+            if($notification->getGeneratedNotifyBy() !== $notification->getNotifiedUser()) {
+                $manager->persist($notification);
+            }
+        }
         $manager->flush();
 
         return $this->json([

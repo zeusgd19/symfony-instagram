@@ -1,9 +1,20 @@
 {% if conversations %}
 {% for user in conversations %}
+{% set contadorNotifications = 0 %}
+    {% for notification in notifications %}
+        {% if user.id == notification.generatedNotifyBy.id and app.user.id == notification.notifiedUser.id %}
+            {% set contadorNotifications = contadorNotifications + 1 %}
+        {% endif %}
+    {% endfor %}
 <div class="user-item" data-id="{{ user.id }}" data-sender-id="{{ app.user.id }}">
     <img src="{{ user.photo }}" alt="Photo profile">
     <div>
         <p id="usernameMessageItem">{{ user.username }}</p>
+        {% if contadorNotifications > 0 %}
+            <p class="notify">
+                {{ contadorNotifications }}
+            </p>
+        {% endif %}
     </div>
 </div>
 {% endfor %}

@@ -62,7 +62,7 @@ header > div > img {
     gap: 25px;
     margin-top: 10px;
 }
-.notify {
+.notifyBar {
     position: relative;
     background-color: red;
     color: white;
