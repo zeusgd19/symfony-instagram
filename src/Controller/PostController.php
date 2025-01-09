@@ -126,6 +126,7 @@ class PostController extends AbstractController
             $notification->setType('like');
             $notification->setGeneratedNotifyBy($this->getUser());
             $notification->setNotifiedUser($post->getUser());
+            $notification->setPost($post);
             $manager->persist($notification);
             $manager->flush();
         }
