@@ -154,5 +154,9 @@ class IndexController extends AbstractController
         ]);
     }
 
-
+    #[Route('/notification', name: 'notification')]
+    public function notification(): Response
+    {
+        return $this->render('page/notification.html.twig');
+    }
 }

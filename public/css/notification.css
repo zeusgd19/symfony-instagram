@@ -1,0 +1,40 @@
+.notification-main{
+    display: flex;
+    flex-direction: column;
+    max-width: 1024px;
+    margin: 40px auto;
+    max-height: 100vh;
+    list-style: none;
+    align-items: center;
+    gap: 20px;
+}
+.notification-main > li{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    border-bottom: 1px solid #dfdfdf;
+    padding-bottom: 10px;
+}
+.profile-pic-notification{
+    width: 40px;
+    height: 40px;
+    border-radius: 100%;
+}
+.post-pic-notification{
+    width: 40px;
+    height: 40px;
+}
+.container-notification{
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+.container-notification > p{
+    width: 300px;
+}
+
+a{
+    text-decoration: none;
+    color: black;
+}
