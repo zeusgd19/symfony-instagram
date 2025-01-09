@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Comment;
+use App\Entity\Notification;
 use App\Entity\Post;
 use App\Service\ImageService;
 use Doctrine\Persistence\ManagerRegistry;
@@ -36,6 +37,16 @@ class CommentController extends AbstractController{
         $comment->setPost($post);
         $comment->setText($data['comment']);
 
+        $notification = new Notification();
+        $notification->setGeneratedNotifyBy($this->getUser());
+        $notification->setNotifiedUser($post->getUser());
+        $notification->setType('comment');
+        $notification->setContentComment($data['comment']);
+        $notification->setPost($post);
+
+        if($notification->getGeneratedNotifyBy() !== $notification->getNotifiedUser()){
+            $manager->persist($notification);
+        }
         $manager->persist($comment);
         $manager->flush();
 

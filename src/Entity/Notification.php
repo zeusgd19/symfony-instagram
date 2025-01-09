@@ -24,6 +24,12 @@ class Notification
     #[ORM\JoinColumn(nullable: false)]
     private ?UserPostgres $generatedNotifyBy = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $contentComment = null;
+
+    #[ORM\ManyToOne]
+    private ?Post $post = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -61,6 +67,30 @@ class Notification
     public function setGeneratedNotifyBy(?UserPostgres $generatedNotifyBy): static
     {
         $this->generatedNotifyBy = $generatedNotifyBy;
+
+        return $this;
+    }
+
+    public function getContentComment(): ?string
+    {
+        return $this->contentComment;
+    }
+
+    public function setContentComment(?string $contentComment): static
+    {
+        $this->contentComment = $contentComment;
+
+        return $this;
+    }
+
+    public function getPost(): ?Post
+    {
+        return $this->post;
+    }
+
+    public function setPost(?Post $post): static
+    {
+        $this->post = $post;
 
         return $this;
     }
