@@ -31,7 +31,7 @@
             {% endif %}
             </li>
             <li><a href="" id="enlace-crear"><img src="{{ asset('img/create-post.svg') }}" alt="create-post" loading="lazy" id="create-post"></a></li>
-            <li><a href=""><img src="{{ asset('img/like-notification.svg') }}" alt="like-notification" loading="lazy"></a>
+            <li><a href="{{ path('app_notification') }}"><img src="{{ asset('img/like-notification.svg') }}" alt="like-notification" loading="lazy"></a>
             {% if contadorNotify > 0 %}
                 <p class="notifyBar">
                     {{ contadorNotify }}

@@ -6,24 +6,22 @@
 {% block body %}
 <main class="notification-main">
     <ul class="notification-main">
-        <li>
-            <div class="container-notification">
-                <img class="profile-pic-notification" src="{{ asset('img/mondongo.jpg') }}">
-                <a href="#">Darius</a>
-                <p> liked your post.</p>
-            </div>
-            <img class="post-pic-notification" src="{{ asset('img/naruto.jpeg') }}">
-        </li>
-        <li>
-            <div class="container-notification">
-                <img class="profile-pic-notification" src="{{ asset('img/mondongo.jpg') }}">
-                <a href="#">Darius</a>
-                <p> commented your post: "Hola que tal"</p>
-            </div>
-            <img class="post-pic-notification"  src="{{ asset('img/naruto.jpeg') }}">
-        </li>
-        <li></li>
-        <li></li>
+        {% for notification in notifications %}
+            {% if notification.generatedNotifyBy != app.user %}
+            <li>
+                <div class="container-notification">
+                    <img class="profile-pic-notification" src="{{ notification.generatedNotifyBy.photo }}">
+                    <a href="/profile/{{ notification.generatedNotifyBy.username }}">{{ notification.generatedNotifyBy.username }}</a>
+                    {% if notification.type == 'like' %}
+                    <p> liked your post.</p>
+                    {% else %}
+                    <p> commented: "{{ notification.contentComment }}" on your post.</p>
+                    {% endif %}
+                </div>
+                <img class="post-pic-notification" src="{{ notification.post.photo }}">
+            </li>
+            {% endif %}
+        {% endfor %}
     </ul>
 </main>
 {% endblock %}

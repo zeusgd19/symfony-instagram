@@ -30,6 +30,18 @@ class Notification
     #[ORM\ManyToOne]
     private ?Post $post = null;
 
+    #[ORM\Column]
+    private ?\DateTimeImmutable $createdAt = null;
+
+    #[ORM\Column]
+    private ?\DateTimeImmutable $expireDate = null;
+
+    public function __construct()
+    {
+        $this->createdAt = new \DateTimeImmutable();
+        $this->expireDate = (new \DateTimeImmutable())->modify('+1 day');
+    }
+
     public function getId(): ?int
     {
         return $this->id;
@@ -91,6 +103,30 @@ class Notification
     public function setPost(?Post $post): static
     {
         $this->post = $post;
+
+        return $this;
+    }
+
+    public function getCreatedAt(): ?\DateTimeImmutable
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(\DateTimeImmutable $createdAt): static
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    public function getExpireDate(): ?\DateTimeImmutable
+    {
+        return $this->expireDate;
+    }
+
+    public function setExpireDate(\DateTimeImmutable $expireDate): static
+    {
+        $this->expireDate = $expireDate;
 
         return $this;
     }

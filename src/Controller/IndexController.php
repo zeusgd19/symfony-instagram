@@ -58,6 +58,14 @@ class IndexController extends AbstractController
             }
         }
 
+        $notifications = $manager->getRepository(Notification::class)->findAll();
+        foreach ($notifications as $notification){
+            if($notification->getExpireDate() < new \DateTime()){
+                $manager->remove($notification);
+                $manager->flush();
+            }
+        }
+
         $newStories = $storyRepository->findAll();
         $followingIds = array_map(fn($user) => $user->getId(), $this->getUser()->getFollowing()->toArray());
 
@@ -152,11 +160,5 @@ class IndexController extends AbstractController
         return $this->render('partials/_navigation.html.twig', [
             'notification' => $notification
         ]);
-    }
-
-    #[Route('/notification', name: 'notification')]
-    public function notification(): Response
-    {
-        return $this->render('page/notification.html.twig');
     }
 }
