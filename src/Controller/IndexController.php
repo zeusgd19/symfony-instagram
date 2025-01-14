@@ -127,6 +127,8 @@ class IndexController extends AbstractController
         $isLikedByUser = [];
         $isSavedByUser = [];
         $timeElapsed = [];
+        $commentRepository = $doctrine->getRepository(Comment::class);
+        $allComments = $commentRepository->findAll();
         foreach ($allPosts as $post) {
             $posts[] = $post;
             $timeElapsed[$post['id']] = Carbon::parse($post['createdAt'])->diffForHumans();
@@ -139,11 +141,23 @@ class IndexController extends AbstractController
             $images[$post['id']] = $imageCache->getPostImage($post['photo']);
         }
 
+        $comments = [];
+        foreach ($allComments as $comment) {
+            $postId = $comment->getPost()->getId();
+            if (!isset($comments[$postId])) {
+                $comments[$postId] = 0;
+            }
+            $comments[$postId]++;
+        }
+
+
+
         return $this->render('page/index.html.twig', [
             'users' => $users,
             'profileImage' => $profileImages,
             'user' => $this->getUser(),
             'posts' => $posts,
+            'comments' => $comments,
             'images' => $images,
             'isLikedByUser' => $isLikedByUser,
             'isSavedByUser' => $isSavedByUser,

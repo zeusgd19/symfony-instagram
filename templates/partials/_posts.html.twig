@@ -50,7 +50,11 @@
                 {% endif %}
 
                 <p>{{ post.description }}</p>
-                <a href="" class="view-comments">View all 103 comments</a>
+                {% if comments[post.id] is defined %}
+                    <a href="" class="view-comments">View all {{ comments[post.id] }} comments</a>
+                {% else %}
+                    <a href="" class="view-comments">View all 0 comments</a>
+                {% endif %}
                 <p class="time">{{ timeElapsed[post.id] }}</p>
             </div>
         </div>
